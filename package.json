@@ -2,10 +2,10 @@
   "name": "web",
   "version": "1.0.0",
   "description": "web server for battleship mcu modules",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ./src",
-    "dev": "nodemon ./src"
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js"
   },
   "author": "Mitch Arndt",
   "license": "0BSD",
