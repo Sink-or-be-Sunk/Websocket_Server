@@ -17,9 +17,12 @@ if (process.env.NODE_ENV !== "production") {
 
 const Game = require("./game/Game.js");
 const Fleet = require("./game/Fleet.js");
+const Coordinate = require("./game/Coordinate.js");
+const CONSTANTS = require("./game/Constants");
 
 const WebSocketServer = require("websocket").server;
 const http = require("http");
+const Ship = require("./game/Ship.js");
 const port = process.env.PORT || 3000;
 
 const server = http.createServer(function (req, res) {
@@ -76,5 +79,13 @@ wsServer.on("request", function (req) {
   });
 });
 
-const fleet = new Fleet();
+// const fleet = new Fleet();
+// const res = fleet.attack(new Coordinate("A", 1));
+// console.log(res);
 const game = new Game(["player1", "player2"]);
+const ship = new Ship(3);
+ship.position(new Coordinate("C", 2), CONSTANTS.DIR.east);
+ship.show();
+console.log(ship.attack(new Coordinate("A", 1)));
+console.log(ship.attack(new Coordinate("C", 2)));
+console.log(ship.attack(new Coordinate("C", 3)));
