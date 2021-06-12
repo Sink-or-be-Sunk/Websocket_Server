@@ -1,4 +1,4 @@
-const Board = require("./Board.js");
+const Board = require("./Board.ts");
 class Game {
   constructor(players) {
     this.isOver = false;
