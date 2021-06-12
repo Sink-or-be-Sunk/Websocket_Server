@@ -15,7 +15,7 @@ if (process.env.NODE_ENV !== "production") {
 //   console.log(`Sink or be Sunk Server listening at http://localhost:${port}`);
 // });
 
-const Game = require("./game/game.js");
+const Game = require("./game/Game.js");
 
 const WebSocketServer = require("websocket").server;
 const http = require("http");
@@ -59,7 +59,6 @@ wsServer.on("request", function (req) {
   console.log(new Date() + " Connection accepted.");
 
   const game = new Game();
-  console.log(game.parseMessage("test"));
 
   connection.on("message", function (message) {
     if (message.type === "utf8") {
@@ -75,3 +74,5 @@ wsServer.on("request", function (req) {
     );
   });
 });
+
+const game = new Game(["player1", "player2"]);

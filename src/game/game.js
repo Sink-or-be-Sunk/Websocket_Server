@@ -1,6 +1,10 @@
+const Board = require("./Board.js");
 class Game {
-  constructor() {
+  constructor(players) {
     this.isOver = false;
+    this.players = players;
+    this.turn = players[0];
+    this.board = new Board();
   }
 
   parseMessage(message) {
