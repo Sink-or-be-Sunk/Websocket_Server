@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== "production") {
 // });
 
 const Game = require("./game/Game.js");
+const Fleet = require("./game/Fleet.js");
 
 const WebSocketServer = require("websocket").server;
 const http = require("http");
@@ -75,4 +76,5 @@ wsServer.on("request", function (req) {
   });
 });
 
+const fleet = new Fleet();
 const game = new Game(["player1", "player2"]);

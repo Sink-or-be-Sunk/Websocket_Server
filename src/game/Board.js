@@ -1,3 +1,5 @@
+const Coordinate = require("./Coordinate.js");
+
 /**
  * Game Board where integers are used to represent the state of the game
  *   0: is the initial "untouched" state of the board space
@@ -5,12 +7,13 @@
  *   2: counts as a hit
  */
 class Board {
-  constructor(size = 8, ships) {
+  constructor(size = 8, fleet) {
     this.size = size;
     this.grid = Array.from(Array(size), () => new Array(size));
-    this.ships = ships;
+    this.fleet = fleet;
     this.clear();
-    this.printBoard();
+    // this.mark(new Coordinate("e", 3));
+    // this.printBoard();
   }
 
   printBoard() {
@@ -34,13 +37,16 @@ class Board {
    * @param row letter corresponding to row
    * @param col 1 indexed column
    */
-  mark(row, col) {
-    row = row.toLowerCase().charCodeAt(0) - 97;
-    col--;
-    if (this.grid[col][row] === 1) {
+  mark(coordinate) {
+    if (coordinate.col >= this.size || coordinate.row >= this.size) {
+      throw new Error(
+        `[IMPORTANT] Coordinate Out of Bounds: (${coordinate.col}, ${coordinate.row})`
+      );
+    }
+    if (this.grid[coordinate.col][coordinate.row] === 1) {
       return false;
     } else {
-      this.grid[col][row] = 1;
+      this.grid[coordinate.col][coordinate.row] = 1;
       return true;
     }
   }
