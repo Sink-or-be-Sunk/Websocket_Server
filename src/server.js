@@ -84,8 +84,8 @@ wsServer.on("request", function (req) {
 // console.log(res);
 const game = new Game(["player1", "player2"]);
 const ship = new Ship(3);
-ship.position(new Coordinate("C", 2), CONSTANTS.DIR.east);
-ship.show();
-console.log(ship.attack(new Coordinate("A", 1)));
+ship.position(new Coordinate("C", 2), CONSTANTS.DIR.south);
+console.log(ship.attack(new Coordinate("E", 2)));
 console.log(ship.attack(new Coordinate("C", 2)));
-console.log(ship.attack(new Coordinate("C", 3)));
+console.log(ship.attack(new Coordinate("D", 2)));
+ship.show();

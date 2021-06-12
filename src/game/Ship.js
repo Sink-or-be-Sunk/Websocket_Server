@@ -15,34 +15,42 @@ class Ship {
   }
 
   attack(coordinate) {
-    switch (this.orientation) {
-      case CONSTANTS.DIR.north: {
-        break;
-      }
-      case CONSTANTS.DIR.south: {
-        break;
-      }
-      case CONSTANTS.DIR.east: {
-        //left to right
-        for (let i = 0; i < this.size; i++) {
-          const c = this.location.x;
-          const r = this.location.y + i;
-          if (c === coordinate.col && r === coordinate.row) {
-            this.hits[i] = 1;
-            if (this.hits.filter((x) => x === 1).length == this.hits.length) {
-              return "sunk";
-            } else {
-              return "hit";
-            }
-          }
+    for (let i = 0; i < this.size; i++) {
+      let c = undefined;
+      let r = undefined;
+      switch (this.orientation) {
+        case CONSTANTS.DIR.north: {
+          c = this.location.x - i;
+          r = this.location.y;
+          break;
         }
-        return "miss";
-        break;
+        case CONSTANTS.DIR.south: {
+          c = this.location.x + i;
+          r = this.location.y;
+          break;
+        }
+        case CONSTANTS.DIR.east: {
+          c = this.location.x;
+          r = this.location.y + i;
+          break;
+        }
+        case CONSTANTS.DIR.west: {
+          c = this.location.x;
+          r = this.location.y - i;
+          break;
+        }
       }
-      case CONSTANTS.DIR.west: {
-        break;
+
+      if (c === coordinate.col && r === coordinate.row) {
+        this.hits[i] = 1;
+        if (this.hits.filter((x) => x === 1).length == this.hits.length) {
+          return "sunk";
+        } else {
+          return "hit";
+        }
       }
     }
+    return "miss";
   }
 
   show() {
