@@ -1,0 +1,6 @@
+{
+  "name": "sink-or-be-sunk-web",
+  "description": "Sink or be Sunk Websocket Server",
+  "repository": "https://github.com/MArndt26/SobS_Web",
+  "keywords": ["node", "typescript", "express", "websocket"]
+}
