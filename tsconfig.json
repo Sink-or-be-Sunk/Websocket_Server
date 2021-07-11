@@ -8,9 +8,7 @@
 
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "removeComments": true,
+    "removeComments": true
   },
-  "include": [
-    "./index.ts"
-  ]
+  "include": ["src/server.ts"]
 }

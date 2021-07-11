@@ -42,6 +42,10 @@ npm install
 
 - `npm i -g typescript`
 
+### Tools
+
+- [Smart Web Socket Chrome Extension][smart-web-socket]
+
 ## Available Scripts
 
 - `start` - deploy application,
@@ -71,3 +75,4 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [volta-tomdale]: https://twitter.com/tomdale/status/1162017336699838467?s=20
 [jsynowiec]: https://github.com/jsynowiec/node-typescript-boilerplate
 [heroku-getting-started]: https://github.com/heroku/typescript-getting-started
+[smart-web-socket]: https://chrome.google.com/webstore/detail/smart-websocket-client/omalebghpgejjiaoknljcfmglgbpocdp
