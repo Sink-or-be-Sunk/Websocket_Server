@@ -28,7 +28,7 @@ wss.on("connection", (ws: WebSocket) => {
 			const resp = lobby.handleReq(ws, req);
 			ws.send(resp.toString());
 		} catch (error) {
-			console.error(`${error}: ${raw}`);
+			console.error(`${error}: client message:\n${raw}`);
 			ws.send(ServerMessenger.FORMAT_ERROR.toString());
 		}
 	});

@@ -3,10 +3,15 @@ import WSServerMessage from "./WSServerMessage";
 export default class ServerMessenger {
 	//HEADERS FOR DYNAMIC MESSAGES
 	private static readonly REQ_ERROR_HEADER: string = "REQ ERROR";
-	private static readonly GAME_CREATED_HEADER: string = "GAME CREATED";
 	private static readonly JOINED_HEADER: string = "JOINED GAME";
 
 	//STATIC MESSAGES
+	static readonly CANNOT_MAKE_MOVE: WSServerMessage = new WSServerMessage(
+		"CANNOT MAKE MOVE",
+	);
+	static readonly MOVE_MADE: WSServerMessage = new WSServerMessage(
+		"MOVE MADE",
+	);
 	static readonly CONNECTED: WSServerMessage = new WSServerMessage(
 		"CONNECTED",
 	);
@@ -19,12 +24,11 @@ export default class ServerMessenger {
 	static readonly TURN_ERROR: WSServerMessage = new WSServerMessage(
 		"TURN ERROR",
 	);
+	static readonly GAME_CREATED: WSServerMessage = new WSServerMessage(
+		"GAME CREATED",
+	);
 
 	// DYNAMIC MESSAGE BUILDERS
-	static gameCreated(): WSServerMessage {
-		return new WSServerMessage(this.GAME_CREATED_HEADER);
-	}
-
 	static joined(id: string): WSServerMessage {
 		return new WSServerMessage(this.JOINED_HEADER, id);
 	}

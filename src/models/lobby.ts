@@ -23,11 +23,13 @@ export default class Lobby {
 			}
 			const game = new Game(message.id, socket); //use the unique MAC address of MCU to generate game id
 			this.games.push(game);
-			return ServerMessenger.gameCreated();
-			// TODO: MAKE MOVE CODE
-			// } else if (message.req === WSClientMessage.MAKE_MOVE) {
-			// 	//attempt to make move in a game
-			// 	return "make move";
+			return ServerMessenger.GAME_CREATED;
+		} else if (message.req === WSClientMessage.MAKE_MOVE) {
+			if (this.makeMove(message.id, message.data)) {
+				return ServerMessenger.MOVE_MADE;
+			} else {
+				return ServerMessenger.CANNOT_MAKE_MOVE;
+			}
 		} else if (message.req == WSClientMessage.JOIN_GAME) {
 			if (this.joinGame(new Player(message.id, socket), message.data)) {
 				return ServerMessenger.joined(message.data);
@@ -39,7 +41,23 @@ export default class Lobby {
 		}
 	}
 
-	public joinGame(player: Player, toJoinID: string): boolean {
+	/**
+	 *
+	 * @param playerID - id of player making move
+	 * @param move - move to be made
+	 * @returns - true if move is valid, false otherwise
+	 */
+	private makeMove(playerID: string, move: string): boolean {
+		for (let i = 0; i < this.games.length; i++) {
+			const game = this.games[i];
+			if (game.contains(playerID)) {
+				return game.makeMove(playerID, move);
+			}
+		}
+		return false;
+	}
+
+	private joinGame(player: Player, toJoinID: string): boolean {
 		for (let i = 0; i < this.games.length; i++) {
 			const game = this.games[i];
 			if (game.id == toJoinID) {
