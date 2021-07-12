@@ -3,7 +3,11 @@ export default class WSMessage {
 	static MAKE_MOVE = "makeMove";
 	static JOIN_GAME = "joinGame";
 
-	private REQUESTS = [WSMessage.NEW_GAME];
+	private REQUESTS = [
+		WSMessage.NEW_GAME,
+		WSMessage.MAKE_MOVE,
+		WSMessage.JOIN_GAME,
+	];
 	req: string;
 	id: string;
 	data: string;

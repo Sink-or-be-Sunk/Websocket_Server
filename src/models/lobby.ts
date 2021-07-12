@@ -3,6 +3,7 @@ import ServerMessenger from "./ServerMessenger";
 import WSClientMessage from "./WSClientMessage";
 import WSServerMessage from "./WSServerMessage";
 import * as WebSocket from "ws";
+import Player from "./Player";
 
 export default class Lobby {
 	games: Game[];
@@ -15,7 +16,7 @@ export default class Lobby {
 		socket: WebSocket,
 		message: WSClientMessage,
 	): WSServerMessage {
-		if (message.req === WSClientMessage.NEW_GAME) {
+		if (message.req == WSClientMessage.NEW_GAME) {
 			//attempt to create new game
 			if (this.getGame(message.id)) {
 				return ServerMessenger.reqError("Game Already Exists");
@@ -27,9 +28,25 @@ export default class Lobby {
 			// } else if (message.req === WSClientMessage.MAKE_MOVE) {
 			// 	//attempt to make move in a game
 			// 	return "make move";
+		} else if (message.req == WSClientMessage.JOIN_GAME) {
+			if (this.joinGame(new Player(message.id, socket), message.data)) {
+				return ServerMessenger.joined(message.data);
+			} else {
+				return ServerMessenger.NO_SUCH_GAME;
+			}
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
+	}
+
+	public joinGame(player: Player, toJoinID: string): boolean {
+		for (let i = 0; i < this.games.length; i++) {
+			const game = this.games[i];
+			if (game.id == toJoinID) {
+				return game.add(player);
+			}
+		}
+		return false;
 	}
 
 	public leaveGame(socket: WebSocket) {

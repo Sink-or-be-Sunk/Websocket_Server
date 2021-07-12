@@ -20,6 +20,7 @@ const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws: WebSocket) => {
 	console.log(`Websocket Connected`);
+	ws.send(ServerMessenger.CONNECTED.toString());
 
 	ws.on("message", function incoming(raw) {
 		try {
