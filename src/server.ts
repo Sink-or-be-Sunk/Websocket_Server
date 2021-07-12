@@ -2,14 +2,13 @@ import * as dotenv from "dotenv";
 import express from "express";
 import * as http from "http";
 import * as WebSocket from "ws";
-import Lobby from "./models/lobby";
-import WSMessage from "./models/ws_message";
-import ServerMessage from "./models/ServerMessage";
+import Lobby from "./models/Lobby";
+import WSMessage from "./models/WSClientMessage";
+import ServerMessenger from "./models/ServerMessenger";
 
 dotenv.config();
 
 const lobby = new Lobby();
-const serverMessage = new ServerMessage();
 
 const app = express();
 
@@ -24,16 +23,17 @@ wss.on("connection", (ws: WebSocket) => {
 
 	ws.on("message", function incoming(raw) {
 		try {
-			const message = new WSMessage(raw.toString());
-			ws.send("success!");
+			const req = new WSMessage(raw.toString());
+			const resp = lobby.handleReq(ws, req);
+			ws.send(resp.toString());
 		} catch (error) {
 			console.error(`${error}: ${raw}`);
-			ws.send(serverMessage.FORMAT_ERROR);
+			ws.send(ServerMessenger.FORMAT_ERROR.toString());
 		}
 	});
 
 	ws.on("close", () => {
-		console.log("Connection Closed");
+		lobby.leaveGame(ws);
 	});
 });
 
