@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import express from "express";
 import * as http from "http";
-import * as WebSocket from "ws";
+import WebSocket from "ws";
 import Lobby from "./models/Lobby";
 import WSMessage from "./models/WSClientMessage";
 import ServerMessenger from "./models/ServerMessenger";
