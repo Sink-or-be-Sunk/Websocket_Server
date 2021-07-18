@@ -14,33 +14,62 @@ const app = express();
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-beforeEach(() => {
-	jest.spyOn(console, "log").mockImplementation(() => {});
-});
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+const ws1 = new WebSocket(`ws://localhost:${port}`);
+const ws2 = new WebSocket(`ws://localhost:${port}`);
 
-test("sample", async () => {
-	// initialize a simple http server
-	const server = http.createServer(app);
-
-	const wss = new WebSocket.Server({ server });
+beforeAll(async () => {
+	jest.spyOn(console, "log").mockImplementation(() => {}); //silence console logs
 
 	server.listen(port, () => {
 		console.log(`Server started on port: ${port}/`);
 	});
 
-	const ws = new WebSocket(`ws://localhost:${port}`);
-
-	while (ws.readyState !== 1) {
-		await delay(5); /// waiting 1 second.
+	while (ws1.readyState !== 1) {
+		await delay(5); /// waiting 5 millisecond.
 	}
+	while (ws2.readyState !== 1) {
+		await delay(5); /// waiting 5 millisecond.
+	}
+});
 
-	const lobby = new Lobby();
-	const msg = new WSMessage(JSON.stringify({ id: "one", req: "newGame" }));
-	const resp = lobby.handleReq(ws, msg);
-
-	expect(resp).toBe(ServerMessenger.GAME_CREATED);
-
-	ws.close();
+afterAll(() => {
+	ws1.close();
+	ws2.close();
 	wss.close();
 	server.close();
+});
+
+describe("Basic Matchmaking", () => {
+	// initialize a simple http server
+	const lobby = new Lobby();
+
+	it("Player 1 Creates New Game", () => {
+		const req = { id: "one", req: WSMessage.NEW_GAME };
+		const msg = new WSMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(ws1, msg);
+		expect(resp).toStrictEqual(ServerMessenger.GAME_CREATED);
+	});
+
+	it("Player 2 Joins the Game", () => {
+		const req = { id: "two", req: WSMessage.JOIN_GAME, data: "one" };
+		const msg = new WSMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(ws2, msg);
+		expect(resp).toStrictEqual(ServerMessenger.joined(req.data));
+	});
+
+	it("Player 1 Makes a Move", () => {
+		const req = { id: "one", req: WSMessage.MAKE_MOVE, data: "move" };
+		const msg = new WSMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(ws1, msg);
+		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
+	});
+
+	it("Player 2 Makes a Move", () => {
+		const req = { id: "two", req: WSMessage.MAKE_MOVE, data: "move" };
+		const msg = new WSMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(ws2, msg);
+		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
+	});
 });
