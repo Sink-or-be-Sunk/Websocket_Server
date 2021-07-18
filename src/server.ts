@@ -1,12 +1,10 @@
-import * as dotenv from "dotenv";
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 import express from "express";
 import * as http from "http";
 import WebSocket from "ws";
 import Lobby from "./models/Lobby";
 import WSClientMessage from "./models/WSClientMessage";
 import ServerMessenger from "./models/ServerMessenger";
-
-dotenv.config();
 
 const lobby = new Lobby();
 
