@@ -86,7 +86,7 @@ export default class Game {
 	private nextTurn() {
 		const prevTurn = this.turn;
 		this.turn++;
-		if (this.turn > this.players.length) {
+		if (this.turn >= this.players.length) {
 			this.turn = 0;
 		}
 		console.log(

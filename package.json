@@ -11,7 +11,8 @@
 		"build": "tsc",
 		"dev": "nodemon",
 		"single": "tsc && node .",
-		"test": "jest"
+		"test": "jest",
+		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand"
 	},
 	"keywords": [],
 	"author": "",
