@@ -13,8 +13,7 @@
 		"single": "tsc && node .",
 		"test": "jest",
 		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
-		"export": "ts-node ./src/utils/ExportClientCmds.ts",
-		"temp": "shx rm ./src/*.js"
+		"export": "ts-node ./src/utils/ExportClientCmds.ts && rimraf ./src/**/*.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -25,11 +24,12 @@
 		"@types/node": "^14.14.22",
 		"@types/ws": "^7.4.6",
 		"dotenv": "^10.0.0",
+		"fs": "^0.0.1-security",
 		"jest-websocket-mock": "^2.2.1",
 		"mock-socket": "^9.0.3",
 		"nodemon": "^2.0.12",
 		"prettier": "2.3.2",
-		"shelljs": "^0.8.4",
+		"rimraf": "^3.0.2",
 		"ts-jest": "^27.0.3",
 		"ts-node": "^10.1.0"
 	},

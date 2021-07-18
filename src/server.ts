@@ -3,7 +3,7 @@ import express from "express";
 import * as http from "http";
 import WebSocket from "ws";
 import Lobby from "./models/Lobby";
-import WSMessage from "./models/WSClientMessage";
+import WSClientMessage from "./models/WSClientMessage";
 import ServerMessenger from "./models/ServerMessenger";
 
 dotenv.config();
@@ -24,7 +24,7 @@ wss.on("connection", (ws: WebSocket) => {
 
 	ws.on("message", function incoming(raw) {
 		try {
-			const req = new WSMessage(raw.toString());
+			const req = new WSClientMessage(raw.toString());
 			const resp = lobby.handleReq(ws, req);
 			ws.send(resp.toString());
 		} catch (error) {
