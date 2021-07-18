@@ -2,7 +2,7 @@ import Game from "./Game";
 import ServerMessenger from "./ServerMessenger";
 import WSClientMessage from "./WSClientMessage";
 import WSServerMessage from "./WSServerMessage";
-import * as WebSocket from "ws";
+import WebSocket from "ws";
 import Player from "./Player";
 
 export default class Lobby {
