@@ -1,12 +1,12 @@
-export default class WSMessage {
+export default class WSClientMessage {
 	static NEW_GAME = "newGame";
 	static MAKE_MOVE = "makeMove";
 	static JOIN_GAME = "joinGame";
 
-	private REQUESTS = [
-		WSMessage.NEW_GAME,
-		WSMessage.MAKE_MOVE,
-		WSMessage.JOIN_GAME,
+	static REQUESTS = [
+		WSClientMessage.NEW_GAME,
+		WSClientMessage.MAKE_MOVE,
+		WSClientMessage.JOIN_GAME,
 	];
 	req: string;
 	id: string;
@@ -21,7 +21,7 @@ export default class WSMessage {
 		if (this.id == undefined || this.req == undefined) {
 			throw Error("Message Didn't Contain all Fields");
 		}
-		if (!this.REQUESTS.includes(this.req)) {
+		if (!WSClientMessage.REQUESTS.includes(this.req)) {
 			throw Error(`Invalid Message Request: ${this.req}`);
 		}
 	}

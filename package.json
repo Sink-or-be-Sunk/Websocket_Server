@@ -12,7 +12,9 @@
 		"dev": "nodemon",
 		"single": "tsc && node .",
 		"test": "jest",
-		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand"
+		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+		"export": "ts-node ./src/utils/ExportClientCmds.ts",
+		"temp": "shx rm ./src/*.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -27,7 +29,9 @@
 		"mock-socket": "^9.0.3",
 		"nodemon": "^2.0.12",
 		"prettier": "2.3.2",
-		"ts-jest": "^27.0.3"
+		"shelljs": "^0.8.4",
+		"ts-jest": "^27.0.3",
+		"ts-node": "^10.1.0"
 	},
 	"dependencies": {
 		"express": "^4.17.1",
