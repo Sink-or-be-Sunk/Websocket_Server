@@ -73,13 +73,14 @@ export default class Game {
 	 * @param move - move being made
 	 * @returns true if move is valid, false otherwise
 	 */
-	makeMove(id: string, move: string): boolean {
+	makeMove(id: string, move: string): GameResponse {
 		if (this.players[this.turn].id == id) {
+			//TODO: need to check for valid move
 			console.log(`player <${id}> made move ${move}`);
 			this.nextTurn();
-			return true;
+			return new GameResponse(true);
 		} else {
-			return false;
+			return new GameResponse(false, GameResponse.TURN_ERROR);
 		}
 	}
 
@@ -94,5 +95,20 @@ export default class Game {
 				this.players[this.turn].id
 			}>`,
 		);
+	}
+}
+
+export class GameResponse {
+	static readonly TURN_ERROR = "TURN ERROR";
+	static readonly MOVE_ERROR = "MOVE ERROR";
+	static readonly NO_META = "NO META";
+	static readonly NO_SUCH_GAME = "NO SUCH GAME";
+
+	valid: boolean;
+	meta: string;
+
+	constructor(valid: boolean, meta?: string) {
+		this.valid = valid;
+		this.meta = meta ?? GameResponse.NO_META;
 	}
 }

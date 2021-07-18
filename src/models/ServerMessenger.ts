@@ -4,11 +4,9 @@ export default class ServerMessenger {
 	//HEADERS FOR DYNAMIC MESSAGES
 	private static readonly REQ_ERROR_HEADER: string = "REQ ERROR";
 	private static readonly JOINED_HEADER: string = "JOINED GAME";
+	private static readonly INVALID_MOVE_HEADER: string = "INVALID MOVE";
 
 	//STATIC MESSAGES
-	static readonly CANNOT_MAKE_MOVE: WSServerMessage = new WSServerMessage(
-		"CANNOT MAKE MOVE",
-	);
 	static readonly MOVE_MADE: WSServerMessage = new WSServerMessage(
 		"MOVE MADE",
 	);
@@ -29,6 +27,9 @@ export default class ServerMessenger {
 	);
 
 	// DYNAMIC MESSAGE BUILDERS
+	static invalid_move(meta: string): WSServerMessage {
+		return new WSServerMessage(this.INVALID_MOVE_HEADER, meta);
+	}
 	static joined(id: string): WSServerMessage {
 		return new WSServerMessage(this.JOINED_HEADER, id);
 	}
