@@ -5,6 +5,10 @@ import WebSocket from "ws";
 import Lobby from "./models/Lobby";
 import WSClientMessage from "./models/WSClientMessage";
 import ServerMessenger from "./models/ServerMessenger";
+const expressLayouts = require("express-ejs-layouts");
+import path from "path";
+
+import indexRouter from "./routes/index";
 
 const lobby = new Lobby();
 
@@ -42,3 +46,11 @@ const port = process.env.PORT || 8080;
 server.listen(port, () => {
 	console.log(`Server started on port: ${port}/`);
 });
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "../src/views"));
+app.set("layout", "layouts/layout");
+app.use(expressLayouts);
+app.use(express.static(path.join(__dirname, "../public")));
+
+app.use("/", indexRouter);
