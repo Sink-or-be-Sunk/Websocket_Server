@@ -9,6 +9,7 @@ const expressLayouts = require("express-ejs-layouts");
 import path from "path";
 
 import indexRouter from "./routes/index";
+import gameRouter from "./routes/game";
 
 const lobby = new Lobby();
 
@@ -54,3 +55,7 @@ app.use(expressLayouts);
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/", indexRouter);
+app.use("/game", gameRouter);
+app.use("*", (req, res) => {
+	res.redirect("/"); //catch all non-managed uri and redirect to homepage
+});
