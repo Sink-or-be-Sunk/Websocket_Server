@@ -49,10 +49,10 @@ server.listen(port, () => {
 });
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "../src/views"));
+app.set("views", path.join(__dirname, "../src/server/views"));
 app.set("layout", "layouts/layout");
 app.use(expressLayouts);
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "../dist/public")));
 
 app.use("/", indexRouter);
 app.use("/game", gameRouter);

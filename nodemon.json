@@ -1,5 +1,5 @@
 {
-	"watch": ["src/", "public", "webpack.config.js"],
-	"ext": "ts, ejs",
+	"watch": ["src/", "public"],
+	"ext": "ts, ejs, js",
 	"exec": "npm run build && npm start"
 }

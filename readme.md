@@ -6,11 +6,11 @@
 
 Tools and Configurations:
 
-- [TypeScript][typescript] [4.3][typescript-4-3]
-- Type definitions for Node.js
-- [Prettier][prettier] to enforce consistent code style
-- NPM [scripts](#available-scripts) for common operations
-- Reproducible environments thanks to [Volta][volta]
+-   [TypeScript][typescript] [4.3][typescript-4-3]
+-   Type definitions for Node.js
+-   [Prettier][prettier] to enforce consistent code style
+-   NPM [scripts](#available-scripts) for common operations
+-   Reproducible environments thanks to [Volta][volta]
 
 ## Getting Started
 
@@ -28,35 +28,36 @@ npm install
 
 ### Setup
 
-- `npm i`
-  - `npm audit` or `npm audit fix` if needed
-- `npm run dev` --> for starting server in development mode
-- `npm run start` --> for starting server in production mode
+-   `npm i`
+    -   `npm audit` or `npm audit fix` if needed
+-   `npm run dev` --> for starting server in development mode
+-   `npm run start` --> for starting server in production mode
 
 ### Configure Prettier Formatter
 
-- Select `VS Code` -> `View` -> `Command Palette`, and type: Format Document With
-- Then `Configure Default Formatter`... and then choose `Prettier - Code formatter`.
+-   Select `VS Code` -> `View` -> `Command Palette`, and type: Format Document With
+-   Then `Configure Default Formatter`... and then choose `Prettier - Code formatter`.
 
 ### Setting up Typescript
 
-- `npm i -g typescript`
+-   `npm i -g typescript`
 
 ### Tools
 
-- [Smart Web Socket Chrome Extension][smart-web-socket]
+-   [Smart Web Socket Chrome Extension][smart-web-socket]
 
 ## Available Scripts
 
-- `start` - deploy application,
-- `build` - build application,
-- `dev` - start application in development mode with live server reload
+-   `start` - deploy application,
+-   `build` - build application,
+-   `dev` - start application in development mode with live server reload
 
 ## References
 
-- [Heroku Typescript Getting Started][heroku-getting-started]
-- [Fireship.io TS Tutorial](https://www.youtube.com/watch?v=ahCwqrYpIuM)
-- [Boilerplate Code][jsynowiec]
+-   [Heroku Typescript Getting Started][heroku-getting-started]
+-   [Fireship.io TS Tutorial](https://www.youtube.com/watch?v=ahCwqrYpIuM)
+-   [Boilerplate Code][jsynowiec]
+-   [Websocket Typescript Example][websocket-ts-example]
 
 ## License
 
@@ -76,3 +77,4 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [jsynowiec]: https://github.com/jsynowiec/node-typescript-boilerplate
 [heroku-getting-started]: https://github.com/heroku/typescript-getting-started
 [smart-web-socket]: https://chrome.google.com/webstore/detail/smart-websocket-client/omalebghpgejjiaoknljcfmglgbpocdp
+[websocket-ts-example]: https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate

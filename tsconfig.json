@@ -10,5 +10,5 @@
 		"forceConsistentCasingInFileNames": true,
 		"removeComments": true
 	},
-	"include": ["src/server.ts"]
+	"include": ["src/server/server.ts"]
 }

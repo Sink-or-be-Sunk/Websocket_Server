@@ -8,11 +8,12 @@
 	},
 	"scripts": {
 		"start": "node .",
-		"build:ts:client": "webpack --config ./src/client/webpack.dev.js",
+		"build:ts:client:dev": "webpack serve --config ./src/client/webpack.dev.js",
+		"build:ts:client": "webpack --config ./src/client/webpack.prod.js",
 		"build:ts:server": "tsc",
 		"build:ts": "npm-run-all build:ts:*",
-		"build:css": "sass src/sass:public/css",
-		"watch:css": "sass --watch src/sass:public/css",
+		"build:css": "sass src/client/sass:dist/public/styles",
+		"watch:css": "sass --watch src/sass:dist/public/styles",
 		"build": "npm-run-all build:*",
 		"dev": "nodemon",
 		"test": "jest",
@@ -43,6 +44,7 @@
 		"ts-node": "^10.1.0",
 		"webpack": "^5.46.0",
 		"webpack-cli": "^4.7.2",
+		"webpack-dev-server": "^3.11.2",
 		"webpack-merge": "^5.8.0"
 	},
 	"dependencies": {
