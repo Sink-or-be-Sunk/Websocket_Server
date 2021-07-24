@@ -9,7 +9,8 @@
 	"scripts": {
 		"start": "node .",
 		"build:ts:client": "tsc -p ./src/client",
-		"build:ts": "tsc",
+		"build:ts:server": "tsc",
+		"build:ts": "npm-run-all build:ts:*",
 		"build:css": "sass src/sass:public/css",
 		"watch:css": "sass --watch src/sass:public/css",
 		"build": "npm-run-all build:*",

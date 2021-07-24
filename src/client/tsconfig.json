@@ -1,13 +1,18 @@
 {
 	"compilerOptions": {
 		"baseUrl": "../",
+		"jsx": "preserve",
 		"module": "commonjs",
 		"rootDir": ".",
 		"outDir": "../../public/js",
 		"strict": true,
 		"target": "ES2019",
+		"lib": ["es6", "dom"],
 
 		"esModuleInterop": true,
+		"sourceMap": true,
+		"allowJs": true,
+		"moduleResolution": "node",
 		"forceConsistentCasingInFileNames": true,
 		"removeComments": true
 	},
