@@ -16,6 +16,7 @@
 		"watch:css": "sass --watch src/sass:dist/public/styles",
 		"dev:client": "copyfiles -f ./src/client/*.html ./dist/public && webpack serve --config ./src/client/webpack.dev.js",
 		"dev:server": "nodemon",
+		"dev": "echo \"\\033[31mError: use \\033[33mdev:client \\033[31mor \\033[33mdev:server\n\"",
 		"test": "jest",
 		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
 		"export": "ts-node ./src/utils/ExportClientCmds.ts && rimraf ./src/utils/*.js"
