@@ -2,8 +2,7 @@ import * as THREE from "three";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import { Water } from "three/examples/jsm/objects/Water";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
-// import BOATS from "./createBoats";
+import createBoats from "./createBoats";
 
 export default class SceneManager {
 	grid: number;
@@ -12,7 +11,7 @@ export default class SceneManager {
 	camera: THREE.PerspectiveCamera;
 	sky: Sky;
 	sun: THREE.Vector3;
-	// boats: THREE.Mesh[][];
+	boats: THREE.Mesh[][];
 	controls: OrbitControls;
 	water: Water;
 
@@ -23,7 +22,7 @@ export default class SceneManager {
 		this.camera = this.createCamera();
 		this.sky = this.createSky();
 		this.sun = this.createSun();
-		// this.boats = BOATS.createBoats(this.scene, this.grid);
+		this.boats = createBoats(this.scene, this.grid);
 		this.controls = this.setOrbitControls();
 		this.water = this.createWater();
 
@@ -124,8 +123,8 @@ export default class SceneManager {
 
 	public update() {
 		// Animates water
-		console.log(this.water.material);
-		// this.water.material.uniforms["time"].value += 1.0 / 60.0; //TODO: add back
+		const mat = this.water.material as THREE.ShaderMaterial; //TODO: fix this in a type declaration file
+		mat.uniforms["time"].value += 1.0 / 60.0;
 
 		const time = performance.now() * 0.001;
 
