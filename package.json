@@ -8,7 +8,7 @@
 	},
 	"scripts": {
 		"start": "node .",
-		"build:ts:client": "tsc -p ./src/client",
+		"build:ts:client": "webpack --config ./src/client/webpack.dev.js",
 		"build:ts:server": "tsc",
 		"build:ts": "npm-run-all build:ts:*",
 		"build:css": "sass src/sass:public/css",
@@ -39,7 +39,11 @@
 		"rimraf": "^3.0.2",
 		"sass": "^1.35.2",
 		"ts-jest": "^27.0.3",
-		"ts-node": "^10.1.0"
+		"ts-loader": "^9.2.4",
+		"ts-node": "^10.1.0",
+		"webpack": "^5.46.0",
+		"webpack-cli": "^4.7.2",
+		"webpack-merge": "^5.8.0"
 	},
 	"dependencies": {
 		"ejs": "^3.1.6",

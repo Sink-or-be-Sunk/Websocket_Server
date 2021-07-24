@@ -9,7 +9,6 @@ export default class BOATS {
 				boats[c][r] = BOATS.createBoat(scene, c * 20, r * 20);
 			}
 		}
-		console.log(boats);
 		return boats;
 	}
 

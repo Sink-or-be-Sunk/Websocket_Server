@@ -1,5 +1,7 @@
 src/**/*.js
-public/js
+public/*bundle*
+
+!src/client/webpack*
 
 # Logs
 logs
