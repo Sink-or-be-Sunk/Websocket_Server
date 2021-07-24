@@ -18,7 +18,7 @@
 		"dev:server": "nodemon",
 		"test": "jest",
 		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
-		"export": "ts-node ./src/utils/ExportClientCmds.ts && rimraf ./src/**/*.js"
+		"export": "ts-node ./src/utils/ExportClientCmds.ts && rimraf ./src/utils/*.js"
 	},
 	"keywords": [],
 	"author": "",
