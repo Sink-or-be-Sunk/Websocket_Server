@@ -1,7 +1,7 @@
-import Lobby from "../models/Lobby";
-import { GameResponse } from "../models/Game";
-import ServerMessenger from "../models/ServerMessenger";
-import WSClientMessage from "../models/WSClientMessage";
+import Lobby from "../server/models/Lobby";
+import { GameResponse } from "../server/models/Game";
+import ServerMessenger from "../server/models/ServerMessenger";
+import WSClientMessage from "../server/models/WSClientMessage";
 import TestUtils from "../utils/TestUtils";
 
 beforeAll(async () => {
