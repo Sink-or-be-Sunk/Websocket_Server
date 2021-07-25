@@ -20,7 +20,7 @@ export default class SceneManager {
 	squareManager: SquareManager;
 	water: Water;
 	interactionManager: InteractionManager;
-	controls: OrbitControls;
+	// controls: OrbitControls;
 
 	constructor(grid: number) {
 		this.grid = grid;
@@ -34,14 +34,11 @@ export default class SceneManager {
 		this.squareManager = new SquareManager(this.scene, this.grid);
 		this.water = this.createWater();
 
-		this.interactionManager = new InteractionManager(
-			this.camera,
-			this.renderer.domElement,
-		);
+		this.interactionManager = new InteractionManager(this.camera);
 		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
 
-		this.controls = this.setOrbitControls();
+		// this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
 			this.onWindowResize();
@@ -50,6 +47,7 @@ export default class SceneManager {
 
 	private createRenderer() {
 		const root = document.createElement("div");
+		root.classList.add("game");
 		document.body.appendChild(root);
 		// const renderer = new THREE.WebGLRenderer({ antialias: true });
 		const renderer = new THREE.WebGLRenderer();

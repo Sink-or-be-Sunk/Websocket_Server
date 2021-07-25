@@ -3,10 +3,10 @@ import * as TWEEN from "@tweenjs/tween.js";
 
 const sceneManager = new SceneManager(8);
 
-document.addEventListener("click", (event) => {
-	event.stopPropagation();
-	sceneManager.transition();
-});
+// document.addEventListener("click", (event) => {
+// 	event.stopPropagation();
+// 	sceneManager.transition();
+// });
 
 animate((time: number) => {
 	sceneManager.update();
