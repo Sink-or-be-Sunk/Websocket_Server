@@ -1,10 +1,10 @@
 <mxfile host="65bd71144e">
     <diagram id="k3TPbrFN-NNLmTVDwDH8" name="Page-1">
-        <mxGraphModel dx="109" dy="39" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="324" dy="115" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="6" value="" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=2;shape=mxgraph.ios7.misc.expand;fillColor=#c0c0c0;" parent="1" vertex="1">
+                <mxCell id="6" value="" style="html=1;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;verticalAlign=top;shadow=0;dashed=0;strokeWidth=2;shape=mxgraph.ios7.misc.expand;fillColor=none;" parent="1" vertex="1">
                     <mxGeometry x="240" y="80" width="40" height="10" as="geometry"/>
                 </mxCell>
             </root>

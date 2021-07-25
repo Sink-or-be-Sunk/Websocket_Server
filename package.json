@@ -14,7 +14,7 @@
 		"build:css": "sass src/client/sass:dist/public/styles",
 		"build:assets": "copyfiles ./assets/**/* ./dist/public",
 		"build": "npm-run-all -s clean build:**",
-		"watch:css": "sass --watch src/sass:dist/public/styles",
+		"watch:css": "sass --watch src/client/sass:dist/public/styles",
 		"dev:client": "copyfiles -f ./src/client/*.html ./dist/public && npm run build:assets && webpack serve --config ./src/client/webpack.dev.js",
 		"dev:server": "nodemon",
 		"dev": "echo \"\\033[31mError: use \\033[33mdev:client \\033[31mor \\033[33mdev:server\n\"",

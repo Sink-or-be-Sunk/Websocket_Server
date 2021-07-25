@@ -51,3 +51,15 @@ body {
 .game {
 	cursor: crosshair;
 }
+
+#arrow-up,
+#arrow-down {
+	stroke: black;
+	stroke-opacity: 0.3;
+	stroke-width: 15;
+	width: 300px;
+
+	:hover {
+		stroke-opacity: 0.5;
+	}
+}

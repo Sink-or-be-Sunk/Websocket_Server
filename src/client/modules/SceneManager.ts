@@ -40,7 +40,7 @@ export default class SceneManager {
 		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
 
-		this.overlayManager = new OverlayManager(this.scene, this.camera);
+		this.overlayManager = new OverlayManager(this.renderer.domElement);
 
 		this.controls = this.setOrbitControls();
 
