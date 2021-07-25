@@ -2,8 +2,9 @@ import * as THREE from "three";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import { Water } from "three/examples/jsm/objects/Water";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Boats from "./Boats";
+import BoatManager from "./BoatManager";
 import Positioner from "./Positioner";
+import InteractionManager from "./InteractionManager";
 
 export default class SceneManager {
 	grid: number;
@@ -13,8 +14,9 @@ export default class SceneManager {
 	camera: THREE.PerspectiveCamera;
 	sky: Sky;
 	sun: THREE.Vector3;
-	boats: Boats;
+	boatManager: BoatManager;
 	water: Water;
+	interactionManager: InteractionManager;
 	// controls: OrbitControls;
 
 	constructor(grid: number) {
@@ -25,8 +27,15 @@ export default class SceneManager {
 		this.camera = this.createCamera();
 		this.sky = this.createSky();
 		this.sun = this.createSun();
-		this.boats = new Boats(this.scene, this.grid);
+		this.boatManager = new BoatManager(this.scene, this.grid);
 		this.water = this.createWater();
+
+		this.interactionManager = new InteractionManager(
+			this.camera,
+			this.renderer,
+			this.scene,
+		);
+		this.interactionManager.add(this.boatManager.getBoats());
 		// this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
@@ -132,7 +141,7 @@ export default class SceneManager {
 
 		const time = performance.now() * 0.001;
 
-		this.boats.waves(time);
+		this.boatManager.waves(time);
 
 		this.renderer.render(this.scene, this.camera);
 	}

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import Statics from "./Statics";
+import * as Statics from "./Statics";
 import Transform from "./Transform";
 
 export default class BoatManager {
@@ -11,6 +11,16 @@ export default class BoatManager {
 		this.scene = scene;
 		this.grid = grid;
 		this.boats = this.createBoats();
+	}
+
+	getBoats() {
+		const boatList = [];
+		for (let c = 0; c < this.grid; c++) {
+			for (let r = 0; r < this.grid; r++) {
+				boatList.push(this.boats[c][r]);
+			}
+		}
+		return boatList;
 	}
 	private createBoats() {
 		const boats = new Array<Array<THREE.Mesh>>(this.grid);

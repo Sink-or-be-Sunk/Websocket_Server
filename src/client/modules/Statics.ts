@@ -1,3 +1,5 @@
-export default class Statics {
-	static readonly GRID_SPACING = 300;
-}
+import * as THREE from "three";
+
+export type OBJECT_MATERIAL = THREE.MeshStandardMaterial;
+
+export const GRID_SPACING = 300;

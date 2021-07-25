@@ -1,4 +1,4 @@
-import Statics from "./Statics";
+import * as Statics from "./Statics";
 import Transform from "./Transform";
 
 enum PositionState {
