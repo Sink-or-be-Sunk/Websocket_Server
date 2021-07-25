@@ -75,7 +75,7 @@ export default class SceneManager {
 		uniforms["mieDirectionalG"].value = 0.8;
 
 		const elevation = 2; //distance into sky
-		const azimuth = 0; //rotational positional direction of sun facing viewer
+		const azimuth = 40; //rotational positional direction of sun facing viewer
 
 		const phi = THREE.MathUtils.degToRad(90 - elevation);
 		const theta = THREE.MathUtils.degToRad(azimuth);
@@ -132,12 +132,7 @@ export default class SceneManager {
 
 		const time = performance.now() * 0.001;
 
-		// for (const boat of this.boats) {
-		//     console.log(boat);
-		//     // this.boat.position.y = Math.sin(time) * 2;
-		//     // this.boat.rotation.x = time * 0.3;
-		//     // this.boat.rotation.z = time * 0.3;
-		// }
+		this.boats.waves(time);
 
 		this.renderer.render(this.scene, this.camera);
 	}

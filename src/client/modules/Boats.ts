@@ -37,4 +37,15 @@ export default class BoatManager {
 		this.scene.add(boat);
 		return boat;
 	}
+
+	waves(time: number) {
+		const intensity = 8;
+		const freq = 1.75;
+		for (let c = 0; c < this.grid; c++) {
+			for (let r = 0; r < this.grid; r++) {
+				this.boats[c][r].position.y =
+					Math.sin(freq * time + c - r) * intensity;
+			}
+		}
+	}
 }
