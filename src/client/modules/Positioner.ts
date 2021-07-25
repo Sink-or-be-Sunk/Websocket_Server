@@ -22,7 +22,7 @@ export default class Positioner {
 
 	constructor(grid: number) {
 		this.state = PositionState.SHIPS;
-		this.mid = ((grid - 1) / 2) * Statics.GRID_SPACING;
+		this.mid = Statics.calcMid(grid);
 		this.camera = new ViewPositions(
 			Transform.tv(this.mid, -this.mid, this.mid),
 			Transform.tv(this.mid, 2 * this.mid, this.mid / 2),

@@ -6,6 +6,7 @@ import BoatManager from "./BoatManager";
 import Positioner from "./Positioner";
 import InteractionManager from "./InteractionManager";
 import * as TWEEN from "@tweenjs/tween.js";
+import SquareManager from "./SquareManager";
 
 export default class SceneManager {
 	grid: number;
@@ -16,9 +17,10 @@ export default class SceneManager {
 	sky: Sky;
 	sun: THREE.Vector3;
 	boatManager: BoatManager;
+	squareManager: SquareManager;
 	water: Water;
 	interactionManager: InteractionManager;
-	// controls: OrbitControls;
+	controls: OrbitControls;
 
 	constructor(grid: number) {
 		this.grid = grid;
@@ -29,11 +31,14 @@ export default class SceneManager {
 		this.sky = this.createSky();
 		this.sun = this.createSun();
 		this.boatManager = new BoatManager(this.scene, this.grid);
+		this.squareManager = new SquareManager(this.scene, this.grid);
 		this.water = this.createWater();
 
 		this.interactionManager = new InteractionManager(this.camera);
 		this.interactionManager.add(this.boatManager.getBoats());
-		// this.controls = this.setOrbitControls();
+		this.interactionManager.add(this.squareManager.getSquares());
+
+		this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
 			this.onWindowResize();
@@ -128,6 +133,8 @@ export default class SceneManager {
 		// controls.minDistance = 40.0;
 		// controls.maxDistance = 1000.0;
 		// controls.update();
+		this.camera.position.copy(this.positioner.camera.ship);
+		this.camera.lookAt(this.positioner.look.ship);
 		return controls;
 	}
 
