@@ -58,6 +58,7 @@ npm install
 -   [Fireship.io TS Tutorial](https://www.youtube.com/watch?v=ahCwqrYpIuM)
 -   [Boilerplate Code][jsynowiec]
 -   [Websocket Typescript Example][websocket-ts-example]
+-   [Plant UML][plant-uml]
 
 ## License
 
@@ -78,3 +79,4 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [heroku-getting-started]: https://github.com/heroku/typescript-getting-started
 [smart-web-socket]: https://chrome.google.com/webstore/detail/smart-websocket-client/omalebghpgejjiaoknljcfmglgbpocdp
 [websocket-ts-example]: https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate
+[plant-uml]: https://www.freecodecamp.org/news/inserting-uml-in-markdown-using-vscode/

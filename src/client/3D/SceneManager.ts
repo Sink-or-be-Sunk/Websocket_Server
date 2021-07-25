@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import { Water } from "three/examples/jsm/objects/Water";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import createBoats from "./createBoats";
+import Boats from "../modules/Boats";
 
 export default class SceneManager {
 	grid: number;
@@ -11,7 +11,7 @@ export default class SceneManager {
 	camera: THREE.PerspectiveCamera;
 	sky: Sky;
 	sun: THREE.Vector3;
-	boats: THREE.Mesh[][];
+	boats: Boats;
 	controls: OrbitControls;
 	water: Water;
 
@@ -22,7 +22,7 @@ export default class SceneManager {
 		this.camera = this.createCamera();
 		this.sky = this.createSky();
 		this.sun = this.createSun();
-		this.boats = createBoats(this.scene, this.grid);
+		this.boats = new Boats(this.scene, this.grid);
 		this.controls = this.setOrbitControls();
 		this.water = this.createWater();
 
