@@ -7,6 +7,7 @@ import Positioner from "./Positioner";
 import InteractionManager from "./InteractionManager";
 import * as TWEEN from "@tweenjs/tween.js";
 import SquareManager from "./SquareManager";
+import OverlayManager from "./OverlayManager";
 
 export default class SceneManager {
 	grid: number;
@@ -20,7 +21,8 @@ export default class SceneManager {
 	squareManager: SquareManager;
 	water: Water;
 	interactionManager: InteractionManager;
-	// controls: OrbitControls;
+	overlayManager: OverlayManager;
+	controls: OrbitControls;
 
 	constructor(grid: number) {
 		this.grid = grid;
@@ -38,7 +40,9 @@ export default class SceneManager {
 		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
 
-		// this.controls = this.setOrbitControls();
+		this.overlayManager = new OverlayManager(this.scene, this.camera);
+
+		this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
 			this.onWindowResize();
