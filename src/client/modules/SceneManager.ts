@@ -34,7 +34,10 @@ export default class SceneManager {
 		this.squareManager = new SquareManager(this.scene, this.grid);
 		this.water = this.createWater();
 
-		this.interactionManager = new InteractionManager(this.camera);
+		this.interactionManager = new InteractionManager(
+			this.camera,
+			this.renderer.domElement,
+		);
 		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
 
@@ -140,8 +143,6 @@ export default class SceneManager {
 
 	public transition() {
 		const { to, from } = this.positioner.toggle();
-		console.log("to:", to);
-		console.log("from: ", from);
 		new TWEEN.Tween(from)
 			.to(to)
 			.easing(TWEEN.Easing.Quadratic.Out)
