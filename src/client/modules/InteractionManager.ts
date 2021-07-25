@@ -37,16 +37,23 @@ export default class InteractionManager {
 		);
 	}
 
+	clear() {
+		for (let i = 0; i < this.objects.length; i++) {
+			const object = this.objects[i];
+			const material = object.material as Statics.OBJECT_MATERIAL;
+			material.color.set(0xffffff);
+		}
+	}
+
 	updateObjects(event: MouseEvent) {
 		const mouse = new THREE.Vector2(
 			(event.clientX / window.innerWidth) * 2 - 1,
 			-(event.clientY / window.innerHeight) * 2 + 1,
 		);
 		this.raycaster.setFromCamera(mouse, this.camera);
-
 		const intersections = this.raycaster.intersectObjects(this.objects);
-		console.log(intersections);
 
+		this.clear();
 		for (let i = 0; i < intersections.length; i++) {
 			const intersection = intersections[i].object as THREE.Mesh;
 			this.active.push(intersection);
