@@ -1,4 +1,4 @@
-import SceneManager from "./3D/SceneManager";
+import SceneManager from "./modules/SceneManager";
 import * as TWEEN from "@tweenjs/tween.js";
 
 const sceneManager = new SceneManager(3);

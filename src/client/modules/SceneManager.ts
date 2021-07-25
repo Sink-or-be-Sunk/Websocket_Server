@@ -2,29 +2,32 @@ import * as THREE from "three";
 import { Sky } from "three/examples/jsm/objects/Sky";
 import { Water } from "three/examples/jsm/objects/Water";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import Boats from "../modules/Boats";
+import Boats from "./Boats";
+import Positioner from "./Positioner";
 
 export default class SceneManager {
 	grid: number;
+	positioner: Positioner;
 	scene: THREE.Scene;
 	renderer: THREE.WebGLRenderer;
 	camera: THREE.PerspectiveCamera;
 	sky: Sky;
 	sun: THREE.Vector3;
 	boats: Boats;
-	controls: OrbitControls;
 	water: Water;
+	// controls: OrbitControls;
 
 	constructor(grid: number) {
 		this.grid = grid;
+		this.positioner = new Positioner(this.grid);
 		this.scene = new THREE.Scene();
 		this.renderer = this.createRenderer();
 		this.camera = this.createCamera();
 		this.sky = this.createSky();
 		this.sun = this.createSun();
 		this.boats = new Boats(this.scene, this.grid);
-		this.controls = this.setOrbitControls();
 		this.water = this.createWater();
+		// this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
 			this.onWindowResize();
@@ -48,7 +51,8 @@ export default class SceneManager {
 			1,
 			20000,
 		);
-		camera.position.set(300, 420, -540);
+		camera.position.copy(this.positioner.camera.ship);
+		camera.lookAt(this.positioner.look.ship);
 		return camera;
 	}
 
@@ -112,12 +116,12 @@ export default class SceneManager {
 			this.camera,
 			this.renderer.domElement,
 		);
-		controls.maxPolarAngle = Math.PI * 0.495;
+		// controls.maxPolarAngle = Math.PI * 0.495;
 		controls.enablePan = true;
-		controls.target.set(0, 10, 0);
-		controls.minDistance = 40.0;
-		controls.maxDistance = 1000.0;
-		controls.update();
+		// controls.target.set(0, 10, 0);
+		// controls.minDistance = 40.0;
+		// controls.maxDistance = 1000.0;
+		// controls.update();
 		return controls;
 	}
 
