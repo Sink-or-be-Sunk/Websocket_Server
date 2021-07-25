@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import BoatManager from "./BoatManager";
 import Positioner from "./Positioner";
 import InteractionManager from "./InteractionManager";
+import * as TWEEN from "@tweenjs/tween.js";
 
 export default class SceneManager {
 	grid: number;
@@ -30,11 +31,7 @@ export default class SceneManager {
 		this.boatManager = new BoatManager(this.scene, this.grid);
 		this.water = this.createWater();
 
-		this.interactionManager = new InteractionManager(
-			this.camera,
-			this.renderer,
-			this.scene,
-		);
+		this.interactionManager = new InteractionManager(this.camera);
 		this.interactionManager.add(this.boatManager.getBoats());
 		// this.controls = this.setOrbitControls();
 
@@ -132,6 +129,23 @@ export default class SceneManager {
 		// controls.maxDistance = 1000.0;
 		// controls.update();
 		return controls;
+	}
+
+	public transition() {
+		const { to, from } = this.positioner.toggle();
+		console.log("to:", to);
+		console.log("from: ", from);
+		new TWEEN.Tween(from)
+			.to(to)
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.onUpdate(() => {
+				this.camera.position.set(from.cx, from.cy, from.cz);
+				this.camera.lookAt(from.lx, from.ly, from.lz);
+			})
+			.start()
+			.onComplete(() => {
+				console.log("something wong");
+			});
 	}
 
 	public update() {

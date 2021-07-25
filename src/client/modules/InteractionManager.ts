@@ -3,21 +3,13 @@ import * as Statics from "./Statics";
 
 export default class InteractionManager {
 	private camera: THREE.Camera;
-	private scene: THREE.Scene;
-	private renderer: THREE.Renderer;
 	private raycaster = new THREE.Raycaster();
 	private domElements = document;
 	private objects: THREE.Mesh[];
 	private active: THREE.Mesh[];
 
-	constructor(
-		camera: THREE.Camera,
-		renderer: THREE.Renderer,
-		scene: THREE.Scene,
-	) {
+	constructor(camera: THREE.Camera) {
 		this.camera = camera;
-		this.renderer = renderer;
-		this.scene = scene;
 		this.createListeners();
 		this.objects = [];
 		this.active = [];
@@ -60,6 +52,5 @@ export default class InteractionManager {
 			const material = intersection.material as Statics.OBJECT_MATERIAL;
 			material.color.set(0xff0000);
 		}
-		this.renderer.render(this.scene, this.camera);
 	}
 }
