@@ -149,10 +149,7 @@ export default class SceneManager {
 				this.camera.position.set(from.cx, from.cy, from.cz);
 				this.camera.lookAt(from.lx, from.ly, from.lz);
 			})
-			.start()
-			.onComplete(() => {
-				console.log("something wong");
-			});
+			.start();
 	}
 
 	public update() {

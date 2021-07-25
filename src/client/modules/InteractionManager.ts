@@ -1,3 +1,4 @@
+import * as TWEEN from "@tweenjs/tween.js";
 import * as THREE from "three";
 import * as Statics from "./Statics";
 
@@ -51,6 +52,14 @@ export default class InteractionManager {
 			this.active.push(intersection);
 			const material = intersection.material as Statics.OBJECT_MATERIAL;
 			material.color.set(0xff0000);
+			const cur = { z: 50 }; //TODO: May want to remove this?
+			new TWEEN.Tween(cur)
+				.to({ z: 20 })
+				.easing(TWEEN.Easing.Quadratic.Out)
+				.onUpdate(() => {
+					intersection.position.y = cur.z;
+				})
+				.start();
 		}
 	}
 }
