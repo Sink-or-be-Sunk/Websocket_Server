@@ -5,40 +5,34 @@ import Transform from "./Transform";
 export default class SquareManager {
 	scene: THREE.Scene;
 	grid: number;
-	squares: THREE.Mesh[][];
-	outline: THREE.GridHelper;
+	shipSquares: THREE.Mesh[][];
+	attackSquares: THREE.Mesh[][];
+	shipOutline: THREE.GridHelper;
+	attackOutline: THREE.GridHelper;
+	attackDist: number;
 
 	constructor(scene: THREE.Scene, grid: number) {
 		this.scene = scene;
 		this.grid = grid;
-		this.squares = this.createSquares();
-		this.outline = this.createOutline();
+		this.attackDist = 2 * Statics.GRID_SPACING * this.grid;
+		this.shipSquares = this.createShipSquares();
+		this.shipOutline = this.createShipOutline();
+		this.attackSquares = this.createAttackSquares();
+		this.attackOutline = this.createAttackOutline();
 	}
 
 	getSquares() {
 		const list = [];
 		for (let c = 0; c < this.grid; c++) {
 			for (let r = 0; r < this.grid; r++) {
-				list.push(this.squares[c][r]);
+				list.push(this.shipSquares[c][r]);
+				list.push(this.attackSquares[c][r]);
 			}
 		}
 		return list;
 	}
-	private createSquares() {
-		const array = new Array<Array<THREE.Mesh>>(this.grid);
-		for (let c = 0; c < this.grid; c++) {
-			array[c] = [];
-			for (let r = 0; r < this.grid; r++) {
-				array[c][r] = this.createSquare(
-					c * Statics.GRID_SPACING,
-					r * Statics.GRID_SPACING,
-				);
-			}
-		}
-		return array;
-	}
 
-	private createSquare(x: number, y: number): THREE.Mesh {
+	private createSquare(x: number, y: number, z: number): THREE.Mesh {
 		const geometry = new THREE.PlaneGeometry(
 			Statics.GRID_SPACING,
 			Statics.GRID_SPACING,
@@ -50,11 +44,46 @@ export default class SquareManager {
 		});
 
 		const plane = new THREE.Mesh(geometry, material);
-		plane.rotation.x = -Math.PI / 2; //rotates plane flat
 
-		plane.position.copy(Transform.tv(x, y, 10));
+		plane.position.copy(Transform.tv(x, y, z));
 		this.scene.add(plane);
 		return plane;
+	}
+
+	private createShipSquares() {
+		const array = new Array<Array<THREE.Mesh>>(this.grid);
+		for (let c = 0; c < this.grid; c++) {
+			array[c] = [];
+			for (let r = 0; r < this.grid; r++) {
+				const plane = this.createSquare(
+					c * Statics.GRID_SPACING,
+					r * Statics.GRID_SPACING,
+					10,
+				);
+				plane.rotation.x = -Math.PI / 2; //rotates plane flat
+
+				array[c][r] = plane;
+			}
+		}
+		return array;
+	}
+
+	private createAttackSquares() {
+		const array = new Array<Array<THREE.Mesh>>(this.grid);
+		for (let c = 0; c < this.grid; c++) {
+			array[c] = [];
+			for (let r = 0; r < this.grid; r++) {
+				const plane = this.createSquare(
+					c * Statics.GRID_SPACING,
+					this.attackDist,
+					(r + 1) * Statics.GRID_SPACING,
+				);
+				plane.rotation.y = Math.PI; //rotates plane flat
+
+				array[c][r] = plane;
+			}
+		}
+		return array;
 	}
 
 	private createOutline() {
@@ -66,5 +95,22 @@ export default class SquareManager {
 		gridHelper.position.copy(Transform.tv(mid, mid, 10));
 		this.scene.add(gridHelper);
 		return gridHelper;
+	}
+
+	private createShipOutline() {
+		return this.createOutline();
+	}
+
+	private createAttackOutline() {
+		const outline = this.createOutline();
+		outline.rotation.x = Math.PI / 2;
+		outline.position.copy(
+			Transform.tv(
+				Statics.calcMid(this.grid),
+				this.attackDist,
+				Statics.calcMid(this.grid) + Statics.GRID_SPACING,
+			),
+		);
+		return outline;
 	}
 }

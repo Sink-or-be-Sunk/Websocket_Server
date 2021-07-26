@@ -49,11 +49,11 @@ export default class Positioner {
 		this.mid = Statics.calcMid(grid);
 		this.camera = new ViewPositions(
 			Transform.tv(this.mid, -this.mid, this.mid),
-			Transform.tv(this.mid, 2 * this.mid, this.mid / 2),
+			Transform.tv(this.mid, (3 / 2) * this.mid, (6 / 5) * this.mid),
 		);
 		this.look = new ViewPositions(
 			Transform.tv(this.mid, this.mid / 2, 0),
-			Transform.tv(this.mid, 3 * this.mid, this.mid / 2),
+			Transform.tv(this.mid, 3 * this.mid, (5 / 4) * this.mid),
 		);
 	}
 
