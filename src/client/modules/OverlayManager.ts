@@ -1,8 +1,25 @@
+import Positioner from "./Positioner";
+import * as TWEEN from "@tweenjs/tween.js";
+import { PositionTransition } from "./Positioner";
+
+enum ArrowDirection {
+	UP,
+	DOWN,
+}
+
 export default class OverlayManager {
 	domElement: HTMLElement;
+	positioner: Positioner;
+	camera: THREE.Camera;
 
-	constructor(domElement: HTMLElement) {
+	constructor(
+		domElement: HTMLElement,
+		positioner: Positioner,
+		camera: THREE.Camera,
+	) {
 		this.domElement = domElement;
+		this.positioner = positioner;
+		this.camera = camera;
 
 		this.createOverlay();
 	}
@@ -12,10 +29,34 @@ export default class OverlayManager {
 		this.positionDownArrow();
 	}
 
+	private clickEvent(direction: ArrowDirection) {
+		if (direction == ArrowDirection.UP) {
+			this.transition(this.positioner.transitionAttack());
+		} else if (direction == ArrowDirection.DOWN) {
+			this.transition(this.positioner.transitionShips());
+		} else {
+			throw Error("Invalid Arrow Direction");
+		}
+	}
+
+	private transition(t: PositionTransition) {
+		new TWEEN.Tween(t.from)
+			.to(t.to)
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.onUpdate(() => {
+				this.camera.position.set(t.from.cx, t.from.cy, t.from.cz);
+				this.camera.lookAt(t.from.lx, t.from.ly, t.from.lz);
+			})
+			.start();
+	}
+
 	private positionUpArrow() {
 		const img = document.getElementById("arrow-up");
 
 		if (img) {
+			img.addEventListener("click", () => {
+				this.clickEvent(ArrowDirection.UP);
+			});
 			let offset = -img.getBoundingClientRect().width / 2;
 			console.log(offset);
 			offset += this.domElement.offsetLeft;
@@ -33,6 +74,9 @@ export default class OverlayManager {
 
 		if (img) {
 			let offset = -img.getBoundingClientRect().width / 2;
+			img.addEventListener("click", () => {
+				this.clickEvent(ArrowDirection.DOWN);
+			});
 			console.log(offset);
 			offset += this.domElement.offsetLeft;
 			offset += this.domElement.clientWidth / 2;

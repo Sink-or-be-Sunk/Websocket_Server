@@ -5,7 +5,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import BoatManager from "./BoatManager";
 import Positioner from "./Positioner";
 import InteractionManager from "./InteractionManager";
-import * as TWEEN from "@tweenjs/tween.js";
 import SquareManager from "./SquareManager";
 import OverlayManager from "./OverlayManager";
 
@@ -22,7 +21,7 @@ export default class SceneManager {
 	water: Water;
 	interactionManager: InteractionManager;
 	overlayManager: OverlayManager;
-	controls: OrbitControls;
+	// controls: OrbitControls;
 
 	constructor(grid: number) {
 		this.grid = grid;
@@ -40,9 +39,13 @@ export default class SceneManager {
 		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
 
-		this.overlayManager = new OverlayManager(this.renderer.domElement);
+		this.overlayManager = new OverlayManager(
+			this.renderer.domElement,
+			this.positioner,
+			this.camera,
+		);
 
-		this.controls = this.setOrbitControls();
+		// this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
 			this.onWindowResize();
@@ -141,18 +144,6 @@ export default class SceneManager {
 		this.camera.position.copy(this.positioner.camera.ship);
 		this.camera.lookAt(this.positioner.look.ship);
 		return controls;
-	}
-
-	public transition() {
-		const { to, from } = this.positioner.toggle();
-		new TWEEN.Tween(from)
-			.to(to)
-			.easing(TWEEN.Easing.Quadratic.Out)
-			.onUpdate(() => {
-				this.camera.position.set(from.cx, from.cy, from.cz);
-				this.camera.lookAt(from.lx, from.ly, from.lz);
-			})
-			.start();
 	}
 
 	public update() {

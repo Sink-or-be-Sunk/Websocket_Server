@@ -1,7 +1,7 @@
 import * as Statics from "./Statics";
 import Transform from "./Transform";
 
-enum PositionState {
+export enum PositionState {
 	SHIPS = "ships",
 	ATTACK = "attack",
 }
@@ -13,7 +13,31 @@ class ViewPositions {
 		this.attack = attack;
 	}
 }
+export class PositionTransition {
+	to: PositionSpreadObject;
+	from: PositionSpreadObject;
+	constructor(to: PositionSpreadObject, from: PositionSpreadObject) {
+		this.to = to;
+		this.from = from;
+	}
+}
+class PositionSpreadObject {
+	cx: number;
+	cy: number;
+	cz: number;
+	lx: number;
+	ly: number;
+	lz: number;
 
+	constructor(camera: ViewPositions, look: ViewPositions) {
+		this.cx = camera.ship.x;
+		this.cy = camera.ship.y;
+		this.cz = camera.ship.z;
+		this.lx = look.ship.x;
+		this.ly = look.ship.y;
+		this.lz = look.ship.z;
+	}
+}
 export default class Positioner {
 	state: PositionState;
 	camera: ViewPositions;
@@ -33,8 +57,8 @@ export default class Positioner {
 		);
 	}
 
-	private stateToObj(state: PositionState) {
-		if (this.state == PositionState.SHIPS) {
+	private stateToObj(state: PositionState): PositionSpreadObject {
+		if (state == PositionState.SHIPS) {
 			return {
 				cx: this.camera.ship.x,
 				cy: this.camera.ship.y,
@@ -43,7 +67,7 @@ export default class Positioner {
 				ly: this.look.ship.y,
 				lz: this.look.ship.z,
 			};
-		} else if (this.state == PositionState.ATTACK) {
+		} else if (state == PositionState.ATTACK) {
 			return {
 				cx: this.camera.attack.x,
 				cy: this.camera.attack.y,
@@ -65,10 +89,25 @@ export default class Positioner {
 		}
 	}
 
-	toggle() {
+	transitionAttack() {
 		const cur = this.stateToObj(this.state);
-		this.nextState();
-		const next = this.stateToObj(this.state);
-		return { to: next, from: cur };
+		const next = this.stateToObj(PositionState.ATTACK);
+		if (this.state != PositionState.ATTACK) {
+			this.state = PositionState.ATTACK;
+			return new PositionTransition(next, cur);
+		} else {
+			return new PositionTransition(cur, cur);
+		}
+	}
+
+	transitionShips() {
+		const cur = this.stateToObj(this.state);
+		const next = this.stateToObj(PositionState.SHIPS);
+		if (this.state != PositionState.SHIPS) {
+			this.state = PositionState.SHIPS;
+			return new PositionTransition(next, cur);
+		} else {
+			return new PositionTransition(cur, cur);
+		}
 	}
 }
