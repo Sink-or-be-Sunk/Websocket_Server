@@ -8,7 +8,7 @@
 		<title>Sink or be Sunk</title>
 	</head>
 	<body>
-		<%- include('../partials/header.ejs') %>
+		<% if (header) { %> <%- include('../partials/header.ejs') %> <% } %>
 		<div class="container">
 			<div class="inner-container"><%- body %></div>
 		</div>
