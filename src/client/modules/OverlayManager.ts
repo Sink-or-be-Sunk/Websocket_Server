@@ -58,7 +58,6 @@ export default class OverlayManager {
 				this.clickEvent(ArrowDirection.UP);
 			});
 			let offset = -img.getBoundingClientRect().width / 2;
-			console.log(offset);
 			offset += this.domElement.offsetLeft;
 			offset += this.domElement.clientWidth / 2;
 
@@ -77,7 +76,6 @@ export default class OverlayManager {
 			img.addEventListener("click", () => {
 				this.clickEvent(ArrowDirection.DOWN);
 			});
-			console.log(offset);
 			offset += this.domElement.offsetLeft;
 			offset += this.domElement.clientWidth / 2;
 
