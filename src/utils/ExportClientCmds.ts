@@ -1,7 +1,7 @@
-import WSClientMessage from "../models/WSClientMessage";
+import WSClientMessage from "../server/models/WSClientMessage";
 import fs from "fs";
 
-const dir = "./Export/";
+const dir = "./dist/export/";
 const filename = "WSClientMessage.c";
 
 if (!fs.existsSync(dir)) {

@@ -1,4 +1,7 @@
 src/**/*.js
+public/*bundle*
+
+!src/client/webpack*
 
 # Logs
 logs
