@@ -1,14 +1,19 @@
 import WebSocket from "ws";
+import Board from "./Board";
 import Player from "./Player";
 
-export default class Game {
+class Game {
 	players: Player[];
+	boards: Board[];
 	id: string;
 	turn: number;
+	size: number;
 
-	constructor(id: string, socket: WebSocket) {
+	constructor(id: string, socket: WebSocket, size: number) {
 		this.id = id;
-		this.players = new Array();
+		this.size = size;
+		this.players = new Array<Player>();
+		this.boards = new Array<Board>();
 		console.log(`New Game Created: <${this.id}>`);
 		this.add(new Player(id, socket));
 		this.turn = 0;
@@ -24,6 +29,7 @@ export default class Game {
 			const p = this.players[i];
 			if (player == p) {
 				this.players.splice(i, 1); // remove player from game
+				this.boards.splice(i, 1); //remove players board from game
 				console.log(
 					`Player <${player.id}> Removed From Game <${this.id}`,
 				);
@@ -48,6 +54,7 @@ export default class Game {
 			}
 		}
 		this.players.push(player);
+		this.boards.push(new Board(player.id, this.size));
 		console.log(`Player <${player.id}> added to Game <${this.id}>`);
 		return true;
 	}
@@ -73,14 +80,14 @@ export default class Game {
 	 * @param move - move being made
 	 * @returns true if move is valid, false otherwise
 	 */
-	makeMove(id: string, move: string): GameResponse {
+	makeMove(id: string, move: string): Game.Response {
 		if (this.players[this.turn].id == id) {
 			//TODO: need to check for valid move
 			console.log(`player <${id}> made move ${move}`);
 			this.nextTurn();
-			return new GameResponse(true);
+			return new Game.Response(true);
 		} else {
-			return new GameResponse(false, GameResponse.TURN_ERROR);
+			return new Game.Response(false, Game.ResponseHeader.TURN_ERROR);
 		}
 	}
 
@@ -98,17 +105,21 @@ export default class Game {
 	}
 }
 
-export class GameResponse {
-	static readonly TURN_ERROR = "TURN ERROR";
-	static readonly MOVE_ERROR = "MOVE ERROR";
-	static readonly NO_META = "NO META";
-	static readonly NO_SUCH_GAME = "NO SUCH GAME";
+namespace Game {
+	export enum ResponseHeader {
+		TURN_ERROR = "TURN ERROR",
+		MOVE_ERROR = "MOVE ERROR",
+		NO_META = "NO META",
+		NO_SUCH_GAME = "NO SUCH GAME",
+	}
+	export class Response {
+		valid: boolean;
+		meta: string;
 
-	valid: boolean;
-	meta: string;
-
-	constructor(valid: boolean, meta?: string) {
-		this.valid = valid;
-		this.meta = meta ?? GameResponse.NO_META;
+		constructor(valid: boolean, meta?: string) {
+			this.valid = valid;
+			this.meta = meta ?? Game.ResponseHeader.NO_META;
+		}
 	}
 }
+export default Game;

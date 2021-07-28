@@ -1,5 +1,5 @@
 import Lobby from "../server/models/Lobby";
-import { GameResponse } from "../server/models/Game";
+import Game from "../server/models/Game";
 import ServerMessenger from "../server/models/ServerMessenger";
 import WSClientMessage from "../server/models/WSClientMessage";
 import TestUtils from "../utils/TestUtils";
@@ -49,7 +49,7 @@ describe("Basic Matchmaking", () => {
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(
-			ServerMessenger.invalid_move(GameResponse.TURN_ERROR),
+			ServerMessenger.invalid_move(Game.ResponseHeader.TURN_ERROR),
 		);
 	});
 });
