@@ -68,6 +68,7 @@ npm install
     -   create/modify file to include the following:
         -   Set-Alias -Name node -Value C:\path\to\node.exe
         -   Set-Alias -Name npm -Value C:\path\to\npm.cmd
+        -   Set-Alias -Name npx -Value C:\path\to\npx.cmd
     -   Add `.npmrc` file to root of project folder with the following line
         -   `scripts-prepend-node-path=true`
 

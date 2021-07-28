@@ -19,6 +19,7 @@
 		"dev:server": "nodemon",
 		"dev": "echo \"\\033[31mError: use \\033[33mdev:client \\033[31mor \\033[33mdev:server\n\"",
 		"test": "jest",
+		"test:current": "jest input_validation",
 		"debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
 		"export": "ts-node ./src/utils/ExportClientCmds.ts && rimraf ./src/utils/*.js"
 	},

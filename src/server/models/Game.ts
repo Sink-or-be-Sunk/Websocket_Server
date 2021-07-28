@@ -4,6 +4,9 @@ import Player from "./Player";
 
 class Game {
 	players: Player[];
+	/**
+	 * Boards have one to one mapping with player array
+	 */
 	boards: Board[];
 	id: string;
 	turn: number;
