@@ -88,3 +88,39 @@ describe("Validate WS Client Messages", () => {
 		});
 	});
 });
+
+describe("Validate Moves from Client Message", () => {
+	it("Accepts Solo Move to Origin", () => {
+		const obj = { type: Move.TYPE.SOLO, x: 0, y: 0 };
+		const str = JSON.stringify(obj);
+		const msg = new Move(str);
+		expect(msg).toEqual({ type: obj.type, x: obj.x, y: obj.y });
+	});
+
+	it("Accepts Solo Move with string x,y", () => {
+		const obj = { type: Move.TYPE.SOLO, x: "0", y: "0" };
+		const str = JSON.stringify(obj);
+		const msg = new Move(str);
+		expect(msg).toEqual({ type: obj.type, x: 0, y: 0 });
+	});
+
+	it("Rejects Solo Move with invalid string x,y", () => {
+		const obj = { type: Move.TYPE.SOLO, x: "0a", y: "0b" };
+		const str = JSON.stringify(obj);
+		const msg = new Move(str);
+		expect(msg).toEqual({ type: Move.TYPE.INVALID, x: -1, y: -1 });
+	});
+
+	it("Rejects Move with invalid fields", () => {
+		const obj = { tYpE: Move.TYPE.SOLO, x: "0a", y: "0b" };
+		const str = JSON.stringify(obj);
+		const msg = new Move(str);
+		expect(msg).toEqual({ type: Move.TYPE.INVALID, x: -1, y: -1 });
+	});
+
+	it("Rejects Solo Move with invalid json format", () => {
+		const str = '{ type: "solo", x: 0, y: 0 }';
+		const msg = new Move(str);
+		expect(msg).toEqual({ type: Move.TYPE.BAD_FORMAT, x: -1, y: -1 });
+	});
+});

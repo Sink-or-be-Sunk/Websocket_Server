@@ -20,6 +20,16 @@ class Move {
 			this.type = Move.TYPE.BAD_FORMAT;
 		}
 	}
+
+	isValid() {
+		return (
+			this.type != Move.TYPE.INVALID && this.type != Move.TYPE.BAD_FORMAT
+		);
+	}
+
+	toString() {
+		return JSON.stringify(this);
+	}
 }
 
 namespace Move {

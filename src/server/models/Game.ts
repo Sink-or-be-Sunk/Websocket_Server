@@ -1,15 +1,27 @@
 import WebSocket from "ws";
 import Board from "./Board";
 import Player from "./Player";
-
+import Move from "./Move";
 class Game {
+	/**
+	 * List of all players in the game
+	 */
 	players: Player[];
 	/**
 	 * Boards have one to one mapping with player array
 	 */
 	boards: Board[];
+	/**
+	 * unique game id
+	 */
 	id: string;
+	/**
+	 * Indicated index of players array who has current turn
+	 */
 	turn: number;
+	/**
+	 * The m x m size of the game board matrix
+	 */
 	size: number;
 
 	constructor(id: string, socket: WebSocket, size: number) {
@@ -83,12 +95,16 @@ class Game {
 	 * @param move - move being made
 	 * @returns true if move is valid, false otherwise
 	 */
-	makeMove(id: string, move: string): Game.Response {
+	makeMove(id: string, moveRaw: string): Game.Response {
 		if (this.players[this.turn].id == id) {
-			//TODO: need to check for valid move
-			console.log(`player <${id}> made move ${move}`);
-			this.nextTurn();
-			return new Game.Response(true);
+			const move = new Move(moveRaw);
+			if (move.isValid(this.size)) {
+				console.log(`player <${id}> made move ${move.toString()}`);
+				this.nextTurn();
+				return new Game.Response(true);
+			} else {
+				return new Game.Response(false, Game.ResponseHeader.MOVE_ERROR);
+			}
 		} else {
 			return new Game.Response(false, Game.ResponseHeader.TURN_ERROR);
 		}
