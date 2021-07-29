@@ -17,7 +17,7 @@ export default class Lobby {
 		socket: WebSocket,
 		message: WSClientMessage,
 	): WSServerMessage {
-		if (message.req == WSClientMessage.NEW_GAME) {
+		if (message.req == WSClientMessage.REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
 			if (this.getGame(message.id)) {
 				return ServerMessenger.reqError("Game Already Exists");
@@ -25,14 +25,14 @@ export default class Lobby {
 			const game = new Game(message.id, socket, Statics.SIZE); //use the unique MAC address of MCU to generate game id
 			this.games.push(game);
 			return ServerMessenger.GAME_CREATED;
-		} else if (message.req === WSClientMessage.MAKE_MOVE) {
+		} else if (message.req === WSClientMessage.REQ_TYPE.MAKE_MOVE) {
 			const resp = this.makeMove(message.id, message.data);
 			if (resp.valid) {
 				return ServerMessenger.MOVE_MADE;
 			} else {
 				return ServerMessenger.invalid_move(resp.meta);
 			}
-		} else if (message.req == WSClientMessage.JOIN_GAME) {
+		} else if (message.req == WSClientMessage.REQ_TYPE.JOIN_GAME) {
 			if (this.joinGame(new Player(message.id, socket), message.data)) {
 				return ServerMessenger.joined(message.data);
 			} else {

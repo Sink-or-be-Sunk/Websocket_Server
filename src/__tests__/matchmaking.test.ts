@@ -17,35 +17,51 @@ describe("Basic Matchmaking", () => {
 	const lobby = new Lobby();
 
 	it("Player 1 Creates New Game", () => {
-		const req = { id: "one", req: WSClientMessage.NEW_GAME };
+		const req = { id: "one", req: WSClientMessage.REQ_TYPE.NEW_GAME };
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.GAME_CREATED);
 	});
 
 	it("Player 2 Joins the Game", () => {
-		const req = { id: "two", req: WSClientMessage.JOIN_GAME, data: "one" };
+		const req = {
+			id: "two",
+			req: WSClientMessage.REQ_TYPE.JOIN_GAME,
+			data: "one",
+		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.joined(req.data));
 	});
 
 	it("Player 1 Makes a Move", () => {
-		const req = { id: "one", req: WSClientMessage.MAKE_MOVE, data: "move" };
+		const req = {
+			id: "one",
+			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
+			data: "move",
+		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
 	});
 
 	it("Player 2 Makes a Move", () => {
-		const req = { id: "two", req: WSClientMessage.MAKE_MOVE, data: "move" };
+		const req = {
+			id: "two",
+			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
+			data: "move",
+		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
 	});
 
 	it("Player 2 Tries to Make Move when its Player 1's Turn", () => {
-		const req = { id: "two", req: WSClientMessage.MAKE_MOVE, data: "move" };
+		const req = {
+			id: "two",
+			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
+			data: "move",
+		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(
