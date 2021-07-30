@@ -17,6 +17,11 @@ export default class TestUtils {
 	static server = server;
 	static sockets = [ws1, ws2];
 
+	/**
+	 * Provides two options for sockets to choose from
+	 * @param num string "one" or "two" to get socket 0 or 1
+	 * @returns websocket 0 or 1 corresponding to string input
+	 */
 	static getSocket(num: string) {
 		let index = -1;
 		if (num === "one") {

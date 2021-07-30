@@ -23,6 +23,10 @@ class Game {
 	 * The m x m size of the game board matrix
 	 */
 	size: number;
+	/**
+	 * Indicated whether or not game is in progress
+	 */
+	started: boolean;
 
 	constructor(id: string, socket: WebSocket, size: number) {
 		this.id = id;
@@ -32,6 +36,7 @@ class Game {
 		console.log(`New Game Created: <${this.id}>`);
 		this.add(new Player(id, socket));
 		this.turn = 0;
+		this.started = false; //wait until another player joins before starting
 	}
 
 	/**
@@ -70,6 +75,9 @@ class Game {
 		}
 		this.players.push(player);
 		this.boards.push(new Board(player.id, this.size));
+		if (this.players.length > 1) {
+			this.started = true;
+		}
 		console.log(`Player <${player.id}> added to Game <${this.id}>`);
 		return true;
 	}
@@ -97,13 +105,23 @@ class Game {
 	 */
 	makeMove(id: string, moveRaw: string): Game.Response {
 		if (this.players[this.turn].id == id) {
-			const move = new Move(moveRaw);
-			if (move.isValid(this.size)) {
-				console.log(`player <${id}> made move ${move.toString()}`);
-				this.nextTurn();
-				return new Game.Response(true);
+			if (this.started) {
+				const move = new Move(moveRaw);
+				if (move.isValid(this.size)) {
+					console.log(`player <${id}> made move ${move.toString()}`);
+					this.nextTurn();
+					return new Game.Response(true);
+				} else {
+					return new Game.Response(
+						false,
+						Game.ResponseHeader.MOVE_ERROR,
+					);
+				}
 			} else {
-				return new Game.Response(false, Game.ResponseHeader.MOVE_ERROR);
+				return new Game.Response(
+					false,
+					Game.ResponseHeader.GAME_NOT_STARTED,
+				);
 			}
 		} else {
 			return new Game.Response(false, Game.ResponseHeader.TURN_ERROR);
@@ -126,6 +144,7 @@ class Game {
 
 namespace Game {
 	export enum ResponseHeader {
+		GAME_NOT_STARTED = "GAME NOT STARTED",
 		TURN_ERROR = "TURN ERROR",
 		MOVE_ERROR = "MOVE ERROR",
 		NO_META = "NO META",

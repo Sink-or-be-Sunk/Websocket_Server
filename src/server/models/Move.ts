@@ -21,10 +21,17 @@ class Move {
 		}
 	}
 
-	isValid() {
-		return (
-			this.type != Move.TYPE.INVALID && this.type != Move.TYPE.BAD_FORMAT
-		);
+	isValid(grid: number) {
+		if (
+			this.type == Move.TYPE.INVALID ||
+			this.type == Move.TYPE.BAD_FORMAT
+		) {
+			return false;
+		}
+		if (this.x >= grid || this.y >= grid) {
+			return false;
+		}
+		return true;
 	}
 
 	toString() {
