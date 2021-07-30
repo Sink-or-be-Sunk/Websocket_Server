@@ -3,6 +3,7 @@ import WebSocket from "ws";
 import Player from "../server/models/Player";
 import Move from "../server/models/Move";
 import TestUtils from "../utils/TestUtils";
+import Ship from "../server/models/Ship";
 
 beforeAll(async () => {
 	await TestUtils.setup();
@@ -53,6 +54,18 @@ describe("Validate basic back and forth game", () => {
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
 			new Game.Response(false, Game.ResponseHeader.MOVE_REPEATED),
+		);
+	});
+
+	it("Allow Player 1 to Sink the Patrol Boat", () => {
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 0, r: 1 });
+		const resp = game.makeMove(p1.id, move);
+		expect(resp).toEqual(
+			new Game.Response(
+				true,
+				Game.ResponseHeader.SUNK,
+				Ship.CLASS.PATROL,
+			),
 		);
 	});
 });

@@ -114,7 +114,6 @@ class Game {
 						console.log(
 							`player <${id}> made move ${move.toString()}`,
 						);
-						board.show();
 						this.nextTurn();
 						return res;
 					} else {

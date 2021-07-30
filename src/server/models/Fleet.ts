@@ -14,11 +14,11 @@ class Fleet {
 
 		if (type == Fleet.TYPE.DEFAULT) {
 			this.ships = [
-				new Ship(new Ship.Type(Ship.CLASS.CARRIER), this.board),
-				new Ship(new Ship.Type(Ship.CLASS.BATTLESHIP), this.board),
-				new Ship(new Ship.Type(Ship.CLASS.DESTROYER), this.board),
-				new Ship(new Ship.Type(Ship.CLASS.SUBMARINE), this.board),
 				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.board),
+				new Ship(new Ship.Type(Ship.CLASS.SUBMARINE), this.board),
+				new Ship(new Ship.Type(Ship.CLASS.DESTROYER), this.board),
+				new Ship(new Ship.Type(Ship.CLASS.BATTLESHIP), this.board),
+				new Ship(new Ship.Type(Ship.CLASS.CARRIER), this.board),
 			];
 		} else {
 			this.ships = [];

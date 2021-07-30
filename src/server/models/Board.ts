@@ -28,16 +28,6 @@ class Board {
 		return grid;
 	}
 
-	show() {
-		console.log(`Board <${this.id}>:`);
-		for (let c = 0; c < this.size; c++) {
-			for (let r = 0; r < this.size; r++) {
-				this.grid[c][r].show();
-			}
-			console.log();
-		}
-	}
-
 	makeMove(move: Move) {
 		const square = this.grid[move.c][move.r];
 		if (square.state != Board.STATE.EMPTY) {
@@ -70,10 +60,6 @@ namespace Board {
 
 		miss() {
 			this.state = STATE.MISS;
-		}
-
-		show() {
-			process.stdout.write(this.state + ", ");
 		}
 	}
 }

@@ -3,13 +3,16 @@ import Game from "../server/models/Game";
 import ServerMessenger from "../server/models/ServerMessenger";
 import WSClientMessage from "../server/models/WSClientMessage";
 import TestUtils from "../utils/TestUtils";
+import Move from "../server/models/Move";
+
+const utils = new TestUtils();
 
 beforeAll(async () => {
-	await TestUtils.setup();
+	await utils.setup();
 });
 
 afterAll(() => {
-	TestUtils.tearDown();
+	utils.tearDown();
 });
 
 describe("Basic Matchmaking", () => {
@@ -19,7 +22,7 @@ describe("Basic Matchmaking", () => {
 	it("Player 1 Creates New Game", () => {
 		const req = { id: "one", req: WSClientMessage.REQ_TYPE.NEW_GAME };
 		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.GAME_CREATED);
 	});
 
@@ -30,7 +33,7 @@ describe("Basic Matchmaking", () => {
 			data: "one",
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.joined(req.data));
 	});
 
@@ -38,10 +41,10 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "one",
 			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: "move",
+			data: JSON.stringify({ c: 0, r: 0, type: Move.TYPE.SOLO }),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
 	});
 
@@ -49,10 +52,10 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "two",
 			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: "move",
+			data: JSON.stringify({ c: 1, r: 2, type: Move.TYPE.SOLO }),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
 	});
 
@@ -60,10 +63,10 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "two",
 			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: "move",
+			data: JSON.stringify({ c: 3, r: 2, type: Move.TYPE.SOLO }),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(TestUtils.getSocket(req.id), msg);
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(
 			ServerMessenger.invalid_move(Game.ResponseHeader.TURN_ERROR),
 		);

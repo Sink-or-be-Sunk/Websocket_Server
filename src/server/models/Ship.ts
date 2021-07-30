@@ -28,7 +28,7 @@ class Ship {
 	attack(move: Move) {
 		for (let i = 0; i < this.squares.length; i++) {
 			const square = this.squares[i];
-			if (square.c == move.c && square.c == move.r) {
+			if (square.c == move.c && square.r == move.r) {
 				square.hit();
 				this.state = Ship.STATE.DAMAGED;
 				if (this.checkSunk()) {
@@ -48,8 +48,10 @@ class Ship {
 			//align ships vertically in line
 			if (board.grid[c][r].state == Board.STATE.EMPTY) {
 				for (; r < this.type.size; r++) {
-					squares[i++] = board.grid[c][r];
+					const square = board.grid[c][r];
+					squares[i++] = square;
 				}
+				break;
 			}
 		}
 		return squares;
