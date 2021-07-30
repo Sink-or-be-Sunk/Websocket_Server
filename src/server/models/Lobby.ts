@@ -38,6 +38,13 @@ export default class Lobby {
 			} else {
 				return ServerMessenger.NO_SUCH_GAME;
 			}
+		} else if (message.req == WSClientMessage.REQ_TYPE.POSITION_SHIPS) {
+			const resp = this.positionShips(message.id, message.data);
+			if (resp.valid) {
+				return ServerMessenger.LAYOUT_APPROVED;
+			} else {
+				return ServerMessenger.invalid_layout(resp.meta);
+			}
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
@@ -52,8 +59,20 @@ export default class Lobby {
 	private makeMove(playerID: string, move: string): Game.Response {
 		for (let i = 0; i < this.games.length; i++) {
 			const game = this.games[i];
-			if (game.contains(playerID)) {
+			const player = game.getPlayerByID(playerID);
+			if (player) {
 				return game.makeMove(playerID, move);
+			}
+		}
+		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);
+	}
+
+	private positionShips(playerID: string, positions: string): Game.Response {
+		for (let i = 0; i < this.games.length; i++) {
+			const game = this.games[i];
+			const player = game.getPlayerByID(playerID);
+			if (player) {
+				return game.positionShips(player, positions);
 			}
 		}
 		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);

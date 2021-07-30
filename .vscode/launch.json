@@ -7,6 +7,7 @@
 			"type": "node",
 			"request": "launch",
 			"runtimeExecutable": "C:\\Users\\M85963\\Documents\\nodejs\\node.exe",
+			"args": ["layout"],
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceRoot}/node_modules/jest/bin/jest.js",

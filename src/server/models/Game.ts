@@ -2,6 +2,7 @@ import WebSocket from "ws";
 import Board from "./Board";
 import Player from "./Player";
 import Move from "./Move";
+import Layout from "./Layout";
 class Game {
 	/**
 	 * List of all players in the game
@@ -70,7 +71,7 @@ class Game {
 		return false;
 	}
 
-	private newPlayer(player: Player) {
+	private newPlayer(player: Player): void {
 		console.log(`Player <${player.id}> added to Game <${this.id}>`);
 
 		this.players.push(player);
@@ -110,13 +111,13 @@ class Game {
 	/**
 	 * Checks if player is in the game
 	 * @param id - id of player
-	 * @returns true if player is in game, false otherwise
+	 * @returns player if player is in game, false otherwise
 	 */
-	contains(id: string) {
+	getPlayerByID(id: string): Player | false {
 		for (let i = 0; i < this.players.length; i++) {
 			const player = this.players[i];
 			if (player.id == id) {
-				return true;
+				return player;
 			}
 		}
 		return false;
@@ -164,7 +165,23 @@ class Game {
 		}
 	}
 
-	private nextTurn() {
+	positionShips(player: Player, positionsRaw: string): Game.Response {
+		if (this.started) {
+			return new Game.Response(
+				false,
+				Game.ResponseHeader.GAME_IN_PROGRESS,
+			);
+		} else {
+			const layout = new Layout(positionsRaw);
+			if (layout.type == Layout.TYPE.VALID) {
+				//FIXME: need to implement
+			} else {
+				return new Game.Response(false, Game.ResponseHeader.BAD_LAYOUT);
+			}
+		}
+	}
+
+	private nextTurn(): void {
 		const prevTurn = this.turn;
 		this.turn++;
 		if (this.turn >= this.players.length) {
@@ -185,6 +202,7 @@ namespace Game {
 	}
 	export enum ResponseHeader {
 		GAME_NOT_STARTED = "GAME NOT STARTED",
+		GAME_IN_PROGRESS = "GAME IN PROGRESS",
 		TURN_ERROR = "TURN ERROR",
 		MOVE_INVALID = "MOVE INVALID",
 		MOVE_REPEATED = "MOVE REPEATED",
@@ -194,6 +212,7 @@ namespace Game {
 		MISS = "MISS",
 		SUNK = "SUNK",
 		GAME_OVER = "GAME OVER",
+		BAD_LAYOUT = "BAD LAYOUT",
 	}
 	export class Response {
 		valid: boolean;

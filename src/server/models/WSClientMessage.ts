@@ -34,11 +34,12 @@ class WSClientMessage {
 
 namespace WSClientMessage {
 	export enum REQ_TYPE {
-		INVALID = "invalid",
-		BAD_FORMAT = "bad_format",
-		NEW_GAME = "newGame",
-		MAKE_MOVE = "makeMove",
-		JOIN_GAME = "joinGame",
+		INVALID = "INVALID",
+		BAD_FORMAT = "BAD FORMAT",
+		NEW_GAME = "NEW GAME",
+		MAKE_MOVE = "MAKE MOVE",
+		POSITION_SHIPS = "POSITION SHIPS",
+		JOIN_GAME = "JOIN GAME",
 	}
 
 	export function isInstance(object: any) {

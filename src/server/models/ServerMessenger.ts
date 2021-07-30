@@ -5,10 +5,14 @@ export default class ServerMessenger {
 	private static readonly REQ_ERROR_HEADER: string = "REQ ERROR";
 	private static readonly JOINED_HEADER: string = "JOINED GAME";
 	private static readonly INVALID_MOVE_HEADER: string = "INVALID MOVE";
+	private static readonly INVALID_LAYOUT_HEADER: string = "INVALID LAYOUT";
 
 	//STATIC MESSAGES
 	static readonly MOVE_MADE: WSServerMessage = new WSServerMessage(
 		"MOVE MADE",
+	);
+	static readonly LAYOUT_APPROVED: WSServerMessage = new WSServerMessage(
+		"LAYOUT APPROVED",
 	);
 	static readonly CONNECTED: WSServerMessage = new WSServerMessage(
 		"CONNECTED",
@@ -27,6 +31,9 @@ export default class ServerMessenger {
 	);
 
 	// DYNAMIC MESSAGE BUILDERS
+	static invalid_layout(meta: string): WSServerMessage {
+		return new WSServerMessage(this.INVALID_LAYOUT_HEADER, meta);
+	}
 	static invalid_move(meta: string): WSServerMessage {
 		return new WSServerMessage(this.INVALID_MOVE_HEADER, meta);
 	}
