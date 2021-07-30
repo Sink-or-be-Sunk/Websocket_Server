@@ -19,7 +19,7 @@ describe("Validate basic back and forth game", () => {
 	const p1 = new Player("one", utils.getSocket("one"));
 	const p2 = new Player("two", utils.getSocket("two"));
 
-	const game = new Game(p1.id, p1.socket, 8);
+	const game = new Game(p1.id, p1.socket, 8, Game.TYPE.SMALL);
 
 	it("Reject Player 1 from making a move until game has started", () => {
 		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 0, r: 0 });
@@ -66,6 +66,36 @@ describe("Validate basic back and forth game", () => {
 			new Game.Response(
 				true,
 				Game.ResponseHeader.SUNK,
+				Ship.CLASS.PATROL,
+			),
+		);
+	});
+
+	it("Allow Player 2 to hit a Patrol Boat", () => {
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 1, r: 0 });
+		const resp = game.makeMove(p2.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	it("Allow Player 1 to hit the Patrol Boat", () => {
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 1, r: 0 });
+		const resp = game.makeMove(p1.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	it("Allow Player 2 to miss", () => {
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 2, r: 0 });
+		const resp = game.makeMove(p2.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.MISS));
+	});
+
+	it("Allow Player 1 to hit the Patrol and win", () => {
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 1, r: 1 });
+		const resp = game.makeMove(p1.id, move);
+		expect(resp).toEqual(
+			new Game.Response(
+				true,
+				Game.ResponseHeader.GAME_OVER,
 				Ship.CLASS.PATROL,
 			),
 		);

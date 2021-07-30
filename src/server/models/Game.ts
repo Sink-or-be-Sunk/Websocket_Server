@@ -2,7 +2,6 @@ import WebSocket from "ws";
 import Board from "./Board";
 import Player from "./Player";
 import Move from "./Move";
-import Fleet from "./Fleet";
 class Game {
 	/**
 	 * List of all players in the game
@@ -194,6 +193,7 @@ namespace Game {
 		HIT = "HIT",
 		MISS = "MISS",
 		SUNK = "SUNK",
+		GAME_OVER = "GAME OVER",
 	}
 	export class Response {
 		valid: boolean;

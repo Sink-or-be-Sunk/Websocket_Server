@@ -50,17 +50,35 @@ class Board {
 		return grid;
 	}
 
+	private shipsRemaining() {
+		for (let i = 0; i < this.ships.length; i++) {
+			const ship = this.ships[i];
+			if (ship.state != Ship.STATE.SUNK) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	attack(move: Move) {
 		for (let i = 0; i < this.ships.length; i++) {
 			const ship = this.ships[i];
 			const res = ship.attack(move);
 			if (res) {
 				if (ship.state == Ship.STATE.SUNK) {
-					return new Game.Response(
-						true,
-						Game.ResponseHeader.SUNK,
-						ship.type.toString(),
-					);
+					if (this.shipsRemaining()) {
+						return new Game.Response(
+							true,
+							Game.ResponseHeader.SUNK,
+							ship.type.toString(),
+						);
+					} else {
+						return new Game.Response(
+							true,
+							Game.ResponseHeader.GAME_OVER,
+							ship.type.toString(),
+						);
+					}
 				} else {
 					return new Game.Response(true, Game.ResponseHeader.HIT);
 				}
@@ -71,7 +89,10 @@ class Board {
 
 	makeMove(move: Move) {
 		const square = this.grid[move.c][move.r];
-		if (square.state != Board.STATE.EMPTY) {
+		if (
+			square.state == Board.STATE.HIT ||
+			square.state == Board.STATE.MISS
+		) {
 			return new Game.Response(false, Game.ResponseHeader.MOVE_REPEATED);
 		}
 		return this.attack(move);
@@ -81,6 +102,7 @@ class Board {
 namespace Board {
 	export enum STATE {
 		EMPTY = " ",
+		FILLED = "F",
 		HIT = "H",
 		MISS = "M",
 	}

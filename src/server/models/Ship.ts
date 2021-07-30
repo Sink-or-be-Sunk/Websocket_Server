@@ -24,6 +24,7 @@ class Ship {
 			if (grid[c][r].state == Board.STATE.EMPTY) {
 				for (; r < this.type.size; r++) {
 					const square = grid[c][r];
+					square.state = Board.STATE.FILLED;
 					squares[i++] = square;
 				}
 				break;
