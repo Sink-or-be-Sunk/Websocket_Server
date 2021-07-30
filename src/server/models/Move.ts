@@ -1,18 +1,18 @@
 class Move {
 	type: Move.TYPE;
-	x: number;
-	y: number;
+	c: number;
+	r: number;
 
 	constructor(raw: string) {
-		this.x = -1;
-		this.y = -1;
+		this.c = -1;
+		this.r = -1;
 
 		try {
 			const parse = JSON.parse(raw) as Move;
 			if (Move.isInstance(parse)) {
 				this.type = parse.type;
-				this.x = +parse.x; //+str provides shorthand for converting "1" to 1
-				this.y = +parse.y;
+				this.c = +parse.c; //+str provides shorthand for converting "1" to 1
+				this.r = +parse.r;
 			} else {
 				this.type = Move.TYPE.INVALID;
 			}
@@ -28,7 +28,10 @@ class Move {
 		) {
 			return false;
 		}
-		if (this.x >= grid || this.y >= grid) {
+		if (this.c >= grid || this.r >= grid) {
+			return false;
+		}
+		if (this.c < 0 || this.r < 0) {
 			return false;
 		}
 		return true;
@@ -48,8 +51,8 @@ namespace Move {
 		BAD_FORMAT = "bad_format",
 	}
 	export function isInstance(object: any) {
-		if ("x" in object && "y" in object && "type" in object) {
-			if (!isNaN(object.x) && !isNaN(object.y)) {
+		if ("c" in object && "r" in object && "type" in object) {
+			if (!isNaN(object.c) && !isNaN(object.r)) {
 				if (
 					object.type === Move.TYPE.SOLO ||
 					object.type === Move.TYPE.SALVO ||

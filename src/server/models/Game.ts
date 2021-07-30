@@ -108,13 +108,25 @@ class Game {
 			if (this.started) {
 				const move = new Move(moveRaw);
 				if (move.isValid(this.size)) {
-					console.log(`player <${id}> made move ${move.toString()}`);
-					this.nextTurn();
-					return new Game.Response(true);
+					const board = this.boards[this.turn];
+					const res = board.makeMove(move);
+					if (res.valid) {
+						console.log(
+							`player <${id}> made move ${move.toString()}`,
+						);
+						board.show();
+						this.nextTurn();
+						return res;
+					} else {
+						return new Game.Response(
+							false,
+							Game.ResponseHeader.MOVE_REPEATED,
+						);
+					}
 				} else {
 					return new Game.Response(
 						false,
-						Game.ResponseHeader.MOVE_ERROR,
+						Game.ResponseHeader.MOVE_INVALID,
 					);
 				}
 			} else {
@@ -146,17 +158,24 @@ namespace Game {
 	export enum ResponseHeader {
 		GAME_NOT_STARTED = "GAME NOT STARTED",
 		TURN_ERROR = "TURN ERROR",
-		MOVE_ERROR = "MOVE ERROR",
+		MOVE_INVALID = "MOVE INVALID",
+		MOVE_REPEATED = "MOVE REPEATED",
 		NO_META = "NO META",
 		NO_SUCH_GAME = "NO SUCH GAME",
+		HIT = "HIT",
+		MISS = "MISS",
+		SUNK = "SUNK",
 	}
 	export class Response {
 		valid: boolean;
 		meta: string;
 
-		constructor(valid: boolean, meta?: string) {
+		constructor(valid: boolean, meta?: ResponseHeader, detail?: string) {
 			this.valid = valid;
 			this.meta = meta ?? Game.ResponseHeader.NO_META;
+			if (detail) {
+				this.meta += `-${detail}`;
+			}
 		}
 	}
 }

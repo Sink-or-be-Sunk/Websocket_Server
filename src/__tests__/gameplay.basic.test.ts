@@ -19,7 +19,7 @@ describe("Validate basic back and forth game", () => {
 	const game = new Game(p1.id, p1.socket, 8);
 
 	it("Reject Player 1 from making a move until game has started", () => {
-		const move = JSON.stringify({ type: Move.TYPE.SOLO, x: 0, y: 0 });
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 0, r: 0 });
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
 			new Game.Response(false, Game.ResponseHeader.GAME_NOT_STARTED),
@@ -37,14 +37,22 @@ describe("Validate basic back and forth game", () => {
 	});
 
 	it("Allow Player 1 to make a move", () => {
-		const move = JSON.stringify({ type: Move.TYPE.SOLO, x: 0, y: 0 });
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 0, r: 0 });
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(new Game.Response(true));
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
 	});
 
 	it("Allow Player 2 to make a move", () => {
-		const move = JSON.stringify({ type: Move.TYPE.SOLO, x: 0, y: 0 });
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 0, r: 0 });
 		const resp = game.makeMove(p2.id, move);
-		expect(resp).toEqual(new Game.Response(true));
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	it("Reject Player 1 from repeating same move", () => {
+		const move = JSON.stringify({ type: Move.TYPE.SOLO, c: 0, r: 0 });
+		const resp = game.makeMove(p1.id, move);
+		expect(resp).toEqual(
+			new Game.Response(false, Game.ResponseHeader.MOVE_REPEATED),
+		);
 	});
 });
