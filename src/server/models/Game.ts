@@ -2,6 +2,7 @@ import WebSocket from "ws";
 import Board from "./Board";
 import Player from "./Player";
 import Move from "./Move";
+import Fleet from "./Fleet";
 class Game {
 	/**
 	 * List of all players in the game
@@ -27,13 +28,22 @@ class Game {
 	 * Indicated whether or not game is in progress
 	 */
 	started: boolean;
+	/**
+	 * sets up the game rules
+	 */
+	type: Game.TYPE;
 
-	constructor(id: string, socket: WebSocket, size: number) {
+	constructor(id: string, socket: WebSocket, size: number, type?: Game.TYPE) {
 		this.id = id;
 		this.size = size;
+		if (type) {
+			this.type = type;
+		} else {
+			this.type = Game.TYPE.DEFAULT;
+		}
 		this.players = new Array<Player>();
 		this.boards = new Array<Board>();
-		console.log(`New Game Created: <${this.id}>`);
+		console.log(`New ${this.type} Game Created: <${this.id}>`);
 		this.add(new Player(id, socket));
 		this.turn = 0;
 		this.started = false; //wait until another player joins before starting
@@ -61,6 +71,27 @@ class Game {
 		return false;
 	}
 
+	private newPlayer(player: Player) {
+		console.log(`Player <${player.id}> added to Game <${this.id}>`);
+
+		this.players.push(player);
+
+		if (this.type == Game.TYPE.DEFAULT) {
+			this.boards.push(
+				new Board(player.id, this.size, Board.TYPE.DEFAULT),
+			);
+		} else if (this.type == Game.TYPE.SMALL) {
+			this.boards.push(new Board(player.id, this.size, Board.TYPE.SMALL));
+		} else {
+			throw Error("Invalid Game Type!");
+		}
+
+		if (this.players.length > 1) {
+			console.log("Game Started");
+			this.started = true;
+		}
+	}
+
 	/**
 	 *
 	 * @param player - Player to add to game
@@ -73,12 +104,7 @@ class Game {
 				return false;
 			}
 		}
-		this.players.push(player);
-		this.boards.push(new Board(player.id, this.size));
-		if (this.players.length > 1) {
-			this.started = true;
-		}
-		console.log(`Player <${player.id}> added to Game <${this.id}>`);
+		this.newPlayer(player);
 		return true;
 	}
 
@@ -154,6 +180,10 @@ class Game {
 }
 
 namespace Game {
+	export enum TYPE {
+		DEFAULT = "DEFAULT",
+		SMALL = "SMALL",
+	}
 	export enum ResponseHeader {
 		GAME_NOT_STARTED = "GAME NOT STARTED",
 		TURN_ERROR = "TURN ERROR",

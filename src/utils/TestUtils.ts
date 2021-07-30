@@ -57,9 +57,17 @@ export default class TestUtils {
 	}
 
 	async tearDown() {
-		this.ws1.close();
-		this.ws2.close();
-		this.wss.close();
+		this.wss.clients.forEach((client) => {
+			client.close();
+		});
+		await new Promise((resolve, reject) => {
+			this.wss.close((err) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(null);
+			});
+		});
 		await new Promise((resolve, reject) => {
 			this.server.close((err) => {
 				if (err) {

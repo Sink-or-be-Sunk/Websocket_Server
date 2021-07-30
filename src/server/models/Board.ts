@@ -1,20 +1,42 @@
 import Move from "./Move";
-import Fleet from "./Fleet";
 import Game from "./Game";
+import Ship from "./Ship";
+
 class Board {
 	id: string;
 	grid: Board.Square[][];
-	fleet: Fleet;
+	ships: Ship[];
+	type: Board.TYPE;
 	/**
 	 * m x m size of grid
 	 */
 	size: number;
 
-	constructor(id: string, size: number) {
+	constructor(id: string, size: number, type: Board.TYPE) {
 		this.id = id;
 		this.size = size;
+		this.type = type;
 		this.grid = this.initGrid();
-		this.fleet = new Fleet(Fleet.TYPE.DEFAULT, this);
+		this.ships = this.initShips();
+	}
+
+	private initShips() {
+		let ships = new Array<Ship>();
+		if (this.type == Board.TYPE.DEFAULT) {
+			ships = [
+				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.grid),
+				new Ship(new Ship.Type(Ship.CLASS.SUBMARINE), this.grid),
+				new Ship(new Ship.Type(Ship.CLASS.DESTROYER), this.grid),
+				new Ship(new Ship.Type(Ship.CLASS.BATTLESHIP), this.grid),
+				new Ship(new Ship.Type(Ship.CLASS.CARRIER), this.grid),
+			];
+		} else if (this.type == Board.TYPE.SMALL) {
+			ships = [
+				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.grid),
+				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.grid),
+			];
+		}
+		return ships;
 	}
 
 	private initGrid() {
@@ -28,12 +50,31 @@ class Board {
 		return grid;
 	}
 
+	attack(move: Move) {
+		for (let i = 0; i < this.ships.length; i++) {
+			const ship = this.ships[i];
+			const res = ship.attack(move);
+			if (res) {
+				if (ship.state == Ship.STATE.SUNK) {
+					return new Game.Response(
+						true,
+						Game.ResponseHeader.SUNK,
+						ship.type.toString(),
+					);
+				} else {
+					return new Game.Response(true, Game.ResponseHeader.HIT);
+				}
+			}
+		}
+		return new Game.Response(true, Game.ResponseHeader.MISS);
+	}
+
 	makeMove(move: Move) {
 		const square = this.grid[move.c][move.r];
 		if (square.state != Board.STATE.EMPTY) {
 			return new Game.Response(false, Game.ResponseHeader.MOVE_REPEATED);
 		}
-		return this.fleet.attack(move);
+		return this.attack(move);
 	}
 }
 
@@ -42,6 +83,12 @@ namespace Board {
 		EMPTY = " ",
 		HIT = "H",
 		MISS = "M",
+	}
+
+	export enum TYPE {
+		DEFAULT = "DEFAULT",
+		SMALL = "SMALL",
+		INVALID = "INVALID",
 	}
 	export class Square {
 		state: STATE;

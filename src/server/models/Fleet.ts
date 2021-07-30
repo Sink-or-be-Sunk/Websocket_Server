@@ -20,6 +20,11 @@ class Fleet {
 				new Ship(new Ship.Type(Ship.CLASS.BATTLESHIP), this.board),
 				new Ship(new Ship.Type(Ship.CLASS.CARRIER), this.board),
 			];
+		} else if (type == Fleet.TYPE.SMALL) {
+			this.ships = [
+				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.board),
+				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.board),
+			];
 		} else {
 			this.ships = [];
 		}
@@ -48,6 +53,7 @@ class Fleet {
 namespace Fleet {
 	export enum TYPE {
 		DEFAULT = "DEFAULT",
+		SMALL = "SMALL",
 		INVALID = "INVALID",
 	}
 }

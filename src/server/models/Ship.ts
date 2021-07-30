@@ -6,13 +6,30 @@ class Ship {
 	type: Ship.Type;
 	state: Ship.STATE;
 
-	constructor(type: Ship.Type, board: Board) {
+	constructor(type: Ship.Type, grid: Board.Square[][]) {
 		this.type = type;
 		this.state = Ship.STATE.WHOLE;
-		if (type.size > board.size) {
+		if (type.size > grid.length) {
 			throw Error("Cannot add a ship bigger than game board!");
 		}
-		this.squares = this.initSquares(board);
+		this.squares = this.initSquares(grid);
+	}
+
+	private initSquares(grid: Board.Square[][]) {
+		const squares = new Array<Board.Square>(this.type.size);
+		let i = 0;
+		for (let c = 0; c < grid.length; c++) {
+			let r = 0;
+			//align ships vertically in line
+			if (grid[c][r].state == Board.STATE.EMPTY) {
+				for (; r < this.type.size; r++) {
+					const square = grid[c][r];
+					squares[i++] = square;
+				}
+				break;
+			}
+		}
+		return squares;
 	}
 
 	checkSunk() {
@@ -38,23 +55,6 @@ class Ship {
 			}
 		}
 		return false;
-	}
-
-	private initSquares(board: Board) {
-		const squares = new Array<Board.Square>(this.type.size);
-		let i = 0;
-		for (let c = 0; c < board.size; c++) {
-			let r = 0;
-			//align ships vertically in line
-			if (board.grid[c][r].state == Board.STATE.EMPTY) {
-				for (; r < this.type.size; r++) {
-					const square = board.grid[c][r];
-					squares[i++] = square;
-				}
-				break;
-			}
-		}
-		return squares;
 	}
 }
 
