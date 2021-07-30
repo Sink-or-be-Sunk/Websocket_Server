@@ -11,8 +11,8 @@ beforeAll(async () => {
 	await utils.setup();
 });
 
-afterAll(() => {
-	utils.tearDown();
+afterAll(async () => {
+	await utils.tearDown();
 });
 
 describe("Basic Matchmaking", () => {

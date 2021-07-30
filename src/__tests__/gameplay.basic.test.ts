@@ -5,17 +5,19 @@ import Move from "../server/models/Move";
 import TestUtils from "../utils/TestUtils";
 import Ship from "../server/models/Ship";
 
+const utils = new TestUtils();
+
 beforeAll(async () => {
-	await TestUtils.setup();
+	await utils.setup();
 });
 
-afterAll(() => {
-	TestUtils.tearDown();
+afterAll(async () => {
+	await utils.tearDown();
 });
 
 describe("Validate basic back and forth game", () => {
-	const p1 = new Player("one", TestUtils.getSocket("one"));
-	const p2 = new Player("two", TestUtils.getSocket("two"));
+	const p1 = new Player("one", utils.getSocket("one"));
+	const p2 = new Player("two", utils.getSocket("two"));
 
 	const game = new Game(p1.id, p1.socket, 8);
 

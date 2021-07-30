@@ -56,10 +56,17 @@ export default class TestUtils {
 		}
 	}
 
-	tearDown() {
+	async tearDown() {
 		this.ws1.close();
 		this.ws2.close();
 		this.wss.close();
-		this.server.close();
+		await new Promise((resolve, reject) => {
+			this.server.close((err) => {
+				if (err) {
+					reject(err);
+				}
+				resolve(null);
+			});
+		});
 	}
 }
