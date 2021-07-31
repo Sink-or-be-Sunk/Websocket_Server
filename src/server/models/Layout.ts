@@ -10,7 +10,7 @@ class Layout {
 				for (let i = 0; i < parse.length; i++) {
 					const el = parse[i];
 					if (Layout.Position.isInstance(el)) {
-						this.list.push(el);
+						this.list.push(new Layout.Position(el.c, el.r, el.o));
 					} else {
 						this.list = [];
 						this.type = Layout.TYPE.BAD_POSITION_OBJ;
@@ -45,8 +45,8 @@ namespace Layout {
 		o: Orientation;
 
 		constructor(c: number, r: number, o: Orientation) {
-			this.c = c;
-			this.r = r;
+			this.c = +c; //+ is shorthand for converting string to number
+			this.r = +r;
 			this.o = o;
 		}
 
