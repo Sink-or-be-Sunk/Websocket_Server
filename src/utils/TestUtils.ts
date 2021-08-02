@@ -78,7 +78,5 @@ export default class TestUtils {
 				resolve(null);
 			});
 		});
-
-		await TestUtils.delay(1000);
 	}
 }
