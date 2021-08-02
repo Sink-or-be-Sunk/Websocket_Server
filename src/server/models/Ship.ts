@@ -1,6 +1,7 @@
 import { isNumericLiteral } from "typescript";
 import Board from "./Board";
 import Game from "./Game";
+import Layout from "./Layout";
 import Move from "./Move";
 
 class Ship {
@@ -8,36 +9,29 @@ class Ship {
 	type: Ship.Type;
 	state: Ship.STATE;
 
-	constructor(type: Ship.Type, grid: Board.Square[][]) {
-		this.type = type;
-		this.squares = [];
+	constructor(type: Layout.TYPE, squares: Board.Square[]) {
+		this.type = this.initType(type);
+		this.squares = squares;
 		this.state = Ship.STATE.WHOLE;
-		if (
-			type.size > grid.length ||
-			this.type.descriptor == Ship.DESCRIPTOR.INVALID_SIZE
-		) {
-			this.type = new Ship.Type(Ship.DESCRIPTOR.INVALID_SIZE);
-		} else {
-			this.squares = this.initSquares(grid);
+		if (this.type.size != squares.length) {
+			this.type = new Ship.Type(Ship.DESCRIPTOR.SIZE_MISMATCH);
 		}
 	}
 
-	private initSquares(grid: Board.Square[][]) {
-		const squares = new Array<Board.Square>(this.type.size);
-		let i = 0;
-		for (let c = 0; c < grid.length; c++) {
-			let r = 0;
-			//align ships vertically in line
-			if (grid[c][r].state == Board.STATE.EMPTY) {
-				for (; r < this.type.size; r++) {
-					const square = grid[c][r];
-					square.state = Board.STATE.FILLED;
-					squares[i++] = square;
-				}
-				break;
-			}
+	initType(type: Layout.TYPE): Ship.Type {
+		if (type == Layout.TYPE.PATROL) {
+			return new Ship.Type(Ship.DESCRIPTOR.PATROL);
+		} else if (type == Layout.TYPE.DESTROYER) {
+			return new Ship.Type(Ship.DESCRIPTOR.DESTROYER);
+		} else if (type == Layout.TYPE.SUBMARINE) {
+			return new Ship.Type(Ship.DESCRIPTOR.SUBMARINE);
+		} else if (type == Layout.TYPE.BATTLESHIP) {
+			return new Ship.Type(Ship.DESCRIPTOR.BATTLESHIP);
+		} else if (type == Layout.TYPE.CARRIER) {
+			return new Ship.Type(Ship.DESCRIPTOR.CARRIER);
+		} else {
+			throw new Error("Invalid Layout type: this should never happen");
 		}
-		return squares;
 	}
 
 	checkSunk() {
@@ -68,7 +62,7 @@ class Ship {
 
 namespace Ship {
 	export enum DESCRIPTOR {
-		INVALID_SIZE = "INVALID SIZE",
+		SIZE_MISMATCH = "SIZE MISMATCH",
 		CARRIER = "AIRCRAFT CARRIER",
 		BATTLESHIP = "BATTLESHIP",
 		DESTROYER = "DESTROYER",

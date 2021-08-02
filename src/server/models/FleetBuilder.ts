@@ -14,17 +14,8 @@ class FleetBuilder {
 		this.fleet = [];
 	}
 
-	add(start: Layout.Position, end: Layout.Position): Game.Response {
-		let size = -1;
-		if (start.o == Layout.Orientation.HORIZONTAL) {
-			size = end.c - start.c + 1;
-		} else if (start.o == Layout.Orientation.VERTICAL) {
-			size = end.r - start.r + 1;
-		} else {
-			throw new Error("Invalid orientation.  This should never happen");
-		}
-		const ship = this.rules.createShip(size, this.fleet, this.grid);
-		if (ship) {
+	add(ship: Ship): Game.Response {
+		if (this.rules.validShip(ship, this.fleet, this.grid)) {
 			this.fleet.push(ship);
 			return new Game.Response(true);
 		} else {

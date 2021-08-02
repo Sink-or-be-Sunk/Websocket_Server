@@ -4,6 +4,7 @@ import Player from "./Player";
 import Move from "./Move";
 import Layout from "./Layout";
 import Ship from "./Ship";
+import FleetBuilder from "./FleetBuilder";
 class Game {
 	/**
 	 * List of all players in the game
@@ -271,6 +272,7 @@ namespace Game {
 		MISS = "MISS",
 		SUNK = "SUNK",
 		SHIP_POSITIONED = "SHIPS POSITIONED",
+		INVALID_SHIP_MARKERS = "INVALID SHIP MARKERS",
 		BAD_SHIP_SIZE = "BAD SHIP SIZE",
 		SHIP_POSITIONER_MISMATCH = "SHIP POSITIONER MISMATCH",
 		GAME_OVER = "GAME OVER",
@@ -338,45 +340,41 @@ namespace Game {
 			} else if (size == 5) {
 				return new Ship.Type(Ship.DESCRIPTOR.CARRIER);
 			} else {
-				return new Ship.Type(Ship.DESCRIPTOR.INVALID_SIZE);
+				return new Ship.Type(Ship.DESCRIPTOR.SIZE_MISMATCH);
 			}
 		}
 
 		/**
-		 * Create Ship and Check for validity based on game rules
-		 * @param size ship size
-		 * @param fleet current fleet of ships
+		 * Check ship for validity based on game rules
+		 * @param ship ship to check if its valid to add to fleet
+		 * @param curFleet current fleet of ships (before adding ship)
 		 * @param grid game board squares grid
-		 * @returns Ship or false if the rules don't allow adding new ship to fleet
+		 * @returns boolean on if the rules allow adding new ship to fleet
 		 */
-		createShip(
-			size: number,
-			fleet: Ship[],
+		validShip(
+			ship: Ship,
+			curFleet: Ship[],
 			grid: Board.Square[][],
-		): Ship | false {
+		): boolean {
+			//TODO: check if ships overlap
+
+			const size = ship.type.size;
 			if (this.type == Game.TYPE.BASIC) {
 				if (size == 2) {
-					if (fleet.length < 2) {
+					if (curFleet.length < 2) {
 						//small mode allows for two patrol boats
-						const type = new Ship.Type(Ship.DESCRIPTOR.PATROL);
-						const ship = new Ship(type, grid);
-						return ship;
+						return true;
 					}
 				}
 			} else if (this.type == Game.TYPE.CLASSIC) {
-				// class mode allows for one of each ship type (two size 3 ships)
-				const count = this.count(size, fleet);
-				const type = this.sizeToType(size, count);
-				const ship = new Ship(type, grid);
-				if (size == 3) {
-					if (count < 2) {
-						return ship;
-					}
-				} else {
-					if (count == 0) {
-						return ship;
+				// class mode allows for one of each ship type/descriptor (two size 3 ships)
+				for (let i = 0; i < curFleet.length; i++) {
+					const s = curFleet[i];
+					if (s.type.descriptor == ship.type.descriptor) {
+						return false; //cannot have more than one ship per type
 					}
 				}
+				return true;
 			} else {
 				throw new Error(
 					"Invalid Game Type When Checking if ship is allowed: This should never happen",

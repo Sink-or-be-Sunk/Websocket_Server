@@ -8,7 +8,7 @@ class Board {
 	id: string;
 	grid: Board.Square[][];
 	ships: Ship[];
-	// type: Board.TYPE;
+	view: string[];
 	/**
 	 * m x m size of grid
 	 */
@@ -17,29 +17,11 @@ class Board {
 	constructor(id: string, rules: Game.Rules) {
 		this.id = id;
 		this.size = rules.boardSize;
-		// this.type = type;
 		this.grid = this.initGrid();
+		this.view = [];
+		this.updateView();
 		this.ships = [];
 	}
-
-	// private initShips(): Ship[] {
-	// 	let ships = new Array<Ship>();
-	// 	if (this.type == Board.TYPE.DEFAULT) {
-	// 		ships = [
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.PATROL), this.grid),
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.SUBMARINE), this.grid),
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.DESTROYER), this.grid),
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.BATTLESHIP), this.grid),
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.CARRIER), this.grid),
-	// 		];
-	// 	} else if (this.type == Board.TYPE.SMALL) {
-	// 		ships = [
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.PATROL), this.grid),
-	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.PATROL), this.grid),
-	// 		];
-	// 	}
-	// 	return ships;
-	// }
 
 	private initGrid(): Board.Square[][] {
 		const grid = new Array<Array<Board.Square>>();
@@ -60,6 +42,16 @@ class Board {
 			}
 		}
 		return false;
+	}
+
+	private updateView() {
+		this.view = []; //clear
+		for (let c = 0; c < this.size; c++) {
+			this.view[c] = "|";
+			for (let r = 0; r < this.size; r++) {
+				this.view[c] += `${this.grid[c][r].state}|`;
+			}
+		}
 	}
 
 	attack(move: Move): Game.Response {
@@ -100,6 +92,50 @@ class Board {
 		return this.attack(move);
 	}
 
+	private getSquareList(
+		start: Layout.Position,
+		end: Layout.Position,
+	): Board.Square[] | false {
+		try {
+			const list = [];
+
+			if (start.c == end.c) {
+				//VERTICAL
+				if (start.c >= this.size) {
+					throw Error("Col Out of Bounds");
+				}
+				for (let r = start.r; r < this.size; r++) {
+					const square = this.grid[start.c][r];
+					square.state = Board.STATE.FILLED;
+					list.push(square);
+					if (end.r == r) {
+						return list;
+					}
+				}
+				throw Error("Row Out of Bounds");
+			} else if (start.r == end.r) {
+				//HORIZONTAL
+				if (start.r >= this.size) {
+					throw Error("Row Out of Bounds");
+				}
+				for (let c = start.c; c < this.size; c++) {
+					const square = this.grid[c][start.r];
+					square.state = Board.STATE.FILLED;
+
+					list.push(square);
+					if (end.c == c) {
+						return list;
+					}
+				}
+				throw Error("Col Out of Bounds");
+			} else {
+				throw Error("Invalid Orientation");
+			}
+		} catch (err) {
+			return false;
+		}
+	}
+
 	updateShipLayout(layout: Layout, rules: Game.Rules): Game.Response {
 		let list = layout.list.sort((a, b) => {
 			if (a.r == b.r) {
@@ -115,25 +151,22 @@ class Board {
 			let found = false;
 			for (let j = i + 1; j < list.length; j++) {
 				const search = list[j];
-				if (cur.o == Layout.Orientation.VERTICAL) {
-					if (search.c == cur.c) {
-						const res = builder.add(cur, search);
+				if (search.t == cur.t) {
+					const squareList = this.getSquareList(cur, search);
+					if (squareList) {
+						const ship = new Ship(cur.t, squareList);
+						const res = builder.add(ship);
 						if (!res.valid) {
 							return res;
 						}
 						list.splice(j, 1); //remove search from list
 						found = true;
 						break;
-					}
-				} else if (cur.o == Layout.Orientation.HORIZONTAL) {
-					if (search.r == cur.r) {
-						const res = builder.add(cur, search);
-						if (!res.valid) {
-							return res;
-						}
-						list.splice(j, 1); //remove search from list
-						found = true;
-						break;
+					} else {
+						return new Game.Response(
+							false,
+							Game.ResponseHeader.INVALID_SHIP_MARKERS,
+						);
 					}
 				}
 			}
@@ -145,6 +178,7 @@ class Board {
 			}
 		}
 		this.ships = builder.fleet;
+		this.updateView();
 		return new Game.Response(true, Game.ResponseHeader.SHIP_POSITIONED);
 	}
 }
@@ -155,6 +189,10 @@ namespace Board {
 		FILLED = "F",
 		HIT = "H",
 		MISS = "M",
+	}
+
+	export enum ERRORS {
+		INVALID_SHIP_POINTS = "INVALID SHIP POINTS",
 	}
 
 	// export enum TYPE {
