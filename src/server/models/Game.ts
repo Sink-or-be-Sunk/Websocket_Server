@@ -30,13 +30,9 @@ class Game {
 	 */
 	rules: Game.Rules;
 
-	constructor(id: string, socket: WebSocket, type?: Game.TYPE) {
+	constructor(id: string, socket: WebSocket, type: Game.TYPE) {
 		this.id = id;
-		if (type) {
-			this.rules = new Game.Rules(type);
-		} else {
-			this.rules = new Game.Rules(Game.TYPE.CLASSIC);
-		}
+		this.rules = new Game.Rules(type);
 		this.players = new Array<Player>();
 		this.boards = new Array<Board>();
 		console.log(`New ${this.rules.type} Game Created: <${this.id}>`);
@@ -240,6 +236,18 @@ namespace Game {
 		CLASSIC = "CLASSIC",
 		BASIC = "BASIC", //SMALL game mode for testing
 	}
+
+	export function parseGameType(raw: string) {
+		if (raw === TYPE.CLASSIC) {
+			return Game.TYPE.CLASSIC;
+		} else if (raw === TYPE.BASIC) {
+			return Game.TYPE.BASIC;
+		} else {
+			console.log("Invalid Game Type Request: Defaulting to Classic");
+			return Game.TYPE.CLASSIC;
+		}
+	}
+
 	export enum ResponseHeader {
 		GAME_NOT_STARTED = "GAME NOT STARTED",
 		GAME_IN_PROGRESS = "GAME IN PROGRESS",

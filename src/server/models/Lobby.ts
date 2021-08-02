@@ -22,7 +22,8 @@ export default class Lobby {
 			if (this.getGame(message.id)) {
 				return ServerMessenger.reqError("Game Already Exists");
 			}
-			const game = new Game(message.id, socket); //use the unique MAC address of MCU to generate game id //TODO: Allow for multiple game types
+			const type = Game.parseGameType(message.data);
+			const game = new Game(message.id, socket, type); //use the unique MAC address of MCU to generate game id
 			this.games.push(game);
 			return ServerMessenger.GAME_CREATED;
 		} else if (message.req === WSClientMessage.REQ_TYPE.MAKE_MOVE) {
