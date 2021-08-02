@@ -21,8 +21,12 @@ describe("Basic Matchmaking", () => {
 	// initialize a simple http server
 	const lobby = new Lobby();
 
-	it("Player 1 Creates New Game", () => {
-		const req = { id: "one", req: WSClientMessage.REQ_TYPE.NEW_GAME };
+	it("Player 1 Creates New Basic Game", () => {
+		const req = {
+			id: "one",
+			req: WSClientMessage.REQ_TYPE.NEW_GAME,
+			data: Game.TYPE.BASIC,
+		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.GAME_CREATED);
@@ -37,17 +41,6 @@ describe("Basic Matchmaking", () => {
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.joined(req.data));
-	});
-
-	it("Player 1 changes to basic game type", () => {
-		const req = {
-			id: "one",
-			req: WSClientMessage.REQ_TYPE.GAME_TYPE,
-			data: Game.TYPE.BASIC,
-		};
-		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
-		expect(resp).toStrictEqual(ServerMessenger.GAME_TYPE_APPROVED);
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {

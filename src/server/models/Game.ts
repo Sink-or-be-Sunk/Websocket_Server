@@ -201,14 +201,25 @@ class Game {
 	}
 
 	changeGameType(id: string, gameType: string): Game.Response {
+		//TODO: do we want only the player that created the game to be able to change game type?
+		let ready = false;
+		for (let i = 0; i < this.players.length; i++) {
+			const player = this.players[i];
+			if (player.ready) {
+				ready = true;
+				break;
+			}
+		}
 		if (this.started) {
 			return new Game.Response(
 				false,
 				Game.ResponseHeader.GAME_IN_PROGRESS,
 			);
+		} else if (ready) {
+			return new Game.Response(false, Game.ResponseHeader.PLAYER_READY);
 		} else {
-			//FIXME: needs implementation for checking valid game types
-			this.rules = new Game.Rules(Game.TYPE.BASIC); //THIS IS JUST FOR EASY DEBUGGING WITH BASIC GAME MODE
+			const type = Game.parseGameType(gameType);
+			this.rules = new Game.Rules(type);
 			return new Game.Response(
 				true,
 				Game.ResponseHeader.GAME_TYPE_CHANGED,
@@ -237,7 +248,7 @@ namespace Game {
 		BASIC = "BASIC", //SMALL game mode for testing
 	}
 
-	export function parseGameType(raw: string) {
+	export function parseGameType(raw: string): Game.TYPE {
 		if (raw === TYPE.CLASSIC) {
 			return Game.TYPE.CLASSIC;
 		} else if (raw === TYPE.BASIC) {
@@ -268,6 +279,7 @@ namespace Game {
 		GAME_STARTED = "GAME STARTED",
 		SHIP_BROKE_RULES = "SHIP BROKE RULES",
 		GAME_TYPE_CHANGED = "GAME TYPE CHANGED",
+		PLAYER_READY = "PLAYER READY",
 	}
 
 	export class Rules {
