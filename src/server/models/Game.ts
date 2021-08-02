@@ -144,15 +144,22 @@ class Game {
 			if (this.started) {
 				const move = new Move(moveRaw);
 				if (move.isValid(this.rules.boardSize)) {
-					const board = this.boards[this.turn];
-					const res = board.makeMove(move);
-					if (res.valid) {
-						console.log(
-							`player <${id}> made move ${move.toString()}`,
+					const board = this.getBoardByID(move.at);
+					if (board) {
+						const res = board.makeMove(move);
+						if (res.valid) {
+							console.log(
+								`player <${id}> made move ${move.toString()}`,
+							);
+							this.nextTurn();
+						}
+						return res;
+					} else {
+						return new Game.Response(
+							false,
+							Game.ResponseHeader.BAD_AT_PLAYER,
 						);
-						this.nextTurn();
 					}
-					return res;
 				} else {
 					return new Game.Response(
 						false,
@@ -282,6 +289,7 @@ namespace Game {
 		SHIP_BROKE_RULES = "SHIP BROKE RULES",
 		GAME_TYPE_CHANGED = "GAME TYPE CHANGED",
 		PLAYER_READY = "PLAYER READY",
+		BAD_AT_PLAYER = "BAD AT PLAYER",
 	}
 
 	export class Rules {

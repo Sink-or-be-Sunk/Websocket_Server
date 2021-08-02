@@ -1,11 +1,13 @@
 class Move {
 	type: Move.TYPE;
+	at: string;
 	c: number;
 	r: number;
 
 	constructor(raw: string) {
 		this.c = -1;
 		this.r = -1;
+		this.at = "";
 
 		try {
 			const parse = JSON.parse(raw) as Move;
@@ -13,6 +15,7 @@ class Move {
 				this.type = parse.type;
 				this.c = +parse.c; //+str provides shorthand for converting "1" to 1
 				this.r = +parse.r;
+				this.at = parse.at;
 			} else {
 				this.type = Move.TYPE.INVALID;
 			}
@@ -51,7 +54,12 @@ namespace Move {
 		BAD_FORMAT = "bad_format",
 	}
 	export function isInstance(object: any) {
-		if ("c" in object && "r" in object && "type" in object) {
+		if (
+			"c" in object &&
+			"r" in object &&
+			"at" in object &&
+			"type" in object
+		) {
 			if (!isNaN(object.c) && !isNaN(object.r)) {
 				if (
 					object.type === Move.TYPE.SOLO ||

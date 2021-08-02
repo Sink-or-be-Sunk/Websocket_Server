@@ -46,10 +46,10 @@ class Board {
 
 	private updateView() {
 		this.view = []; //clear
-		for (let c = 0; c < this.size; c++) {
-			this.view[c] = "|";
-			for (let r = 0; r < this.size; r++) {
-				this.view[c] += `${this.grid[c][r].state}|`;
+		for (let r = 0; r < this.size; r++) {
+			this.view[r] = "|";
+			for (let c = 0; c < this.size; c++) {
+				this.view[r] += `${this.grid[c][r].state}|`;
 			}
 		}
 	}
