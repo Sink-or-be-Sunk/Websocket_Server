@@ -1,4 +1,6 @@
+import { isNumericLiteral } from "typescript";
 import Board from "./Board";
+import Game from "./Game";
 import Move from "./Move";
 
 class Ship {
@@ -8,11 +10,16 @@ class Ship {
 
 	constructor(type: Ship.Type, grid: Board.Square[][]) {
 		this.type = type;
+		this.squares = [];
 		this.state = Ship.STATE.WHOLE;
-		if (type.size > grid.length) {
-			throw Error("Cannot add a ship bigger than game board!");
+		if (
+			type.size > grid.length ||
+			this.type.descriptor == Ship.DESCRIPTOR.INVALID_SIZE
+		) {
+			this.type = new Ship.Type(Ship.DESCRIPTOR.INVALID_SIZE);
+		} else {
+			this.squares = this.initSquares(grid);
 		}
-		this.squares = this.initSquares(grid);
 	}
 
 	private initSquares(grid: Board.Square[][]) {
@@ -60,7 +67,8 @@ class Ship {
 }
 
 namespace Ship {
-	export enum CLASS {
+	export enum DESCRIPTOR {
+		INVALID_SIZE = "INVALID SIZE",
 		CARRIER = "AIRCRAFT CARRIER",
 		BATTLESHIP = "BATTLESHIP",
 		DESTROYER = "DESTROYER",
@@ -81,40 +89,40 @@ namespace Ship {
 	}
 
 	export class Type {
-		type: Ship.CLASS;
+		descriptor: Ship.DESCRIPTOR;
 		name: Ship.NAME;
 		size: number;
 
-		constructor(type: Ship.CLASS, name?: Ship.NAME) {
-			this.type = type;
+		constructor(descriptor: Ship.DESCRIPTOR, name?: Ship.NAME) {
+			this.descriptor = descriptor;
 			if (name) {
 				this.name = name;
 			} else {
 				this.name = Ship.NAME.DEFAULT;
 			}
 
-			this.size = this.initSize(type);
+			this.size = Type.classToSize(descriptor);
 		}
 
-		private initSize(type: Ship.CLASS) {
-			if (type == Ship.CLASS.CARRIER) {
+		private static classToSize(type: Ship.DESCRIPTOR) {
+			if (type == Ship.DESCRIPTOR.CARRIER) {
 				return 5;
-			} else if (type == Ship.CLASS.BATTLESHIP) {
+			} else if (type == Ship.DESCRIPTOR.BATTLESHIP) {
 				return 4;
 			} else if (
-				type == Ship.CLASS.DESTROYER ||
-				type == Ship.CLASS.SUBMARINE
+				type == Ship.DESCRIPTOR.DESTROYER ||
+				type == Ship.DESCRIPTOR.SUBMARINE
 			) {
 				return 3;
-			} else if (type == Ship.CLASS.PATROL) {
+			} else if (type == Ship.DESCRIPTOR.PATROL) {
 				return 2;
 			} else {
-				throw Error("Invalid Ship Type: this should never occur");
+				return -1;
 			}
 		}
 
 		toString() {
-			let str = this.type.toString();
+			let str = this.descriptor.toString();
 			if (this.name != Ship.NAME.DEFAULT) {
 				str += `-${this.name}`;
 			}

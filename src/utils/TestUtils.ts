@@ -14,6 +14,10 @@ export default class TestUtils {
 	static delay = (ms: number) =>
 		new Promise((resolve) => setTimeout(resolve, ms));
 
+	static silenceLog() {
+		jest.spyOn(console, "log").mockImplementation(() => {}); //silence console logs
+	}
+
 	constructor() {
 		this.port = 8080;
 		this.app = express();
@@ -42,8 +46,6 @@ export default class TestUtils {
 	}
 
 	async setup() {
-		jest.spyOn(console, "log").mockImplementation(() => {}); //silence console logs
-
 		this.server.listen(this.port, () => {
 			console.log(`Server started on port: ${this.port}/`);
 		});

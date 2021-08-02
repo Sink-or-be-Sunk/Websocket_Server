@@ -6,6 +6,7 @@ import TestUtils from "../utils/TestUtils";
 import Move from "../server/models/Move";
 
 const utils = new TestUtils();
+TestUtils.silenceLog();
 
 beforeAll(async () => {
 	await utils.setup();
@@ -35,6 +36,17 @@ describe("Basic Matchmaking", () => {
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(ServerMessenger.joined(req.data));
+	});
+
+	it("Player 1 Makes a Move", () => {
+		const req = {
+			id: "one",
+			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
+			data: JSON.stringify({ c: 0, r: 0, type: Move.TYPE.SOLO }),
+		};
+		const msg = new WSClientMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
+		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
 	});
 
 	it("Player 1 Makes a Move", () => {

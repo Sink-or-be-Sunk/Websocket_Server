@@ -1,45 +1,47 @@
 import Move from "./Move";
 import Game from "./Game";
 import Ship from "./Ship";
+import Layout from "./Layout";
+import FleetBuilder from "./FleetBuilder";
 
 class Board {
 	id: string;
 	grid: Board.Square[][];
 	ships: Ship[];
-	type: Board.TYPE;
+	// type: Board.TYPE;
 	/**
 	 * m x m size of grid
 	 */
 	size: number;
 
-	constructor(id: string, size: number, type: Board.TYPE) {
+	constructor(id: string, rules: Game.Rules) {
 		this.id = id;
-		this.size = size;
-		this.type = type;
+		this.size = rules.boardSize;
+		// this.type = type;
 		this.grid = this.initGrid();
-		this.ships = this.initShips();
+		this.ships = [];
 	}
 
-	private initShips() {
-		let ships = new Array<Ship>();
-		if (this.type == Board.TYPE.DEFAULT) {
-			ships = [
-				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.grid),
-				new Ship(new Ship.Type(Ship.CLASS.SUBMARINE), this.grid),
-				new Ship(new Ship.Type(Ship.CLASS.DESTROYER), this.grid),
-				new Ship(new Ship.Type(Ship.CLASS.BATTLESHIP), this.grid),
-				new Ship(new Ship.Type(Ship.CLASS.CARRIER), this.grid),
-			];
-		} else if (this.type == Board.TYPE.SMALL) {
-			ships = [
-				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.grid),
-				new Ship(new Ship.Type(Ship.CLASS.PATROL), this.grid),
-			];
-		}
-		return ships;
-	}
+	// private initShips(): Ship[] {
+	// 	let ships = new Array<Ship>();
+	// 	if (this.type == Board.TYPE.DEFAULT) {
+	// 		ships = [
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.PATROL), this.grid),
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.SUBMARINE), this.grid),
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.DESTROYER), this.grid),
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.BATTLESHIP), this.grid),
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.CARRIER), this.grid),
+	// 		];
+	// 	} else if (this.type == Board.TYPE.SMALL) {
+	// 		ships = [
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.PATROL), this.grid),
+	// 			new Ship(new Ship.Type(Ship.DESCRIPTOR.PATROL), this.grid),
+	// 		];
+	// 	}
+	// 	return ships;
+	// }
 
-	private initGrid() {
+	private initGrid(): Board.Square[][] {
 		const grid = new Array<Array<Board.Square>>();
 		for (let c = 0; c < this.size; c++) {
 			grid[c] = [];
@@ -50,7 +52,7 @@ class Board {
 		return grid;
 	}
 
-	private shipsRemaining() {
+	private shipsRemaining(): boolean {
 		for (let i = 0; i < this.ships.length; i++) {
 			const ship = this.ships[i];
 			if (ship.state != Ship.STATE.SUNK) {
@@ -60,7 +62,7 @@ class Board {
 		return false;
 	}
 
-	attack(move: Move) {
+	attack(move: Move): Game.Response {
 		for (let i = 0; i < this.ships.length; i++) {
 			const ship = this.ships[i];
 			const res = ship.attack(move);
@@ -87,7 +89,7 @@ class Board {
 		return new Game.Response(true, Game.ResponseHeader.MISS);
 	}
 
-	makeMove(move: Move) {
+	makeMove(move: Move): Game.Response {
 		const square = this.grid[move.c][move.r];
 		if (
 			square.state == Board.STATE.HIT ||
@@ -96,6 +98,54 @@ class Board {
 			return new Game.Response(false, Game.ResponseHeader.MOVE_REPEATED);
 		}
 		return this.attack(move);
+	}
+
+	updateShipLayout(layout: Layout, rules: Game.Rules): Game.Response {
+		let list = layout.list.sort((a, b) => {
+			if (a.r == b.r) {
+				return a.c < b.c ? -1 : 1;
+			} else {
+				return a.r < b.r ? -1 : 1;
+			}
+		});
+		//list is sorted from 0,0 -> x,0 -> 0,1 -> x,1 -> ...
+		const builder = new FleetBuilder(this.grid, rules);
+		for (let i = 0; i < list.length; i++) {
+			const cur = list[i];
+			let found = false;
+			for (let j = i + 1; j < list.length; j++) {
+				const search = list[j];
+				if (cur.o == Layout.Orientation.VERTICAL) {
+					if (search.c == cur.c) {
+						const res = builder.add(cur, search);
+						if (!res.valid) {
+							return res;
+						}
+						list.splice(j, 1); //remove search from list
+						found = true;
+						break;
+					}
+				} else if (cur.o == Layout.Orientation.HORIZONTAL) {
+					if (search.r == cur.r) {
+						const res = builder.add(cur, search);
+						if (!res.valid) {
+							return res;
+						}
+						list.splice(j, 1); //remove search from list
+						found = true;
+						break;
+					}
+				}
+			}
+			if (!found) {
+				return new Game.Response(
+					false,
+					Game.ResponseHeader.SHIP_POSITIONER_MISMATCH,
+				);
+			}
+		}
+		this.ships = builder.fleet;
+		return new Game.Response(true, Game.ResponseHeader.SHIP_POSITIONED);
 	}
 }
 
@@ -107,11 +157,11 @@ namespace Board {
 		MISS = "M",
 	}
 
-	export enum TYPE {
-		DEFAULT = "DEFAULT",
-		SMALL = "SMALL",
-		INVALID = "INVALID",
-	}
+	// export enum TYPE {
+	// 	DEFAULT = "DEFAULT",
+	// 	SMALL = "SMALL",
+	// 	INVALID = "INVALID",
+	// }
 	export class Square {
 		state: STATE;
 		c: number;

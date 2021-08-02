@@ -22,7 +22,7 @@ export default class Lobby {
 			if (this.getGame(message.id)) {
 				return ServerMessenger.reqError("Game Already Exists");
 			}
-			const game = new Game(message.id, socket, Statics.SIZE); //use the unique MAC address of MCU to generate game id
+			const game = new Game(message.id, socket); //use the unique MAC address of MCU to generate game id //TODO: Allow for multiple game types
 			this.games.push(game);
 			return ServerMessenger.GAME_CREATED;
 		} else if (message.req === WSClientMessage.REQ_TYPE.MAKE_MOVE) {
@@ -72,7 +72,7 @@ export default class Lobby {
 			const game = this.games[i];
 			const player = game.getPlayerByID(playerID);
 			if (player) {
-				return game.positionShips(player, positions);
+				return game.positionShips(playerID, positions);
 			}
 		}
 		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);
