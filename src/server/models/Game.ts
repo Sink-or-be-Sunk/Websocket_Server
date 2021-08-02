@@ -314,9 +314,9 @@ namespace Game {
 
 		private initBoard(type: TYPE): number {
 			if (type == TYPE.CLASSIC) {
-				return 10; //TODO: Is this correct?
-			} else if (type == TYPE.BASIC) {
 				return 8;
+			} else if (type == TYPE.BASIC) {
+				return 6;
 			} else {
 				throw new Error("Invalid Rule Type: This should never happen");
 			}
@@ -364,10 +364,19 @@ namespace Game {
 					}
 				}
 			} else if (this.type == Game.TYPE.CLASSIC) {
-				// class mode allows for one of each ship type
+				// class mode allows for one of each ship type (two size 3 ships)
 				const count = this.count(size, fleet);
 				const type = this.sizeToType(size, count);
 				const ship = new Ship(type, grid);
+				if (size == 3) {
+					if (count < 2) {
+						return ship;
+					}
+				} else {
+					if (count == 0) {
+						return ship;
+					}
+				}
 			} else {
 				throw new Error(
 					"Invalid Game Type When Checking if ship is allowed: This should never happen",
