@@ -19,7 +19,7 @@ describe("Validate basic back and forth game", () => {
 	const p1 = new Player("one", utils.getSocket("one"));
 	const p2 = new Player("two", utils.getSocket("two"));
 
-	const game = new Game(p1.id, p1.socket, Game.TYPE.SMALL);
+	const game = new Game(p1.id, p1.socket, Game.TYPE.BASIC);
 
 	it("Allows Player2 to join game", () => {
 		const resp = game.add(p2);

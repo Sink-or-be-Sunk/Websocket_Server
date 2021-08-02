@@ -40,6 +40,7 @@ namespace WSClientMessage {
 		MAKE_MOVE = "MAKE MOVE",
 		POSITION_SHIPS = "POSITION SHIPS",
 		JOIN_GAME = "JOIN GAME",
+		GAME_TYPE = "GAME TYPE",
 	}
 
 	export function isInstance(object: any) {
@@ -47,7 +48,9 @@ namespace WSClientMessage {
 			if (
 				object.req === WSClientMessage.REQ_TYPE.NEW_GAME ||
 				object.req === WSClientMessage.REQ_TYPE.MAKE_MOVE ||
-				object.req === WSClientMessage.REQ_TYPE.JOIN_GAME
+				object.req === WSClientMessage.REQ_TYPE.JOIN_GAME ||
+				object.req === WSClientMessage.REQ_TYPE.GAME_TYPE ||
+				object.req === WSClientMessage.REQ_TYPE.POSITION_SHIPS
 			) {
 				return true;
 			}

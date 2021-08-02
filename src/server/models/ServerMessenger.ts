@@ -6,6 +6,8 @@ export default class ServerMessenger {
 	private static readonly JOINED_HEADER: string = "JOINED GAME";
 	private static readonly INVALID_MOVE_HEADER: string = "INVALID MOVE";
 	private static readonly INVALID_LAYOUT_HEADER: string = "INVALID LAYOUT";
+	private static readonly INVALID_GAME_TYPE_HEADER: string =
+		"INVALID GAME TYPE";
 
 	//STATIC MESSAGES
 	static readonly MOVE_MADE: WSServerMessage = new WSServerMessage(
@@ -13,6 +15,9 @@ export default class ServerMessenger {
 	);
 	static readonly LAYOUT_APPROVED: WSServerMessage = new WSServerMessage(
 		"LAYOUT APPROVED",
+	);
+	static readonly GAME_TYPE_APPROVED: WSServerMessage = new WSServerMessage(
+		"GAME TYPE APPROVED",
 	);
 	static readonly CONNECTED: WSServerMessage = new WSServerMessage(
 		"CONNECTED",
@@ -33,6 +38,9 @@ export default class ServerMessenger {
 	// DYNAMIC MESSAGE BUILDERS
 	static invalid_layout(meta: string): WSServerMessage {
 		return new WSServerMessage(this.INVALID_LAYOUT_HEADER, meta);
+	}
+	static invalid_game_type(meta: string): WSServerMessage {
+		return new WSServerMessage(this.INVALID_GAME_TYPE_HEADER, meta);
 	}
 	static invalid_move(meta: string): WSServerMessage {
 		return new WSServerMessage(this.INVALID_MOVE_HEADER, meta);

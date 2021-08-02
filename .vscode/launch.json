@@ -21,7 +21,7 @@
 			"name": "Debug Jest Tests for Mac",
 			"type": "node",
 			"request": "launch",
-			"args": ["gameplay"],
+			"args": ["matchmaking"],
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceRoot}/node_modules/.bin/jest",

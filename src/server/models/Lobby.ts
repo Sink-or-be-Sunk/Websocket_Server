@@ -45,6 +45,13 @@ export default class Lobby {
 			} else {
 				return ServerMessenger.invalid_layout(resp.meta);
 			}
+		} else if (message.req == WSClientMessage.REQ_TYPE.GAME_TYPE) {
+			const resp = this.changeGameType(message.id, message.data);
+			if (resp.valid) {
+				return ServerMessenger.GAME_TYPE_APPROVED;
+			} else {
+				return ServerMessenger.invalid_game_type(resp.meta);
+			}
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
@@ -73,6 +80,17 @@ export default class Lobby {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
 				return game.positionShips(playerID, positions);
+			}
+		}
+		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);
+	}
+
+	private changeGameType(playerID: string, positions: string): Game.Response {
+		for (let i = 0; i < this.games.length; i++) {
+			const game = this.games[i];
+			const player = game.getPlayerByID(playerID);
+			if (player) {
+				return game.changeGameType(playerID, positions);
 			}
 		}
 		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);

@@ -4,6 +4,7 @@ import ServerMessenger from "../server/models/ServerMessenger";
 import WSClientMessage from "../server/models/WSClientMessage";
 import TestUtils from "../utils/TestUtils";
 import Move from "../server/models/Move";
+import Layout from "../server/models/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -38,15 +39,49 @@ describe("Basic Matchmaking", () => {
 		expect(resp).toStrictEqual(ServerMessenger.joined(req.data));
 	});
 
-	it("Player 1 Makes a Move", () => {
+	it("Player 1 changes to basic game type", () => {
 		const req = {
 			id: "one",
-			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: JSON.stringify({ c: 0, r: 0, type: Move.TYPE.SOLO }),
+			req: WSClientMessage.REQ_TYPE.GAME_TYPE,
+			data: Game.TYPE.BASIC,
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
-		expect(resp).toStrictEqual(ServerMessenger.MOVE_MADE);
+		expect(resp).toStrictEqual(ServerMessenger.GAME_TYPE_APPROVED);
+	});
+
+	it("Allow Player 1 to position ships vertical", () => {
+		const pos0 = new Layout.Position(0, 0, Layout.Orientation.VERTICAL);
+		const pos1 = new Layout.Position(0, 1, Layout.Orientation.VERTICAL);
+		const pos2 = new Layout.Position(1, 0, Layout.Orientation.VERTICAL);
+		const pos3 = new Layout.Position(1, 1, Layout.Orientation.VERTICAL);
+		const list = [pos2, pos1, pos0, pos3];
+		const str = JSON.stringify(list);
+		const req = {
+			id: "one",
+			req: WSClientMessage.REQ_TYPE.POSITION_SHIPS,
+			data: str,
+		};
+		const msg = new WSClientMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
+		expect(resp).toEqual(ServerMessenger.LAYOUT_APPROVED);
+	});
+
+	it("Allow Player 1 to position ships vertical", () => {
+		const pos0 = new Layout.Position(0, 0, Layout.Orientation.VERTICAL);
+		const pos1 = new Layout.Position(0, 1, Layout.Orientation.VERTICAL);
+		const pos2 = new Layout.Position(1, 0, Layout.Orientation.VERTICAL);
+		const pos3 = new Layout.Position(1, 1, Layout.Orientation.VERTICAL);
+		const list = [pos2, pos1, pos0, pos3];
+		const str = JSON.stringify(list);
+		const req = {
+			id: "two",
+			req: WSClientMessage.REQ_TYPE.POSITION_SHIPS,
+			data: str,
+		};
+		const msg = new WSClientMessage(JSON.stringify(req));
+		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
+		expect(resp).toEqual(ServerMessenger.LAYOUT_APPROVED);
 	});
 
 	it("Player 1 Makes a Move", () => {

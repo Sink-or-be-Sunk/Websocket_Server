@@ -204,6 +204,23 @@ class Game {
 		}
 	}
 
+	changeGameType(id: string, gameType: string): Game.Response {
+		if (this.started) {
+			return new Game.Response(
+				false,
+				Game.ResponseHeader.GAME_IN_PROGRESS,
+			);
+		} else {
+			//FIXME: needs implementation for checking valid game types
+			this.rules = new Game.Rules(Game.TYPE.BASIC); //THIS IS JUST FOR EASY DEBUGGING WITH BASIC GAME MODE
+			return new Game.Response(
+				true,
+				Game.ResponseHeader.GAME_TYPE_CHANGED,
+				this.rules.type,
+			);
+		}
+	}
+
 	private nextTurn(): void {
 		const prevTurn = this.turn;
 		this.turn++;
@@ -242,6 +259,7 @@ namespace Game {
 		BOARD_NOT_FOUND = "BOARD NOT FOUND",
 		GAME_STARTED = "GAME STARTED",
 		SHIP_BROKE_RULES = "SHIP BROKE RULES",
+		GAME_TYPE_CHANGED = "GAME TYPE CHANGED",
 	}
 
 	export class Rules {
