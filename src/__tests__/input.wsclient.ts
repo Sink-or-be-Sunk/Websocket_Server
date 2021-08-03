@@ -1,7 +1,4 @@
 import WSClientMessage from "../server/models/WSClientMessage";
-import Move from "../server/models/Move";
-
-//FIXME: NEED TO REDO AFTER CHANGING IMPLEMENTATION
 
 describe("Validate WS Client Messages", () => {
 	it("Accepts New Game Message", () => {
@@ -52,41 +49,5 @@ describe("Validate WS Client Messages", () => {
 			id: "",
 			data: "",
 		});
-	});
-});
-
-describe("Validate Moves from Client Message", () => {
-	it("Accepts Solo Move to Origin", () => {
-		const obj = { type: Move.TYPE.SOLO, c: 0, r: 0 };
-		const str = JSON.stringify(obj);
-		const msg = new Move(str);
-		expect(msg).toEqual({ type: obj.type, c: obj.c, r: obj.r });
-	});
-
-	it("Accepts Solo Move with string c,r", () => {
-		const obj = { type: Move.TYPE.SOLO, c: "0", r: "0" };
-		const str = JSON.stringify(obj);
-		const msg = new Move(str);
-		expect(msg).toEqual({ type: obj.type, c: 0, r: 0 });
-	});
-
-	it("Rejects Solo Move with invalid string c,r", () => {
-		const obj = { type: Move.TYPE.SOLO, c: "0a", r: "0b" };
-		const str = JSON.stringify(obj);
-		const msg = new Move(str);
-		expect(msg).toEqual({ type: Move.TYPE.INVALID, c: -1, r: -1 });
-	});
-
-	it("Rejects Move with invalid fields", () => {
-		const obj = { tYpE: Move.TYPE.SOLO, c: "0a", r: "0b" };
-		const str = JSON.stringify(obj);
-		const msg = new Move(str);
-		expect(msg).toEqual({ type: Move.TYPE.INVALID, c: -1, r: -1 });
-	});
-
-	it("Rejects Solo Move with invalid json format", () => {
-		const str = '{ type: "solo", c: 0, r: 0 }';
-		const msg = new Move(str);
-		expect(msg).toEqual({ type: Move.TYPE.BAD_FORMAT, c: -1, r: -1 });
 	});
 });
