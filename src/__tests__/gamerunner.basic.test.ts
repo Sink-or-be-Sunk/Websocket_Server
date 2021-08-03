@@ -50,7 +50,7 @@ describe("Validate basic back and forth game", () => {
 		boards,
 	);
 
-	it("adds players to game", () => {
-		runner.addPlayers();
-	});
+	runner.addPlayers();
+
+	runner.setLayouts();
 });
