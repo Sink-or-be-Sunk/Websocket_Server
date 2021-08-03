@@ -23,13 +23,13 @@ class Game {
 	 */
 	turn: number;
 	/**
-	 * Indicated whether or not game is in progress
-	 */
-	started: boolean;
-	/**
 	 * sets up the game rules
 	 */
 	rules: Game.Rules;
+	/**
+	 * current state of the game
+	 */
+	state: Game.STATE;
 
 	constructor(id: string, socket: WebSocket, type: Game.TYPE) {
 		this.id = id;
@@ -39,7 +39,15 @@ class Game {
 		console.log(`New ${this.rules.type} Game Created: <${this.id}>`);
 		this.add(new Player(id, socket));
 		this.turn = 0;
-		this.started = false; //wait until ship positions are locked in
+		this.state = Game.STATE.IDLE; //wait for ship positions to be locked in;
+	}
+
+	isStarted(): boolean {
+		return this.state == Game.STATE.STARTED;
+	}
+
+	isOver(): boolean {
+		return this.state == Game.STATE.OVER;
 	}
 
 	/**
@@ -88,17 +96,17 @@ class Game {
 	}
 
 	private readyUp(id: string): void {
-		this.started = true;
+		this.state = Game.STATE.STARTED;
 		for (let i = 0; i < this.players.length; i++) {
 			const player = this.players[i];
 			if (id == player.id) {
 				player.ready = true;
 			}
 			if (!player.ready) {
-				this.started = false;
+				this.state = Game.STATE.IDLE;
 			}
 		}
-		if (this.started) {
+		if (this.state == Game.STATE.STARTED) {
 			console.log("Game Started");
 		}
 	}
@@ -141,7 +149,7 @@ class Game {
 	 */
 	makeMove(id: string, moveRaw: string): Game.Response {
 		if (this.players[this.turn].id == id) {
-			if (this.started) {
+			if (this.isStarted()) {
 				const move = new Move(moveRaw);
 				if (move.isValid(this.rules.boardSize)) {
 					const board = this.getBoardByID(move.at);
@@ -151,6 +159,11 @@ class Game {
 							console.log(
 								`player <${id}> made move ${move.toString()}`,
 							);
+							if (
+								res.meta.includes(Game.ResponseHeader.GAME_OVER)
+							) {
+								this.state = Game.STATE.OVER;
+							}
 							this.nextTurn();
 						}
 						return res;
@@ -166,6 +179,8 @@ class Game {
 						Game.ResponseHeader.MOVE_INVALID,
 					);
 				}
+			} else if (this.isOver()) {
+				return new Game.Response(false, Game.ResponseHeader.GAME_OVER);
 			} else {
 				return new Game.Response(
 					false,
@@ -178,11 +193,13 @@ class Game {
 	}
 
 	positionShips(id: string, positionsRaw: string): Game.Response {
-		if (this.started) {
+		if (this.isStarted()) {
 			return new Game.Response(
 				false,
 				Game.ResponseHeader.GAME_IN_PROGRESS,
 			);
+		} else if (this.players[this.turn].id != id) {
+			return new Game.Response(false, Game.ResponseHeader.TURN_ERROR);
 		} else {
 			const layout = new Layout(positionsRaw);
 			if (layout.type == Layout.TYPE.VALID) {
@@ -191,9 +208,10 @@ class Game {
 					const res = board.updateShipLayout(layout, this.rules);
 					if (res.valid) {
 						this.readyUp(id);
-						if (this.started) {
+						if (this.isStarted()) {
 							res.addDetail(Game.ResponseHeader.GAME_STARTED);
 						}
+						this.nextTurn();
 					}
 					return res;
 				} else {
@@ -218,7 +236,7 @@ class Game {
 				break;
 			}
 		}
-		if (this.started) {
+		if (this.isStarted()) {
 			return new Game.Response(
 				false,
 				Game.ResponseHeader.GAME_IN_PROGRESS,
@@ -254,6 +272,12 @@ namespace Game {
 	export enum TYPE {
 		CLASSIC = "CLASSIC",
 		BASIC = "BASIC", //SMALL game mode for testing
+	}
+
+	export enum STATE {
+		IDLE = "IDLE", //before game has started
+		STARTED = "STARTED",
+		OVER = "OVER",
 	}
 
 	export function parseGameType(raw: string): Game.TYPE {

@@ -191,6 +191,20 @@ namespace Board {
 		MISS = "M",
 	}
 
+	/**
+	 * Checks If Move can be made, i.e. someone hasn't already made
+	 * a move on this square
+	 * @param square - square being checked
+	 * @returns true if move can be made, false otherwise
+	 */
+	export function MoveAllowed(square: Board.Square): boolean {
+		if (square.state === STATE.EMPTY || square.state === STATE.FILLED) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	export enum ERRORS {
 		INVALID_SHIP_POINTS = "INVALID SHIP POINTS",
 	}
