@@ -1,6 +1,8 @@
 import WSClientMessage from "../server/models/WSClientMessage";
 import Move from "../server/models/Move";
 
+//FIXME: NEED TO REDO AFTER CHANGING IMPLEMENTATION
+
 describe("Validate WS Client Messages", () => {
 	it("Accepts New Game Message", () => {
 		const obj = { req: WSClientMessage.REQ_TYPE.NEW_GAME, id: "one" };
