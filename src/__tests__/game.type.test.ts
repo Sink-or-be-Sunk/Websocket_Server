@@ -49,10 +49,10 @@ describe("Validate basic back and forth game", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical basic ", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.Orientation.VERTICAL);
-		const pos1 = new Layout.Position(0, 1, Layout.Orientation.VERTICAL);
-		const pos2 = new Layout.Position(1, 0, Layout.Orientation.VERTICAL);
-		const pos3 = new Layout.Position(1, 1, Layout.Orientation.VERTICAL);
+		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
+		const pos1 = new Layout.Position(1, 0, Layout.TYPE.PATROL);
+		const pos2 = new Layout.Position(0, 1, Layout.TYPE.DESTROYER);
+		const pos3 = new Layout.Position(2, 1, Layout.TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const resp = game.positionShips(p1.id, str);
@@ -69,10 +69,10 @@ describe("Validate basic back and forth game", () => {
 	});
 
 	it("Allow Player 2 to position ships horizontal basic", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.Orientation.HORIZONTAL);
-		const pos1 = new Layout.Position(1, 0, Layout.Orientation.HORIZONTAL);
-		const pos2 = new Layout.Position(0, 1, Layout.Orientation.HORIZONTAL);
-		const pos3 = new Layout.Position(1, 1, Layout.Orientation.HORIZONTAL);
+		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
+		const pos1 = new Layout.Position(1, 0, Layout.TYPE.PATROL);
+		const pos2 = new Layout.Position(0, 1, Layout.TYPE.DESTROYER);
+		const pos3 = new Layout.Position(2, 1, Layout.TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const resp = game.positionShips(p2.id, str);
