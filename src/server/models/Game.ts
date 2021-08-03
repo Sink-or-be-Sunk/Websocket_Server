@@ -198,9 +198,8 @@ class Game {
 				false,
 				Game.ResponseHeader.GAME_IN_PROGRESS,
 			);
-		} else if (this.players[this.turn].id != id) {
-			return new Game.Response(false, Game.ResponseHeader.TURN_ERROR);
 		} else {
+			//NOTE: We don't check this.turn because player is allowed to continually change ship positions util game start
 			const layout = new Layout(positionsRaw);
 			if (layout.type == Layout.TYPE.VALID) {
 				const board = this.getBoardByID(id);

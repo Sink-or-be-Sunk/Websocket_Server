@@ -1,11 +1,6 @@
 import Game from "../server/models/Game";
-import Player from "../server/models/Player";
-import Move from "../server/models/Move";
 import TestUtils from "../utils/TestUtils";
-import Layout from "../server/models/Layout";
 import GameRunner from "../utils/GameRunner";
-import Board from "../server/models/Board";
-import Ship from "../server/models/Ship";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -21,10 +16,7 @@ afterAll(async () => {
 describe("Validate GameRunner Match with Player1 Winning", () => {
 	const E = GameRunner.POSITIONS.E;
 	const P = GameRunner.POSITIONS.P;
-	const S = GameRunner.POSITIONS.S;
 	const D = GameRunner.POSITIONS.D;
-	const B = GameRunner.POSITIONS.B;
-	const C = GameRunner.POSITIONS.C;
 
 	const b1 = [
 		[E, E, E, E, E, E],
@@ -60,10 +52,7 @@ describe("Validate GameRunner Match with Player1 Winning", () => {
 describe("Validate GameRunner Match with Player2 Winning", () => {
 	const E = GameRunner.POSITIONS.E;
 	const P = GameRunner.POSITIONS.P;
-	const S = GameRunner.POSITIONS.S;
 	const D = GameRunner.POSITIONS.D;
-	const B = GameRunner.POSITIONS.B;
-	const C = GameRunner.POSITIONS.C;
 
 	const b1 = [
 		[E, E, E, E, P, P],

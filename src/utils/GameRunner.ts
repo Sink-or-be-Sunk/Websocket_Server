@@ -3,7 +3,6 @@ import WebSocket from "ws";
 import Player from "../server/models/Player";
 import Board from "../server/models/Board";
 import Layout from "../server/models/Layout";
-import Ship from "../server/models/Ship";
 import Move from "../server/models/Move";
 
 class GameRunner {
