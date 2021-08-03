@@ -5,6 +5,7 @@ import WSClientMessage from "../server/models/WSClientMessage";
 import TestUtils from "../utils/TestUtils";
 import Move from "../server/models/Move";
 import Layout from "../server/models/Layout";
+import { pbkdf2 } from "crypto";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -44,10 +45,10 @@ describe("Basic Matchmaking", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.Orientation.VERTICAL);
-		const pos1 = new Layout.Position(0, 1, Layout.Orientation.VERTICAL);
-		const pos2 = new Layout.Position(1, 0, Layout.Orientation.VERTICAL);
-		const pos3 = new Layout.Position(1, 1, Layout.Orientation.VERTICAL);
+		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
+		const pos1 = new Layout.Position(0, 1, Layout.TYPE.PATROL);
+		const pos2 = new Layout.Position(1, 0, Layout.TYPE.DESTROYER);
+		const pos3 = new Layout.Position(1, 2, Layout.TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const req = {
@@ -61,10 +62,10 @@ describe("Basic Matchmaking", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.Orientation.VERTICAL);
-		const pos1 = new Layout.Position(0, 1, Layout.Orientation.VERTICAL);
-		const pos2 = new Layout.Position(1, 0, Layout.Orientation.VERTICAL);
-		const pos3 = new Layout.Position(1, 1, Layout.Orientation.VERTICAL);
+		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
+		const pos1 = new Layout.Position(0, 1, Layout.TYPE.PATROL);
+		const pos2 = new Layout.Position(1, 0, Layout.TYPE.DESTROYER);
+		const pos3 = new Layout.Position(1, 2, Layout.TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const req = {
@@ -81,7 +82,12 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "one",
 			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: JSON.stringify({ c: 0, r: 0, type: Move.TYPE.SOLO }),
+			data: JSON.stringify({
+				c: 0,
+				r: 0,
+				type: Move.TYPE.SOLO,
+				at: "two",
+			}),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
@@ -92,7 +98,12 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "two",
 			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: JSON.stringify({ c: 1, r: 2, type: Move.TYPE.SOLO }),
+			data: JSON.stringify({
+				c: 1,
+				r: 2,
+				type: Move.TYPE.SOLO,
+				at: "one",
+			}),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
@@ -103,7 +114,12 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "two",
 			req: WSClientMessage.REQ_TYPE.MAKE_MOVE,
-			data: JSON.stringify({ c: 3, r: 2, type: Move.TYPE.SOLO }),
+			data: JSON.stringify({
+				c: 3,
+				r: 2,
+				type: Move.TYPE.SOLO,
+				at: "one",
+			}),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
