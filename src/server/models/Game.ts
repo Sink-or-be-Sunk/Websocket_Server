@@ -332,26 +332,6 @@ namespace Game {
 			}
 		}
 
-		private sizeToType(size: number, count: number): Ship.Type {
-			if (size == 2) {
-				return new Ship.Type(Ship.DESCRIPTOR.PATROL);
-			} else if (size == 3) {
-				if (count) {
-					if (count > 0) {
-						//TODO: this could use some refinement, maybe use enum for instance type
-						return new Ship.Type(Ship.DESCRIPTOR.SUBMARINE);
-					}
-				}
-				return new Ship.Type(Ship.DESCRIPTOR.DESTROYER);
-			} else if (size == 4) {
-				return new Ship.Type(Ship.DESCRIPTOR.BATTLESHIP);
-			} else if (size == 5) {
-				return new Ship.Type(Ship.DESCRIPTOR.CARRIER);
-			} else {
-				return new Ship.Type(Ship.DESCRIPTOR.SIZE_MISMATCH);
-			}
-		}
-
 		/**
 		 * Check ship for validity based on game rules
 		 * @param ship ship to check if its valid to add to fleet
@@ -368,14 +348,25 @@ namespace Game {
 
 			const size = ship.type.size;
 			if (this.type == Game.TYPE.BASIC) {
-				if (size == 2) {
-					if (curFleet.length < 2) {
-						//small mode allows for two patrol boats
+				if (curFleet.length < 2) {
+					if (
+						ship.type.descriptor == Ship.DESCRIPTOR.PATROL ||
+						ship.type.descriptor == Ship.DESCRIPTOR.DESTROYER
+					) {
+						for (let i = 0; i < curFleet.length; i++) {
+							const s = curFleet[i];
+							if (s.type.descriptor == ship.type.descriptor) {
+								return false; //cannot have more than one ship per type
+							}
+						}
 						return true;
 					}
 				}
 			} else if (this.type == Game.TYPE.CLASSIC) {
 				// class mode allows for one of each ship type/descriptor (two size 3 ships)
+				if (curFleet.length >= 5) {
+					return false;
+				}
 				for (let i = 0; i < curFleet.length; i++) {
 					const s = curFleet[i];
 					if (s.type.descriptor == ship.type.descriptor) {
