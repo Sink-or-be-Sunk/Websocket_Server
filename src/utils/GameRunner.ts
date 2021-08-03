@@ -50,12 +50,12 @@ class GameRunner {
 
 	private getPositions(board: GameRunner.POSITIONS[][]): string {
 		const list = [];
-		for (let c = 0; c < board.length; c++) {
-			for (let r = 0; r < board.length; r++) {
-				const p = board[c][r];
+		for (let row = 0; row < board.length; row++) {
+			for (let col = 0; col < board.length; col++) {
+				const p = board[row][col];
 				if (p != GameRunner.POSITIONS.E) {
 					list.push(
-						new Layout.Position(c, r, this.toLayoutPosition(p)),
+						new Layout.Position(col, row, this.toLayoutPosition(p)),
 					);
 				}
 			}

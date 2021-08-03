@@ -26,7 +26,6 @@ describe("Validate basic back and forth game", () => {
 	const B = GameRunner.POSITIONS.B;
 	const C = GameRunner.POSITIONS.C;
 
-	//TODO: NEED TO SWITCH ORIENTATION OF THESE BOARDS
 	const b1 = [
 		[E, E, E, E, E, E],
 		[E, E, E, E, E, E],
