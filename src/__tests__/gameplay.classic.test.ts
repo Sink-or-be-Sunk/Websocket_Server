@@ -163,4 +163,142 @@ describe("Validate classic back and forth game", () => {
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.MISS));
 	});
+
+	/**     Player1				   Player 2
+	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
+	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
+	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
+	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
+	 * 5| |v| |M|v| | | |	 * 5|h|h|h|H|H| | | |
+	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
+	 * 7| | | | |v| | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 1 to HIT PT Boat", () => {
+		const obj = { me: p1, them: p2 };
+		const move = JSON.stringify({
+			type: Move.TYPE.SOLO,
+			c: 4,
+			r: 5,
+			at: obj.them.id,
+		});
+		const resp = game.makeMove(obj.me.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	/**     Player1				   Player 2
+	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
+	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
+	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
+	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
+	 * 5| |v| |M|H| | | |	 * 5|h|h|h|H|H| | | |
+	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
+	 * 7| | | | |v| | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 2 to HIT Carrier", () => {
+		const obj = { me: p2, them: p1 };
+		const move = JSON.stringify({
+			type: Move.TYPE.SOLO,
+			c: 4,
+			r: 5,
+			at: obj.them.id,
+		});
+		const resp = game.makeMove(obj.me.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	/**     Player1				   Player 2
+	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
+	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
+	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
+	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
+	 * 5| |v| |M|H| | | |	 * 5|h|h|H|H|H| | | |
+	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
+	 * 7| | | | |v| | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 1 to HIT Battleship", () => {
+		const obj = { me: p1, them: p2 };
+		const move = JSON.stringify({
+			type: Move.TYPE.SOLO,
+			c: 2,
+			r: 5,
+			at: obj.them.id,
+		});
+		const resp = game.makeMove(obj.me.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	/**     Player1				   Player 2
+	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
+	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
+	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
+	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
+	 * 5| |v|M|M|H| | | |	 * 5|h|h|H|H|H| | | |
+	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
+	 * 7| | | | |v| | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 2 to Miss", () => {
+		const obj = { me: p2, them: p1 };
+		const move = JSON.stringify({
+			type: Move.TYPE.SOLO,
+			c: 2,
+			r: 5,
+			at: obj.them.id,
+		});
+		const resp = game.makeMove(obj.me.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.MISS));
+	});
+
+	/**     Player1				   Player 2
+	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
+	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
+	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
+	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
+	 * 5| |v|M|M|H| | | |	 * 5|h|H|H|H|H| | | |
+	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
+	 * 7| | | | |v| | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 1 to HIT Battleship", () => {
+		const obj = { me: p1, them: p2 };
+		const move = JSON.stringify({
+			type: Move.TYPE.SOLO,
+			c: 1,
+			r: 5,
+			at: obj.them.id,
+		});
+		const resp = game.makeMove(obj.me.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
+
+	/**     Player1				   Player 2
+	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
+	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
+	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
+	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
+	 * 5| |H|M|M|H| | | |	 * 5|h|H|H|H|H| | | |
+	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
+	 * 7| | | | |v| | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 2 to HIT PT", () => {
+		const obj = { me: p2, them: p1 };
+		const move = JSON.stringify({
+			type: Move.TYPE.SOLO,
+			c: 1,
+			r: 5,
+			at: obj.them.id,
+		});
+		const resp = game.makeMove(obj.me.id, move);
+		expect(resp).toEqual(new Game.Response(true, Game.ResponseHeader.HIT));
+	});
 });
