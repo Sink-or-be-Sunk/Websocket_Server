@@ -55,7 +55,10 @@ export default class SceneManager {
 	private createRenderer() {
 		const root = document.createElement("div");
 		root.classList.add("game");
-		document.body.appendChild(root);
+		const container = document.getElementById(
+			"game-container",
+		) as HTMLElement;
+		container.appendChild(root);
 		// const renderer = new THREE.WebGLRenderer({ antialias: true });
 		const renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
