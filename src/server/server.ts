@@ -26,13 +26,16 @@ wss.on("connection", (ws: WebSocket) => {
 	ws.send(ServerMessenger.CONNECTED.toString());
 
 	ws.on("message", function incoming(raw) {
-		try {
-			const req = new WSClientMessage(raw.toString());
+		const req = new WSClientMessage(raw.toString());
+		if (
+			req.id == WSClientMessage.REQ_TYPE.INVALID ||
+			req.id == WSClientMessage.REQ_TYPE.BAD_FORMAT
+		) {
+			console.error(`${req.id}: client message:\n${raw}`);
+			ws.send(ServerMessenger.FORMAT_ERROR.toString()); //TODO: Change server message based on what actual client msg error occurs
+		} else {
 			const resp = lobby.handleReq(ws, req);
 			ws.send(resp.toString());
-		} catch (error) {
-			console.error(`${error}: client message:\n${raw}`);
-			ws.send(ServerMessenger.FORMAT_ERROR.toString());
 		}
 	});
 

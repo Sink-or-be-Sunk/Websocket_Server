@@ -6,6 +6,8 @@
 			"name": "Debug Jest Tests for Windows",
 			"type": "node",
 			"request": "launch",
+			"runtimeExecutable": "C:\\Users\\M85963\\Documents\\nodejs\\node.exe",
+			"args": ["gamerunner"],
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceRoot}/node_modules/jest/bin/jest.js",
@@ -19,6 +21,7 @@
 			"name": "Debug Jest Tests for Mac",
 			"type": "node",
 			"request": "launch",
+			"args": ["matchmaking"],
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceRoot}/node_modules/.bin/jest",

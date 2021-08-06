@@ -1,9 +1,10 @@
-import Game, { GameResponse } from "./Game";
+import Game from "./Game";
 import ServerMessenger from "./ServerMessenger";
 import WSClientMessage from "./WSClientMessage";
 import WSServerMessage from "./WSServerMessage";
 import WebSocket from "ws";
 import Player from "./Player";
+import Statics from "./Statics";
 
 export default class Lobby {
 	games: Game[];
@@ -16,26 +17,41 @@ export default class Lobby {
 		socket: WebSocket,
 		message: WSClientMessage,
 	): WSServerMessage {
-		if (message.req == WSClientMessage.NEW_GAME) {
+		if (message.req == WSClientMessage.REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
 			if (this.getGame(message.id)) {
 				return ServerMessenger.reqError("Game Already Exists");
 			}
-			const game = new Game(message.id, socket); //use the unique MAC address of MCU to generate game id
+			const type = Game.parseGameType(message.data);
+			const game = new Game(message.id, socket, type); //use the unique MAC address of MCU to generate game id
 			this.games.push(game);
 			return ServerMessenger.GAME_CREATED;
-		} else if (message.req === WSClientMessage.MAKE_MOVE) {
+		} else if (message.req === WSClientMessage.REQ_TYPE.MAKE_MOVE) {
 			const resp = this.makeMove(message.id, message.data);
 			if (resp.valid) {
 				return ServerMessenger.MOVE_MADE;
 			} else {
 				return ServerMessenger.invalid_move(resp.meta);
 			}
-		} else if (message.req == WSClientMessage.JOIN_GAME) {
+		} else if (message.req == WSClientMessage.REQ_TYPE.JOIN_GAME) {
 			if (this.joinGame(new Player(message.id, socket), message.data)) {
 				return ServerMessenger.joined(message.data);
 			} else {
 				return ServerMessenger.NO_SUCH_GAME;
+			}
+		} else if (message.req == WSClientMessage.REQ_TYPE.POSITION_SHIPS) {
+			const resp = this.positionShips(message.id, message.data);
+			if (resp.valid) {
+				return ServerMessenger.LAYOUT_APPROVED;
+			} else {
+				return ServerMessenger.invalid_layout(resp.meta);
+			}
+		} else if (message.req == WSClientMessage.REQ_TYPE.GAME_TYPE) {
+			const resp = this.changeGameType(message.id, message.data);
+			if (resp.valid) {
+				return ServerMessenger.GAME_TYPE_APPROVED;
+			} else {
+				return ServerMessenger.invalid_game_type(resp.meta);
 			}
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
@@ -48,14 +64,37 @@ export default class Lobby {
 	 * @param move - move to be made
 	 * @returns - true if move is valid, false otherwise
 	 */
-	private makeMove(playerID: string, move: string): GameResponse {
+	private makeMove(playerID: string, move: string): Game.Response {
 		for (let i = 0; i < this.games.length; i++) {
 			const game = this.games[i];
-			if (game.contains(playerID)) {
+			const player = game.getPlayerByID(playerID);
+			if (player) {
 				return game.makeMove(playerID, move);
 			}
 		}
-		return new GameResponse(false, GameResponse.NO_SUCH_GAME);
+		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);
+	}
+
+	private positionShips(playerID: string, positions: string): Game.Response {
+		for (let i = 0; i < this.games.length; i++) {
+			const game = this.games[i];
+			const player = game.getPlayerByID(playerID);
+			if (player) {
+				return game.positionShips(playerID, positions);
+			}
+		}
+		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);
+	}
+
+	private changeGameType(playerID: string, positions: string): Game.Response {
+		for (let i = 0; i < this.games.length; i++) {
+			const game = this.games[i];
+			const player = game.getPlayerByID(playerID);
+			if (player) {
+				return game.changeGameType(playerID, positions);
+			}
+		}
+		return new Game.Response(false, Game.ResponseHeader.NO_SUCH_GAME);
 	}
 
 	private joinGame(player: Player, toJoinID: string): boolean {

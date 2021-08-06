@@ -60,6 +60,18 @@ npm install
 -   [Websocket Typescript Example][websocket-ts-example]
 -   [Plant UML][plant-uml]
 
+## Running Node Locally
+
+-   Install Node Binaries
+-   create powershell alias for node
+    -   `echo $profile` to find where powershell profile is located
+    -   create/modify file to include the following:
+        -   Set-Alias -Name node -Value C:\path\to\node.exe
+        -   Set-Alias -Name npm -Value C:\path\to\npm.cmd
+        -   Set-Alias -Name npx -Value C:\path\to\npx.cmd
+    -   Add `.npmrc` file to root of project folder with the following line
+        -   `scripts-prepend-node-path=true`
+
 ## License
 
 Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web/blob/main/LICENSE) file for details.
