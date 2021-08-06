@@ -21,12 +21,7 @@ export default class OverlayManager {
 		this.positioner = positioner;
 		this.camera = camera;
 
-		this.createOverlay();
-	}
-
-	private createOverlay() {
-		this.positionUpArrow();
-		this.positionDownArrow();
+		this.update();
 	}
 
 	private clickEvent(direction: ArrowDirection) {
@@ -50,7 +45,12 @@ export default class OverlayManager {
 			.start();
 	}
 
-	private positionUpArrow() {
+	update() {
+		this.updateDownArrowPos();
+		this.updateUpArrowPos();
+	}
+
+	private updateUpArrowPos() {
 		const img = document.getElementById("arrow-up");
 
 		if (img) {
@@ -68,7 +68,7 @@ export default class OverlayManager {
 			console.error("Cannot Find Up Arrow");
 		}
 	}
-	private positionDownArrow() {
+	private updateDownArrowPos() {
 		const img = document.getElementById("arrow-down");
 
 		if (img) {
