@@ -26,7 +26,19 @@ cd SobS_Web
 npm install
 ```
 
-### Setup
+### Download Volta
+
+Volta is used to ensure that all team members are using the same javascript tooling and environments.
+
+-   For more info see [Volta][volta]
+
+for Unix environment, Install with one command:
+
+```bash
+curl https://get.volta.sh | bash
+```
+
+### Project Setup
 
 -   `npm i`
     -   `npm audit` or `npm audit fix` if needed
@@ -92,3 +104,4 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [smart-web-socket]: https://chrome.google.com/webstore/detail/smart-websocket-client/omalebghpgejjiaoknljcfmglgbpocdp
 [websocket-ts-example]: https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate
 [plant-uml]: https://www.freecodecamp.org/news/inserting-uml-in-markdown-using-vscode/
+[volta]: https://docs.volta.sh/guide/getting-started
