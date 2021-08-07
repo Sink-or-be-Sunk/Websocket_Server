@@ -1,89 +1,52 @@
 import Positioner from "./Positioner";
-import * as TWEEN from "@tweenjs/tween.js";
-import { PositionTransition } from "./Positioner";
-
-enum ArrowDirection {
-	UP,
-	DOWN,
-}
+import Arrows from "./Arrows";
 
 export default class OverlayManager {
-	domElement: HTMLElement;
+	canvas: HTMLElement;
 	positioner: Positioner;
 	camera: THREE.Camera;
+	container: HTMLElement;
+	arrows: Arrows;
+	// menu: Menu;
 
 	constructor(
-		domElement: HTMLElement,
+		canvas: HTMLElement,
 		positioner: Positioner,
 		camera: THREE.Camera,
 	) {
-		this.domElement = domElement;
+		this.container = document.getElementById(
+			"hud-container",
+		) as HTMLElement;
+
+		this.canvas = canvas;
 		this.positioner = positioner;
 		this.camera = camera;
 
 		this.update();
-	}
-
-	private clickEvent(direction: ArrowDirection) {
-		if (direction == ArrowDirection.UP) {
-			this.transition(this.positioner.transitionAttack());
-		} else if (direction == ArrowDirection.DOWN) {
-			this.transition(this.positioner.transitionShips());
-		} else {
-			throw Error("Invalid Arrow Direction");
-		}
-	}
-
-	private transition(t: PositionTransition) {
-		new TWEEN.Tween(t.from)
-			.to(t.to)
-			.easing(TWEEN.Easing.Quadratic.Out)
-			.onUpdate(() => {
-				this.camera.position.set(t.from.cx, t.from.cy, t.from.cz);
-				this.camera.lookAt(t.from.lx, t.from.ly, t.from.lz);
-			})
-			.start();
+		this.arrows = new Arrows(this.container, this.camera, this.positioner);
+		// this.menu = new Menu(this.container);
 	}
 
 	update() {
-		this.updateDownArrowPos();
-		this.updateUpArrowPos();
+		// this.updateDownArrowPos();
+		// this.updateUpArrowPos();
 	}
 
-	private updateUpArrowPos() {
-		const img = document.getElementById("arrow-up");
+	// private updateDownArrowPos() {
+	// 	const img = document.getElementById("arrow-down");
 
-		if (img) {
-			img.addEventListener("click", () => {
-				this.clickEvent(ArrowDirection.UP);
-			});
-			let offset = -img.getBoundingClientRect().width / 2;
-			offset += this.domElement.offsetLeft;
-			offset += this.domElement.clientWidth / 2;
+	// 	if (img) {
+	// 		let offset = -img.getBoundingClientRect().width / 2;
+	// 		img.addEventListener("click", () => {
+	// 			this.clickEvent(ArrowDirection.DOWN);
+	// 		});
+	// 		offset += this.canvas.offsetLeft;
+	// 		offset += this.canvas.clientWidth / 2;
 
-			img.style.position = "absolute";
-			img.style.left = `${offset}px`;
-			img.style.top = "10px";
-		} else {
-			console.error("Cannot Find Up Arrow");
-		}
-	}
-	private updateDownArrowPos() {
-		const img = document.getElementById("arrow-down");
-
-		if (img) {
-			let offset = -img.getBoundingClientRect().width / 2;
-			img.addEventListener("click", () => {
-				this.clickEvent(ArrowDirection.DOWN);
-			});
-			offset += this.domElement.offsetLeft;
-			offset += this.domElement.clientWidth / 2;
-
-			img.style.position = "absolute";
-			img.style.left = `${offset}px`;
-			img.style.bottom = "10px";
-		} else {
-			console.error("Cannot Find Up Arrow");
-		}
-	}
+	// 		img.style.left = `${offset}px`;
+	// 		img.style.bottom = "10px";
+	// 	} else {
+	// 		console.error("Cannot Find Up Arrow");
+	// 	}
+	// }
 }

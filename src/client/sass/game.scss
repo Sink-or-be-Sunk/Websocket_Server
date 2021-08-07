@@ -9,14 +9,28 @@
 	cursor: crosshair;
 }
 
-#arrow-up,
-#arrow-down {
+.menu-icon,
+.arrow-up,
+.arrow-down {
 	stroke: black;
-	stroke-opacity: 0.3;
-	stroke-width: 15;
-	width: 300px;
+	stroke-linecap: round;
+	position: absolute;
+	fill: none;
 
 	:hover {
 		stroke-opacity: 0.5;
 	}
+}
+
+.arrow-up,
+.arrow-down {
+	stroke-opacity: 0.3;
+	stroke-width: 15;
+	width: 300px;
+}
+
+.menu-icon {
+	stroke-opacity: 0.5;
+	width: 40px;
+	stroke-width: 3;
 }
