@@ -32,23 +32,25 @@
 	top: 10px;
 	left: 10px;
 	fill: none;
-	width: 40px;
 	position: absolute;
+	width: 50px;
+	height: 50px;
+	stroke-linecap: round;
 
-	:hover {
+	.menu-svg:hover {
 		.menu-background {
 			fill-opacity: 0.75;
 		}
+	}
+
+	.menu-background {
+		fill: black;
+		fill-opacity: 0.65;
 	}
 
 	.menu-icon {
 		stroke: white;
 		stroke-opacity: 0.75;
 		stroke-width: 3;
-	}
-
-	.menu-background {
-		fill: black;
-		fill-opacity: 0.65;
 	}
 }
