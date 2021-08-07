@@ -1,5 +1,4 @@
 import Positioner, { PositionTransition } from "./Positioner";
-import { Menu } from "./Menu";
 import * as TWEEN from "@tweenjs/tween.js";
 
 enum ArrowDirection {
@@ -31,7 +30,6 @@ export default class Arrows {
 			ArrowDirection.DOWN,
 			"M184 8.5L97 33.5L8.5 8.5",
 		);
-		this.update();
 	}
 
 	private transition(t: PositionTransition) {

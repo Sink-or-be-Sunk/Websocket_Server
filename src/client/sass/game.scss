@@ -9,7 +9,6 @@
 	cursor: crosshair;
 }
 
-.menu-icon,
 .arrow-up,
 .arrow-down {
 	stroke: black;
@@ -29,8 +28,27 @@
 	width: 300px;
 }
 
-.menu-icon {
-	stroke-opacity: 0.5;
+.menu-container {
+	top: 10px;
+	left: 10px;
+	fill: none;
 	width: 40px;
-	stroke-width: 3;
+	position: absolute;
+
+	:hover {
+		.menu-background {
+			fill-opacity: 0.75;
+		}
+	}
+
+	.menu-icon {
+		stroke: white;
+		stroke-opacity: 0.75;
+		stroke-width: 3;
+	}
+
+	.menu-background {
+		fill: black;
+		fill-opacity: 0.65;
+	}
 }

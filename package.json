@@ -15,7 +15,7 @@
 		"build:assets": "copyfiles ./assets/**/* ./dist/public",
 		"build": "npm-run-all -s clean build:**",
 		"watch:css": "sass --watch src/client/sass:dist/public/styles",
-		"dev:client": "copyfiles -f ./src/client/*.html ./dist/public && npm run build:assets && webpack serve --config ./src/client/webpack.dev.js",
+		"dev:client": "copyfiles -f ./src/client/*.html ./dist/public && npm run build:assets && npm run watch:css & webpack serve --config ./src/client/webpack.dev.js",
 		"dev:server": "nodemon",
 		"dev": "echo \"\\033[31mError: use \\033[33mdev:client \\033[31mor \\033[33mdev:server\n\"",
 		"test": "jest --detect-open-handles",
@@ -58,10 +58,6 @@
 		"three": "^0.130.1",
 		"typescript": "^4.3.5",
 		"ws": "^7.5.3"
-	},
-	"nodemonConfig": {
-		"ext": "ts",
-		"exec": "npm run build && npm start"
 	},
 	"volta": {
 		"node": "14.16.1"

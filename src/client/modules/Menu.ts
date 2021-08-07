@@ -1,37 +1,56 @@
-export class Menu {
+import { createImportClause } from "typescript";
+
+export default class Menu {
 	container: HTMLElement;
 	menu: SVGSVGElement;
 
 	constructor(container: HTMLElement) {
 		this.container = container;
 		this.menu = this.createMenu();
-		console.log("menu run");
+	}
+
+	private clickEvent() {
+		console.log("menu click");
 	}
 
 	private createMenu(): SVGSVGElement {
-		const svg = document.createElementNS(
-			"http://www.w3.org/2000/svg",
-			"svg",
-		);
-		svg.setAttribute("fill", "none");
-		svg.setAttribute("viewBox", "0 0 36 26");
-		svg.setAttribute("fill", "none");
-		svg.classList.add("game-menu");
-
 		const path = document.createElementNS(
 			"http://www.w3.org/2000/svg",
 			"path",
 		);
+		path.setAttribute("d", "M16 41H46M16 21H46M16 31H46");
+		path.classList.add("menu-icon");
 
-		path.setAttribute("d", "M3 23H33M3 3H33M3 13H33");
-		path.setAttribute("stroke-linecap", "round");
+		const circle = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"circle",
+		);
+		circle.setAttribute("cx", "31");
+		circle.setAttribute("cy", "31");
+		circle.setAttribute("r", "30");
+		circle.classList.add("menu-background");
 
+		const svg = document.createElementNS(
+			"http://www.w3.org/2000/svg",
+			"svg",
+		);
+		svg.setAttribute("viewBox", "0 0 62 62");
+		svg.appendChild(circle);
 		svg.appendChild(path);
 
-		console.log(this.container);
+		const svgContainer = document.createElement("div");
+		svgContainer.classList.add("menu-container");
+		svgContainer.addEventListener("click", () => {
+			this.clickEvent();
+		});
+		svgContainer.append(svg);
 
-		this.container.appendChild(svg);
+		this.container.appendChild(svgContainer);
 
 		return svg;
+	}
+
+	update() {
+		console.log("no update ");
 	}
 }

@@ -1,5 +1,6 @@
 import Positioner from "./Positioner";
 import Arrows from "./Arrows";
+import Menu from "./Menu";
 
 export default class OverlayManager {
 	canvas: HTMLElement;
@@ -7,7 +8,7 @@ export default class OverlayManager {
 	camera: THREE.Camera;
 	container: HTMLElement;
 	arrows: Arrows;
-	// menu: Menu;
+	menu: Menu;
 
 	constructor(
 		canvas: HTMLElement,
@@ -22,31 +23,13 @@ export default class OverlayManager {
 		this.positioner = positioner;
 		this.camera = camera;
 
-		this.update();
 		this.arrows = new Arrows(this.container, this.camera, this.positioner);
-		// this.menu = new Menu(this.container);
+		this.menu = new Menu(this.container);
+		this.update();
 	}
 
 	update() {
-		// this.updateDownArrowPos();
+		this.arrows.update();
 		// this.updateUpArrowPos();
 	}
-
-	// private updateDownArrowPos() {
-	// 	const img = document.getElementById("arrow-down");
-
-	// 	if (img) {
-	// 		let offset = -img.getBoundingClientRect().width / 2;
-	// 		img.addEventListener("click", () => {
-	// 			this.clickEvent(ArrowDirection.DOWN);
-	// 		});
-	// 		offset += this.canvas.offsetLeft;
-	// 		offset += this.canvas.clientWidth / 2;
-
-	// 		img.style.left = `${offset}px`;
-	// 		img.style.bottom = "10px";
-	// 	} else {
-	// 		console.error("Cannot Find Up Arrow");
-	// 	}
-	// }
 }
