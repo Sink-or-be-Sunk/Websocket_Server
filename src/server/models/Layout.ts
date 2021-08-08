@@ -54,7 +54,7 @@ namespace Layout {
 		}
 
 		static isInstance(obj: any): boolean {
-			if ("r" in obj && "r" in obj && "t" in obj) {
+			if ("r" in obj && "c" in obj && "t" in obj) {
 				if (!isNaN(obj.c) && !isNaN(obj.r)) {
 					if (
 						obj.t === Layout.TYPE.PATROL ||
