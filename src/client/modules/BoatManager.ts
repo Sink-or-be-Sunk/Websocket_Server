@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as Statics from "./Statics";
 import Transform from "./Transform";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export default class BoatManager {
 	scene: THREE.Scene;
@@ -11,6 +12,22 @@ export default class BoatManager {
 		this.scene = scene;
 		this.grid = grid;
 		this.boats = this.createBoats();
+		this.loadBoat();
+	}
+
+	loadBoat() {
+		const loader = new GLTFLoader();
+
+		loader.load(
+			"assets/models/scene.gltf",
+			(gltf) => {
+				this.scene.add(gltf.scene);
+			},
+			undefined,
+			function (error) {
+				console.error(error);
+			},
+		);
 	}
 
 	getBoats() {
