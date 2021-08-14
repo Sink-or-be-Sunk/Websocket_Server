@@ -19,7 +19,7 @@ export default class BoatManager {
 		const loader = new GLTFLoader();
 
 		loader.load(
-			"assets/models/scene.gltf",
+			"assets/models/scharnhorst/scene.gltf",
 			(gltf) => {
 				this.scene.add(gltf.scene);
 			},
