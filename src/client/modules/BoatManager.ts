@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as Statics from "./Statics";
 import Transform from "./Transform";
+import Ship from "./Ship";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 export default class BoatManager {
@@ -21,7 +22,9 @@ export default class BoatManager {
 		loader.load(
 			"assets/models/scharnhorst/scene.gltf",
 			(gltf) => {
-				this.scene.add(gltf.scene);
+				const ship = new Ship(gltf.scene);
+
+				this.scene.add(ship.mesh);
 			},
 			undefined,
 			function (error) {
