@@ -81,6 +81,7 @@ export default class SceneManager {
 	private createSky() {
 		const sky = new Sky();
 		sky.scale.setScalar(450000);
+		console.log(sky);
 		this.scene.add(sky);
 		return sky;
 	}

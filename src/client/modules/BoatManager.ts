@@ -22,9 +22,16 @@ export default class BoatManager {
 		loader.load(
 			"assets/models/scharnhorst/scene.gltf",
 			(gltf) => {
-				const ship = new Ship(gltf.scene);
+				const ship = new Ship(gltf.scene.children[0]);
 
 				this.scene.add(ship.mesh);
+
+				const light = new THREE.HemisphereLight(
+					0xffeeb1,
+					0x0080820,
+					0.6,
+				);
+				this.scene.add(light);
 			},
 			undefined,
 			function (error) {
