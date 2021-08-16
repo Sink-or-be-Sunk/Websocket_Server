@@ -114,6 +114,7 @@ export default class BoatManager {
 		const boat = new THREE.Mesh(geometry, material);
 		boat.position.copy(Transform.tv(x, y, 0));
 		// this.scene.add(boat);
+
 		return boat;
 	}
 

@@ -22,16 +22,30 @@ class Ship {
 				node.receiveShadow = true;
 			}
 		});
-		this.mesh.scale.setScalar(5.5);
+		this.mesh.scale.setScalar(5);
 		var box = new THREE.Box3().setFromObject(this.mesh);
 		var size = new THREE.Vector3();
 		box.getSize(size);
 		this.length = size.x;
 
-		this.mesh.position.copy(
-			Transform.tv(Statics.GRID_SPACING * 2, this.length / 2, 0),
-		);
+		// this.mesh.position.copy(
+		// 	Transform.tv(Statics.GRID_SPACING * 2, this.length / 2, 0),
+		// );
 		this.setOrientation(Ship.ORIENTATION.VERTICAL);
+		this.position(7, 1);
+	}
+
+	position(x: number, y: number) {
+		x *= Statics.GRID_SPACING;
+		y *= Statics.GRID_SPACING;
+		if (this.orientation === Ship.ORIENTATION.HORIZONTAL) {
+			x += this.length / 2 - Statics.GRID_SPACING / 2;
+		} else if (this.orientation === Ship.ORIENTATION.VERTICAL) {
+			y += this.length / 2 - Statics.GRID_SPACING / 2;
+		} else {
+			throw Error("Invalid Ship Orientation: this should never happen");
+		}
+		this.mesh.position.copy(Transform.tv(x, y, 0));
 	}
 
 	setOrientation(o: Ship.ORIENTATION) {
