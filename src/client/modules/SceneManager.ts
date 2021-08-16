@@ -21,7 +21,7 @@ export default class SceneManager {
 	water: Water;
 	interactionManager: InteractionManager;
 	overlayManager: OverlayManager;
-	// controls: OrbitControls;
+	controls: OrbitControls;
 
 	constructor(grid: number) {
 		this.grid = grid;
@@ -45,7 +45,7 @@ export default class SceneManager {
 			this.camera,
 		);
 
-		// this.controls = this.setOrbitControls();
+		this.controls = this.setOrbitControls();
 
 		window.addEventListener("resize", () => {
 			this.onWindowResize();
@@ -59,8 +59,9 @@ export default class SceneManager {
 			"game-container",
 		) as HTMLElement;
 		container.appendChild(root);
-		// const renderer = new THREE.WebGLRenderer({ antialias: true });
-		const renderer = new THREE.WebGLRenderer();
+		const renderer = new THREE.WebGLRenderer({ antialias: true });
+		// const renderer = new THREE.WebGLRenderer();
+		renderer.shadowMap.enabled = true;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		root.appendChild(renderer.domElement);
 		return renderer;

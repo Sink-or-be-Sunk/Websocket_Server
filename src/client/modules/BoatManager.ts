@@ -8,11 +8,14 @@ export default class BoatManager {
 	scene: THREE.Scene;
 	grid: number;
 	boats: THREE.Mesh[][];
+	ships: Ship[];
 
 	constructor(scene: THREE.Scene, grid: number) {
 		this.scene = scene;
 		this.grid = grid;
+		this.ships = [];
 		this.boats = this.createBoats();
+
 		this.loadBoat();
 	}
 
@@ -22,16 +25,55 @@ export default class BoatManager {
 		loader.load(
 			"assets/models/scharnhorst/scene.gltf",
 			(gltf) => {
-				const ship = new Ship(gltf.scene.children[0]);
+				console.log(gltf.scene.children);
 
+				const ship = new Ship(gltf.scene.children[0]);
 				this.scene.add(ship.mesh);
 
-				const light = new THREE.HemisphereLight(
+				const ambient = new THREE.HemisphereLight(
 					0xffeeb1,
-					0x0080820,
-					0.6,
+					0x080820,
+					0.75,
 				);
-				this.scene.add(light);
+				this.scene.add(ambient);
+
+				const dirLight = new THREE.DirectionalLight(0xffddcc, 4);
+				dirLight.castShadow = true;
+				dirLight.position.copy(
+					Transform.tv(
+						Statics.GRID_SPACING * -1,
+						Statics.GRID_SPACING * 8,
+						Statics.GRID_SPACING * 1,
+					),
+				);
+				const lightTarget = new THREE.Object3D();
+				this.scene.add(lightTarget);
+				lightTarget.position.copy(
+					Transform.tv(
+						Statics.GRID_SPACING * 3,
+						Statics.GRID_SPACING * 3,
+						0,
+					),
+				);
+				dirLight.target = lightTarget;
+				dirLight.shadow.bias = -0.0075;
+				dirLight.shadow.camera.near = 1;
+				dirLight.shadow.camera.far = Statics.GRID_SPACING * 12;
+
+				dirLight.shadow.camera.top = Statics.GRID_SPACING * 2;
+				dirLight.shadow.camera.right = Statics.GRID_SPACING * 5;
+				dirLight.shadow.camera.left = Statics.GRID_SPACING * -7;
+				dirLight.shadow.camera.bottom = Statics.GRID_SPACING * -1;
+				dirLight.shadow.radius = 3; //blur edges of shadow
+
+				// this.scene.add(new THREE.CameraHelper(dirLight.shadow.camera));
+
+				this.scene.add(dirLight);
+
+				// const helper = new THREE.DirectionalLightHelper(dirLight, 100);
+				// this.scene.add(helper);
+
+				this.ships.push(ship);
 			},
 			undefined,
 			function (error) {
@@ -71,13 +113,16 @@ export default class BoatManager {
 
 		const boat = new THREE.Mesh(geometry, material);
 		boat.position.copy(Transform.tv(x, y, 0));
-		this.scene.add(boat);
+		// this.scene.add(boat);
 		return boat;
 	}
 
 	waves(time: number) {
 		const intensity = 8;
 		const freq = 1.75;
+
+		this.ships[0]?.wave(time);
+
 		for (let c = 0; c < this.grid; c++) {
 			for (let r = 0; r < this.grid; r++) {
 				this.boats[c][r].position.y =
