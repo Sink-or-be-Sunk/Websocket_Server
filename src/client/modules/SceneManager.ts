@@ -61,6 +61,8 @@ export default class SceneManager {
 		container.appendChild(root);
 		const renderer = new THREE.WebGLRenderer({ antialias: true });
 		// const renderer = new THREE.WebGLRenderer();
+		// renderer.outputEncoding = THREE.sRGBEncoding; //supposedly this is needed for .gtfl files??
+
 		renderer.shadowMap.enabled = true;
 		renderer.setSize(window.innerWidth, window.innerHeight);
 		root.appendChild(renderer.domElement);

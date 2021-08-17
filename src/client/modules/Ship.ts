@@ -7,12 +7,19 @@ class Ship {
 	pos: number;
 	length: number;
 	orientation: Ship.ORIENTATION;
+	config: Ship.Asset;
 	private bow_stern: "y" | "x";
 	private port_starboard: "y" | "x";
 
-	constructor(mesh: THREE.Object3D) {
+	constructor(
+		mesh: THREE.Object3D,
+		x: number,
+		y: number,
+		config: Ship.Asset,
+	) {
 		this.pos = 0;
 		this.mesh = mesh;
+		this.config = config;
 		this.orientation = Ship.ORIENTATION.HORIZONTAL;
 		this.bow_stern = "x";
 		this.port_starboard = "y";
@@ -22,17 +29,14 @@ class Ship {
 				node.receiveShadow = true;
 			}
 		});
-		this.mesh.scale.setScalar(5);
+		this.mesh.scale.setScalar(config.scale);
 		var box = new THREE.Box3().setFromObject(this.mesh);
 		var size = new THREE.Vector3();
 		box.getSize(size);
 		this.length = size.x;
 
-		// this.mesh.position.copy(
-		// 	Transform.tv(Statics.GRID_SPACING * 2, this.length / 2, 0),
-		// );
 		this.setOrientation(Ship.ORIENTATION.VERTICAL);
-		this.position(7, 1);
+		this.position(x, y);
 	}
 
 	position(x: number, y: number) {
@@ -45,7 +49,7 @@ class Ship {
 		} else {
 			throw Error("Invalid Ship Orientation: this should never happen");
 		}
-		this.mesh.position.copy(Transform.tv(x, y, 0));
+		this.mesh.position.copy(Transform.tv(x, y, this.config.z_off));
 	}
 
 	setOrientation(o: Ship.ORIENTATION) {
@@ -65,8 +69,8 @@ class Ship {
 
 	wave(time: number) {
 		const freq = 1.75;
-		const intensity = 5;
-		this.mesh.position.y = Math.sin(freq * time) * intensity;
+		const intensity = 0.15;
+		this.mesh.position.y += Math.sin(freq * time) * intensity;
 
 		const rockIntensity = 0.0005;
 		this.mesh.rotation[this.bow_stern] +=
@@ -80,6 +84,18 @@ namespace Ship {
 	export enum ORIENTATION {
 		HORIZONTAL,
 		VERTICAL,
+	}
+
+	export class Asset {
+		path: String;
+		scale: number;
+		z_off: number;
+
+		constructor(path: String, scale: number, z_off: number) {
+			this.path = path;
+			this.scale = scale;
+			this.z_off = z_off;
+		}
 	}
 }
 
