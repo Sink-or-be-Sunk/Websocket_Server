@@ -43,9 +43,15 @@ class Ship {
 		x *= Statics.GRID_SPACING;
 		y *= Statics.GRID_SPACING;
 		if (this.orientation === Ship.ORIENTATION.HORIZONTAL) {
-			x += this.length / 2 - Statics.GRID_SPACING / 2;
+			x +=
+				this.length / 2 -
+				Statics.GRID_SPACING / 2 +
+				this.config.length_off;
 		} else if (this.orientation === Ship.ORIENTATION.VERTICAL) {
-			y += this.length / 2 - Statics.GRID_SPACING / 2;
+			y +=
+				this.length / 2 -
+				Statics.GRID_SPACING / 2 +
+				this.config.length_off;
 		} else {
 			throw Error("Invalid Ship Orientation: this should never happen");
 		}
@@ -68,9 +74,9 @@ class Ship {
 	}
 
 	wave(time: number) {
-		const freq = 1.75;
-		const intensity = 0.15;
-		this.mesh.position.y += Math.sin(freq * time) * intensity;
+		const freq = 1;
+		// const intensity = 1;
+		// this.mesh.position.y += Math.sin(freq * time) * intensity;
 
 		const rockIntensity = 0.0005;
 		this.mesh.rotation[this.bow_stern] +=
@@ -90,11 +96,18 @@ namespace Ship {
 		path: String;
 		scale: number;
 		z_off: number;
+		length_off: number;
 
-		constructor(path: String, scale: number, z_off: number) {
+		constructor(
+			path: String,
+			scale: number,
+			z_off: number,
+			length_off: number,
+		) {
 			this.path = path;
 			this.scale = scale;
 			this.z_off = z_off;
+			this.length_off = length_off;
 		}
 	}
 }

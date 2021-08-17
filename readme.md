@@ -74,6 +74,9 @@ curl https://get.volta.sh | bash
 -   3D Models:
     -   [Battleship][battleship-model]
     -   [Submarine][submarine-model]
+    -   [Destroyer][destroyer-model]
+    -   [Carrier][carrier-model]
+    -   [PT Boat][pt-model]
 
 ## Running Node Locally
 
@@ -110,3 +113,6 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [volta]: https://docs.volta.sh/guide/getting-started
 [battleship-model]: https://sketchfab.com/3d-models/scharnhorst-0144f06264304b68a684d79cc13f1c62
 [submarine-model]: https://sketchfab.com/3d-models/u-557-ae10491added470c88e4e21bc8672cd1
+[destroyer-model]: https://sketchfab.com/3d-models/z-39-4bf9941a596b4b8b8a12302946d51181
+[carrier-model]: https://sketchfab.com/3d-models/enterprise-303b76d3efdf472d8a105702c44ff571#download
+[pt-model]: https://sketchfab.com/3d-models/elco-80ft-pt-e759cb35865c480f8db77c91020e8f6c#download

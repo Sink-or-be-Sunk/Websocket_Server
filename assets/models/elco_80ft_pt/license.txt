@@ -1,0 +1,11 @@
+Model Information:
+* title:	Elco 80ft PT
+* source:	https://sketchfab.com/3d-models/elco-80ft-pt-e759cb35865c480f8db77c91020e8f6c
+* author:	ThomasBeerens (https://sketchfab.com/ThomasBeerens)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Elco 80ft PT" (https://sketchfab.com/3d-models/elco-80ft-pt-e759cb35865c480f8db77c91020e8f6c) by ThomasBeerens (https://sketchfab.com/ThomasBeerens) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

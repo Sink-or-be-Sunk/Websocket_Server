@@ -61,8 +61,11 @@ export default class BoatManager {
 		const loader = new GLTFLoader();
 
 		const assets = [
-			new Ship.Asset("u-557", 13.25, 8),
-			new Ship.Asset("scharnhorst", 5, 5),
+			new Ship.Asset("elco_80ft_pt", 10, -5, 200),
+			new Ship.Asset("u-557", 13.25, 8, 0),
+			new Ship.Asset("z-39", 7.1, 5, 0),
+			new Ship.Asset("scharnhorst", 5, 7, 0),
+			new Ship.Asset("enterprise", 5.9, 0, 0),
 		];
 
 		for (let i = 0; i < assets.length; i++) {
