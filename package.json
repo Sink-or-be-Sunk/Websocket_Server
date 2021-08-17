@@ -12,7 +12,7 @@
 		"build:ts:client": "webpack --config ./src/client/webpack.prod.js",
 		"build:ts:server": "tsc",
 		"build:css": "sass src/client/sass:dist/public/styles",
-		"build:assets": "copyfiles ./assets/**/* ./dist/public",
+		"build:assets": "copyfiles './assets/**/*' './dist/public'",
 		"build": "npm-run-all -s clean build:**",
 		"watch:css": "sass --watch src/client/sass:dist/public/styles",
 		"dev:client": "copyfiles -f ./src/client/*.html ./dist/public && npm run build:assets && npm run watch:css & webpack serve --config ./src/client/webpack.dev.js",
