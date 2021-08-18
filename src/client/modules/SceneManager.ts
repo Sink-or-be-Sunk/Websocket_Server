@@ -36,7 +36,6 @@ export default class SceneManager {
 		this.water = this.createWater();
 
 		this.interactionManager = new InteractionManager(this.camera);
-		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
 
 		this.overlayManager = new OverlayManager(

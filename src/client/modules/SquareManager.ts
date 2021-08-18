@@ -5,7 +5,7 @@ import Transform from "./Transform";
 export default class SquareManager {
 	scene: THREE.Scene;
 	grid: number;
-	shipSquares: THREE.Mesh[][];
+	// shipSquares: THREE.Mesh[][];
 	attackSquares: THREE.Mesh[][];
 	shipOutline: THREE.GridHelper;
 	attackOutline: THREE.GridHelper;
@@ -15,7 +15,7 @@ export default class SquareManager {
 		this.scene = scene;
 		this.grid = grid;
 		this.attackDist = 2 * Statics.GRID_SPACING * this.grid;
-		this.shipSquares = this.createShipSquares();
+		// this.shipSquares = this.createShipSquares();
 		this.shipOutline = this.createShipOutline();
 		this.attackSquares = this.createAttackSquares();
 		this.attackOutline = this.createAttackOutline();
@@ -25,7 +25,7 @@ export default class SquareManager {
 		const list = [];
 		for (let c = 0; c < this.grid; c++) {
 			for (let r = 0; r < this.grid; r++) {
-				list.push(this.shipSquares[c][r]);
+				// list.push(this.shipSquares[c][r]); //FIXME: NEED TO REMOVE THIS
 				list.push(this.attackSquares[c][r]);
 			}
 		}
@@ -38,7 +38,6 @@ export default class SquareManager {
 			Statics.GRID_SPACING,
 		);
 		const material = new THREE.MeshBasicMaterial({
-			color: 0xffffff,
 			transparent: true,
 			opacity: 0.05,
 		});
@@ -48,24 +47,6 @@ export default class SquareManager {
 		plane.position.copy(Transform.tv(x, y, z));
 		this.scene.add(plane);
 		return plane;
-	}
-
-	private createShipSquares() {
-		const array = new Array<Array<THREE.Mesh>>(this.grid);
-		for (let c = 0; c < this.grid; c++) {
-			array[c] = [];
-			for (let r = 0; r < this.grid; r++) {
-				const plane = this.createSquare(
-					c * Statics.GRID_SPACING,
-					r * Statics.GRID_SPACING,
-					10,
-				);
-				plane.rotation.x = -Math.PI / 2; //rotates plane flat
-
-				array[c][r] = plane;
-			}
-		}
-		return array;
 	}
 
 	private createAttackSquares() {

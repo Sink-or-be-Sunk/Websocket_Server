@@ -7,16 +7,22 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 export default class BoatManager {
 	scene: THREE.Scene;
 	grid: number;
-	boats: THREE.Mesh[][];
 	ships: Ship[];
+
+	static assets = [
+		new Ship.Config("elco_80ft_pt", 10, -5, 200, 2),
+		new Ship.Config("u-557", 13.25, 8, 0, 3),
+		new Ship.Config("z-39", 7.1, 5, 0, 3),
+		new Ship.Config("scharnhorst", 5, 7, 0, 4),
+		new Ship.Config("enterprise", 5.9, 0, 0, 5),
+	];
 
 	constructor(scene: THREE.Scene, grid: number) {
 		this.scene = scene;
 		this.grid = grid;
 		this.ships = [];
-		this.boats = this.createBoats();
 
-		this.loadBoat();
+		this.loadBoats();
 		this.addShipLights();
 	}
 
@@ -57,69 +63,57 @@ export default class BoatManager {
 		// this.scene.add(helper);
 	}
 
-	loadBoat() {
+	loadBoats() {
 		const loader = new GLTFLoader();
 
-		const assets = [
-			new Ship.Asset("elco_80ft_pt", 10, -5, 200),
-			new Ship.Asset("u-557", 13.25, 8, 0),
-			new Ship.Asset("z-39", 7.1, 5, 0),
-			new Ship.Asset("scharnhorst", 5, 7, 0),
-			new Ship.Asset("enterprise", 5.9, 0, 0),
-		];
+		for (let c = 0; c < BoatManager.assets.length; c++) {
+			const config = BoatManager.assets[c];
 
-		for (let i = 0; i < assets.length; i++) {
-			const asset = assets[i];
+			const ship = new Ship(config);
 
 			loader.load(
-				`assets/models/${asset.path}/scene.gltf`,
+				`assets/models/${config.path}/scene.gltf`,
 				(gltf) => {
-					const ship = new Ship(gltf.scene.children[0], i, 0, asset);
-					this.scene.add(ship.mesh);
-					this.ships.push(ship);
+					const mesh = gltf.scene.children[0];
+					ship.add3D(mesh, c, 0);
+					this.scene.add(mesh);
 				},
 				undefined,
 				function (error) {
 					console.error(error);
 				},
 			);
-		}
-	}
 
-	getBoats() {
-		const boatList = [];
-		for (let c = 0; c < this.grid; c++) {
-			for (let r = 0; r < this.grid; r++) {
-				boatList.push(this.boats[c][r]);
-			}
-		}
-		return boatList;
-	}
-	private createBoats() {
-		const boats = new Array<Array<THREE.Mesh>>(this.grid);
-		for (let c = 0; c < this.grid; c++) {
-			boats[c] = [];
-			for (let r = 0; r < this.grid; r++) {
-				boats[c][r] = this.createBoat(
+			for (let r = 0; r < config.num_squares; r++) {
+				const square = this.createShipSquare(
 					c * Statics.GRID_SPACING,
 					r * Statics.GRID_SPACING,
+					10,
 				);
+				ship.addSquare(square);
 			}
+
+			this.ships.push(ship);
 		}
-		return boats;
 	}
 
-	private createBoat(x: number, y: number): THREE.Mesh {
-		const geometry = new THREE.SphereGeometry(30, 20, 20);
-		const material = new THREE.MeshStandardMaterial({
-			color: 0xd3e1e6,
+	private createShipSquare(x: number, y: number, z: number): THREE.Mesh {
+		const geometry = new THREE.PlaneGeometry(
+			Statics.GRID_SPACING,
+			Statics.GRID_SPACING,
+		);
+		const material = new THREE.MeshBasicMaterial({
+			transparent: true,
+			opacity: 0.05,
+			color: 0x0000ff,
 		});
 
-		const boat = new THREE.Mesh(geometry, material);
-		boat.position.copy(Transform.tv(x, y, 0));
-		// this.scene.add(boat);
+		const plane = new THREE.Mesh(geometry, material);
+		plane.rotation.x = -Math.PI / 2; //rotates plane flat
 
-		return boat;
+		plane.position.copy(Transform.tv(x, y, z));
+		this.scene.add(plane);
+		return plane;
 	}
 
 	waves(time: number) {
@@ -129,13 +123,6 @@ export default class BoatManager {
 		for (let i = 0; i < this.ships.length; i++) {
 			const ship = this.ships[i];
 			ship.wave(time + i);
-		}
-
-		for (let c = 0; c < this.grid; c++) {
-			for (let r = 0; r < this.grid; r++) {
-				this.boats[c][r].position.y =
-					Math.sin(freq * time + c - r) * intensity;
-			}
 		}
 	}
 }

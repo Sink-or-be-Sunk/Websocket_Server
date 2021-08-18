@@ -29,15 +29,8 @@ export default class InteractionManager {
 				this.active.push(intersection);
 				const material =
 					intersection.material as Statics.OBJECT_MATERIAL;
-				material.color.set(0xff0000);
-				// const cur = { z: 50 }; //TODO: May want to remove this?
-				// new TWEEN.Tween(cur)
-				// 	.to({ z: 20 })
-				// 	.easing(TWEEN.Easing.Quadratic.Out)
-				// 	.onUpdate(() => {
-				// 		intersection.position.y = cur.z;
-				// 	})
-				// 	.start();
+				material.color.set(0x00ff00);
+				material.opacity = 0.1;
 			}
 		});
 		this.domElements.addEventListener("click", (event) => {
@@ -53,7 +46,8 @@ export default class InteractionManager {
 		for (let i = 0; i < this.objects.length; i++) {
 			const object = this.objects[i];
 			const material = object.material as Statics.OBJECT_MATERIAL;
-			material.color.set(0xffffff);
+			material.color.set(0x000000);
+			material.opacity = 0.0;
 		}
 	}
 
