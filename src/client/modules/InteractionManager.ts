@@ -30,14 +30,6 @@ export default class InteractionManager {
 				const material =
 					intersection.material as Statics.OBJECT_MATERIAL;
 				material.color.set(0xff0000);
-				// const cur = { z: 50 }; //TODO: May want to remove this?
-				// new TWEEN.Tween(cur)
-				// 	.to({ z: 20 })
-				// 	.easing(TWEEN.Easing.Quadratic.Out)
-				// 	.onUpdate(() => {
-				// 		intersection.position.y = cur.z;
-				// 	})
-				// 	.start();
 			}
 		});
 		this.domElements.addEventListener("click", (event) => {
