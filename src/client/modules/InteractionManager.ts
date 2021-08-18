@@ -46,7 +46,7 @@ export default class InteractionManager {
 		for (let i = 0; i < this.objects.length; i++) {
 			const object = this.objects[i];
 			const material = object.material as Statics.OBJECT_MATERIAL;
-			material.color.set(0x000000);
+			// material.color.set(0x000000);
 			material.opacity = 0.0;
 		}
 	}

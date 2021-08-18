@@ -26,6 +26,15 @@ export default class BoatManager {
 		this.addShipLights();
 	}
 
+	getBoatSquares(): THREE.Mesh[] {
+		const squares = [];
+		for (let i = 0; i < this.ships.length; i++) {
+			const ship = this.ships[i];
+			squares.push(...ship.squares);
+		}
+		return squares;
+	}
+
 	private addShipLights() {
 		const ambient = new THREE.HemisphereLight(0xffeeb1, 0x080820, 0.75);
 		this.scene.add(ambient);
