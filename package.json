@@ -2,7 +2,7 @@
 	"name": "sink-or-be-sunk-web",
 	"version": "1.0.0",
 	"description": "Sink or be Sunk Websocket Server",
-	"main": "dist/server.js",
+	"main": "dist/main.js",
 	"engines": {
 		"node": ">= 14.16 <15"
 	},
