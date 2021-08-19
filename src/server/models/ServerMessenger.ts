@@ -8,6 +8,7 @@ export default class ServerMessenger {
 	private static readonly INVALID_LAYOUT_HEADER: string = "INVALID LAYOUT";
 	private static readonly INVALID_GAME_TYPE_HEADER: string =
 		"INVALID GAME TYPE";
+	private static readonly FORMAT_ERROR_HEADER: string = "BAD CLIENT MESSAGE";
 
 	//STATIC MESSAGES
 	static readonly MOVE_MADE: WSServerMessage = new WSServerMessage(
@@ -25,9 +26,6 @@ export default class ServerMessenger {
 	static readonly NO_SUCH_GAME: WSServerMessage = new WSServerMessage(
 		"NO SUCH GAME",
 	);
-	static readonly FORMAT_ERROR: WSServerMessage = new WSServerMessage(
-		"FORMAT ERROR",
-	);
 	static readonly TURN_ERROR: WSServerMessage = new WSServerMessage(
 		"TURN ERROR",
 	);
@@ -36,6 +34,9 @@ export default class ServerMessenger {
 	);
 
 	// DYNAMIC MESSAGE BUILDERS
+	static bad_client_msg(meta: string): WSServerMessage {
+		return new WSServerMessage(this.FORMAT_ERROR_HEADER, meta);
+	}
 	static invalid_layout(meta: string): WSServerMessage {
 		return new WSServerMessage(this.INVALID_LAYOUT_HEADER, meta);
 	}

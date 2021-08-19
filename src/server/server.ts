@@ -28,11 +28,11 @@ wss.on("connection", (ws: WebSocket) => {
 	ws.on("message", function incoming(raw) {
 		const req = new WSClientMessage(raw.toString());
 		if (
-			req.id == WSClientMessage.REQ_TYPE.INVALID ||
-			req.id == WSClientMessage.REQ_TYPE.BAD_FORMAT
+			req.req == WSClientMessage.REQ_TYPE.INVALID ||
+			req.req == WSClientMessage.REQ_TYPE.BAD_FORMAT
 		) {
 			console.error(`${req.id}: client message:\n${raw}`);
-			ws.send(ServerMessenger.FORMAT_ERROR.toString()); //TODO: Change server message based on what actual client msg error occurs
+			ws.send(ServerMessenger.bad_client_msg(raw.toString()));
 		} else {
 			const resp = lobby.handleReq(ws, req);
 			ws.send(resp.toString());
