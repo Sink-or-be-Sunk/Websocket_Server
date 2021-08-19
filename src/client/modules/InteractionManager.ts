@@ -1,4 +1,3 @@
-import * as TWEEN from "@tweenjs/tween.js";
 import * as THREE from "three";
 import * as Statics from "./Statics";
 
@@ -30,6 +29,7 @@ export default class InteractionManager {
 				const material =
 					intersection.material as Statics.OBJECT_MATERIAL;
 				material.color.set(0xff0000);
+				(material.opacity = 0.1), (intersection.visible = true);
 			}
 		});
 		this.domElements.addEventListener("click", (event) => {
@@ -44,8 +44,7 @@ export default class InteractionManager {
 	clear() {
 		for (let i = 0; i < this.objects.length; i++) {
 			const object = this.objects[i];
-			const material = object.material as Statics.OBJECT_MATERIAL;
-			material.color.set(0xffffff);
+			object.visible = false;
 		}
 	}
 
