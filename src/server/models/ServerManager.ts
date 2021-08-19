@@ -56,7 +56,9 @@ export default class ServerManager {
 			req.req == WSClientMessage.REQ_TYPE.BAD_FORMAT
 		) {
 			console.error(`${req.id}: client message:\n${raw}`);
-			socket.send(ServerMessenger.bad_client_msg(raw.toString()));
+			socket.send(
+				ServerMessenger.bad_client_msg(raw.toString()).toString(),
+			);
 		} else {
 			const resp = this.lobby.handleReq(socket, req);
 			socket.send(resp.toString());
