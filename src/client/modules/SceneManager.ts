@@ -7,6 +7,7 @@ import Positioner from "./Positioner";
 import InteractionManager from "./InteractionManager";
 import SquareManager from "./SquareManager";
 import OverlayManager from "./OverlayManager";
+import SocketManager from "./SocketManager";
 
 export default class SceneManager {
 	grid: number;
@@ -22,6 +23,7 @@ export default class SceneManager {
 	interactionManager: InteractionManager;
 	overlayManager: OverlayManager;
 	controls: OrbitControls;
+	socketManager: SocketManager;
 
 	constructor(grid: number) {
 		this.grid = grid;
@@ -38,6 +40,8 @@ export default class SceneManager {
 		this.interactionManager = new InteractionManager(this.camera);
 		this.interactionManager.add(this.boatManager.getBoats());
 		this.interactionManager.add(this.squareManager.getSquares());
+
+		this.socketManager = new SocketManager();
 
 		this.overlayManager = new OverlayManager(
 			this.renderer.domElement,
