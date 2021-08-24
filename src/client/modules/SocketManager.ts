@@ -6,7 +6,11 @@ export default class SocketManager {
 	id: string;
 
 	constructor() {
-		this.socket = new WebSocket("ws://sink-or-be-sunk.herokuapp.com/");
+		if (location.protocol === "https:") {
+			this.socket = new WebSocket("wss://sink-or-be-sunk.herokuapp.com/");
+		} else {
+			this.socket = new WebSocket("ws://sink-or-be-sunk.herokuapp.com/");
+		}
 		const cachedID = window.localStorage.getItem("id");
 		if (cachedID) {
 			this.id = cachedID;
