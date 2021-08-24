@@ -1,0 +1,21 @@
+<h2>Websocket Server Terminal</h1>
+<ul id="messages"></ul>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+	$(function () {
+		const socket = io();
+		socket.on("log_message", function (msg) {
+			$("#messages").append($("<li>").text(msg));
+		});
+	});
+</script>
+<style>
+	#messages {
+		background: rgb(218, 218, 218);
+		height: 80vh;
+		color: rgb(2, 82, 169);
+		overflow: scroll;
+		list-style-type: none;
+	}
+</style>
