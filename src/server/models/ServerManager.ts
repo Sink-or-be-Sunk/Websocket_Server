@@ -1,11 +1,10 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
+import express from "express";
 import * as http from "http";
 import WebSocket from "ws";
 import Lobby from "./Lobby";
 import WSClientMessage from "./WSClientMessage";
 import ServerMessenger from "./ServerMessenger";
-
-import events from "events"; //FIXME: REMOVE WHEN REMOVING LOGGING
 
 export default class ServerManager {
 	private lobby: Lobby;
@@ -24,8 +23,6 @@ export default class ServerManager {
 
 		// initialize the WebSocket server instance
 		this.wss = new WebSocket.Server({ server });
-
-		this._createLoggerSocket(); //FIXME: REMOVE
 	}
 
 	start() {
@@ -35,7 +32,7 @@ export default class ServerManager {
 
 		// start server
 		this.server.listen(this.port, () => {
-			console.log(`Server started at http://localhost:${this.port}/`);
+			console.log(`Server started on port: ${this.port}/`);
 		});
 	}
 
@@ -70,22 +67,5 @@ export default class ServerManager {
 
 	private _onWSClose(ws: WebSocket) {
 		this.lobby.leaveGame(ws);
-	}
-
-	private _createLoggerSocket() {
-		const io = require("socket.io")(this.server); //FIXME: REMOVE THIS FROM PACKAGE.JSON WHEN REMOVING FROM APP
-		const eventEmitter = new events.EventEmitter();
-
-		eventEmitter.on("logging", function (message) {
-			io.emit("log_message", message);
-		});
-
-		// Override console.log
-		const originConsoleLog = console.log;
-		console.log = function (data) {
-			data = `[${new Date().toUTCString()}]: ${data}`;
-			eventEmitter.emit("logging", data);
-			originConsoleLog(data);
-		};
 	}
 }
