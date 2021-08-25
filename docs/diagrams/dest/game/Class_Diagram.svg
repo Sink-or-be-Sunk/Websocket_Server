@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="387px" preserveAspectRatio="none" style="width:789px;height:387px;background:#FFFFFF;" version="1.1" viewBox="0 0 789 387" width="789px" zoomAndPan="magnify"><defs><filter height="300%" id="f1nhdn7v60u3r" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[760d6591f8d41f56006ade8de0d378ba]
+cluster Game Class Diagram--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="16,6,172,6,179,28.4883,772,28.4883,772,380,16,380,16,6" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="16" x2="179" y1="28.4883" y2="28.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="150" x="20" y="21.5352">Game Class Diagram</text><!--MD5=[e4eeac980f7c60d0b9b4864e7df151e6]
+cluster Board--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="382,168,392,158,740,158,740,338,730,348,382,348,382,168" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="730" x2="740" y1="168" y2="158"/><line style="stroke:#000000;stroke-width:1.5;" x1="382" x2="730" y1="168" y2="168"/><line style="stroke:#000000;stroke-width:1.5;" x1="730" x2="730" y1="168" y2="348"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="41" x="536.5" y="184.5352">Board</text><!--MD5=[8c40d9dd5d31fe877751a06228577dc5]
+cluster Grid--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="588,224,598,214,708,214,708,306,698,316,588,316,588,224" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="698" x2="708" y1="224" y2="214"/><line style="stroke:#000000;stroke-width:1.5;" x1="588" x2="698" y1="224" y2="224"/><line style="stroke:#000000;stroke-width:1.5;" x1="698" x2="698" y1="224" y2="316"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="30" x="629" y="240.5352">Grid</text><!--MD5=[ebd0f3325ff55015b47dc6fefa938bc6]
+cluster Ship--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="422,224,432,214,564,214,564,306,554,316,422,316,422,224" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="554" x2="564" y1="224" y2="214"/><line style="stroke:#000000;stroke-width:1.5;" x1="422" x2="554" y1="224" y2="224"/><line style="stroke:#000000;stroke-width:1.5;" x1="554" x2="554" y1="224" y2="316"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="31" x="473.5" y="240.5352">Ship</text><!--MD5=[305218153d33047fc0f139a7ddc942d1]
+entity Game_obj--><rect fill="#FEFECE" filter="url(#f1nhdn7v60u3r)" height="46.4883" style="stroke:#A80036;stroke-width:1.5;" width="108" x="189" y="41"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="277" y="46"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="275" y="48"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="275" y="52"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="68" x="204" y="74.5352">Game_obj</text><!--MD5=[7f288c97821f0e3769ad2f992cdcb754]
+entity game_id--><ellipse cx="145" cy="64" fill="#FEFECE" filter="url(#f1nhdn7v60u3r)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="58" x="116" y="94.5352">game_id</text><!--MD5=[431a2edf4812d542ae14cefd1d3ebe0b]
+entity turn--><ellipse cx="341" cy="64" fill="#FEFECE" filter="url(#f1nhdn7v60u3r)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="29" x="326.5" y="94.5352">turn</text><!--MD5=[b03d5724fb3bba77613173b624e4549a]
+entity game_state--><ellipse cx="79" cy="277" fill="#FEFECE" filter="url(#f1nhdn7v60u3r)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="78" x="40" y="307.5352">game_state</text><!--MD5=[fcbb921f173b1d58926693d3e10c6deb]
+entity Rules--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="161.5,264,171.5,254,238.5,254,238.5,290.4883,228.5,300.4883,161.5,300.4883,161.5,264" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="228.5" x2="238.5" y1="264" y2="254"/><line style="stroke:#000000;stroke-width:1.5;" x1="161.5" x2="228.5" y1="264" y2="264"/><line style="stroke:#000000;stroke-width:1.5;" x1="228.5" x2="228.5" y1="264" y2="300.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37" x="176.5" y="287.5352">Rules</text><!--MD5=[de2effd8dc5bf946a609466312d0f75f]
+entity Player--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="273.5,264,283.5,254,354.5,254,354.5,290.4883,344.5,300.4883,273.5,300.4883,273.5,264" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="344.5" x2="354.5" y1="264" y2="254"/><line style="stroke:#000000;stroke-width:1.5;" x1="273.5" x2="344.5" y1="264" y2="264"/><line style="stroke:#000000;stroke-width:1.5;" x1="344.5" x2="344.5" y1="264" y2="300.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="41" x="288.5" y="287.5352">Player</text><!--MD5=[11315a4eda09bf4dce7d2447642de674]
+entity Square--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="604,264,614,254,692,254,692,290.4883,682,300.4883,604,300.4883,604,264" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="682" x2="692" y1="264" y2="254"/><line style="stroke:#000000;stroke-width:1.5;" x1="604" x2="682" y1="264" y2="264"/><line style="stroke:#000000;stroke-width:1.5;" x1="682" x2="682" y1="264" y2="300.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="48" x="619" y="287.5352">Square</text><!--MD5=[fa8094cabacfe61e8e361aa68f1cb068]
+entity Ship_Type--><polygon fill="#FFFFFF" filter="url(#f1nhdn7v60u3r)" points="438,264,448,254,548,254,548,290.4883,538,300.4883,438,300.4883,438,264" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="538" x2="548" y1="264" y2="254"/><line style="stroke:#000000;stroke-width:1.5;" x1="438" x2="538" y1="264" y2="264"/><line style="stroke:#000000;stroke-width:1.5;" x1="538" x2="538" y1="264" y2="300.4883"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="70" x="453" y="287.5352">Ship_Type</text><!--MD5=[27189ad4e114daa594f890d2fcb0c642]
+link game_id to Game_obj--><path d="M154.19,64 C165.75,64 177.32,64 188.88,64 " fill="none" id="game_id-Game_obj" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[8b11553c6d75ddaed2fb781452cb0aea]
+link Game_obj to turn--><path d="M297.36,64 C308.84,64 320.32,64 331.79,64 " fill="none" id="Game_obj-turn" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ba140fe3a6453401ee4fda0d21fe57fe]
+link Game_obj to game_state--><path d="M196.3,87 C182.48,95.06 168.1,105.16 157,117 C115.03,161.76 91.09,233.37 82.58,262.76 " fill="none" id="Game_obj-to-game_state" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="81.17,267.74,87.4619,260.1629,82.5266,262.9276,79.762,257.9923,81.17,267.74" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="34" x="158" y="130.5684">has 1</text><!--MD5=[ab2b1cbadeac5921e9fc391389751681]
+link Game_obj to Rules--><path d="M222.89,87.2 C216.26,95.87 209.64,106.3 206,117 C190.92,161.31 193.17,216.62 196.42,248.95 " fill="none" id="Game_obj-to-Rules" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="196.95,253.94,199.976,244.5675,196.4214,248.968,192.0209,245.4133,196.95,253.94" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="34" x="207" y="130.5684">has 1</text><!--MD5=[21d7d2228b2e1fdecb931f28a8431b2a]
+link Game_obj to Board--><path d="M296.56,87.08 C332.63,103.14 375.48,124.97 386,142 C387.9263,145.1188 389.6306,148.3609 391.1331,151.6996 C391.8844,153.3689 392.5852,155.0623 393.238,156.7765 C393.3196,156.9908 393.4005,157.2053 393.4806,157.4203 " fill="none" id="Game_obj-to-Board" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="393.4806,157.4203,394.0852,147.59,391.7342,152.7352,386.589,150.3842,393.4806,157.4203" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58" x="378" y="130.5684">has &gt;= 2</text><!--MD5=[222ac5dba3c891fd98532c5e4a280664]
+link Game_obj to Player--><path d="M250.46,87.18 C263.57,126.12 290.66,206.64 304.86,248.85 " fill="none" id="Game_obj-to-Player" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="306.53,253.8,307.4343,243.9927,304.9274,249.0638,299.8564,246.5569,306.53,253.8" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58" x="266" y="130.5684">has &gt;= 2</text><!--MD5=[f437b62fa940b0a46d917142766d208a]
+@startuml Class_Diagram
+package "Game Class Diagram" {
+        [Game_obj] -left- game_id
+        [Game_obj] -right- turn
+        [Game_obj] -down-> game_state : has 1
+        [Game_obj] -down-> [Rules] : has 1
+        [Game_obj] -down-> [Board] : has >= 2
+        [Game_obj] -down-> [Player] : has >= 2
+
+        node "Rules" {
+        }
+
+        node "Player" {
+        }
+
+        node "Board" {
+
+            node "Grid" {
+                node "Square" {
+                }
+            }
+
+            node "Ship" {
+                node "Ship_Type" {
+                }
+            }
+        }
+
+}
+@enduml
+
+PlantUML version 1.2021.7(Sun May 23 08:40:07 EDT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

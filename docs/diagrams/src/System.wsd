@@ -1,0 +1,50 @@
+@startuml System_Class_Diagram
+package "Server" {
+    node "Server_Manager" {
+        node "Lobby" {
+            node "Game Logic" {
+            }
+        }
+        [Server_Manager_Obj] -left- port
+        [Server_Manager_Obj] -down-> [HTTP Server]
+        [Server_Manager_Obj] -down-> [Websocket Server]
+        [Server_Manager_Obj] -right-> Lobby
+
+    }
+    
+    [Websocket Server] --> Lobby : handle
+    [HTTP Server] --> Lobby : handle
+}
+
+package "Client" {
+    [WiFi] - [USART_A]
+}
+
+package "MCU" {
+    [USART_B] --> [Controller]
+
+    [Controller] <-left- Inputs
+    [Controller] -right-> Outputs
+
+    node "Inputs" {
+    }
+    Inputs <-down- [ADC]
+
+    [ADC] <-down- Battery : monitored
+    [ADC] <-down- Ship_Positions : multiplexed
+    [ADC] <-down- Player_Moves : multiplexed
+
+    node "Outputs" {
+    }
+    Outputs -down-> [GPIO]
+    Outputs -down-> [DAC]
+    Outputs -down-> [SPI]
+
+    [GPIO] -down-> LED_GRID : shift registered
+    [DAC] -down-> Speaker : amplified
+    [SPI] -down-> LCD_Display
+}
+
+[USART_A] <--> [USART_B]
+[Websocket Server] <--> [WiFi]
+@enduml

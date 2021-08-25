@@ -1,5 +1,4 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
-import express from "express";
 import * as http from "http";
 import WebSocket from "ws";
 import Lobby from "./Lobby";

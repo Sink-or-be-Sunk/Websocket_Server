@@ -64,6 +64,19 @@ curl https://get.volta.sh | bash
 -   `build` - build application,
 -   `dev` - start application in development mode with live server reload
 
+## Diagrams
+
+[Plant UML][plant-uml] was used to generate diagrams of various components of this project.
+
+You can view the source code [here](docs/diagrams/src).
+
+You can view full list of rendered diagrams [here](docs/diagrams/diagrams.md).
+
+To set up plant-uml in vscode there is are some helpful gits that walk through the steps.
+
+-   [General Version](https://gist.github.com/GAM3RG33K/cc59290e8fe68d61c7ab2540f8471fd3)
+-   [Mac Version](https://gist.github.com/uupaa/dfb80e9244ce4e2b2d4449a352ec5bc1)
+
 ## References
 
 -   [Heroku Typescript Getting Started][heroku-getting-started]
