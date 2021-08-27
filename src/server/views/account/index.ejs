@@ -1,29 +1,5 @@
 <h2>Welcome <%- account.displayName %></h2>
 <form action="/account/<%= account.id %>?_method=PUT" method="POST">
-	<div>
-		<dl class="form-group">
-			<dt><label for="user_display_name">Display Name</label></dt>
-			<dd>
-				<input
-					class="form-control"
-					type="text"
-					value="<%- account.displayName %>"
-					name="display_name"
-				/>
-			</dd>
-		</dl>
-		<dl class="form-group">
-			<dt><label for="user_email">Email</label></dt>
-			<dd>
-				<input
-					class="form-control"
-					type="text"
-					value="<%- account.email %>"
-					type="email"
-					name="email"
-				/>
-			</dd>
-		</dl>
-		<button type="submit" class="btn-primary btn">Update profile</button>
-	</div>
+	<%- include('_common_fields.ejs') %>
+	<button type="submit" class="btn-primary btn">Update Profile</button>
 </form>
