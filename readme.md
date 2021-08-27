@@ -26,6 +26,21 @@ cd SobS_Web
 npm install
 ```
 
+### Download MongoDB
+
+Mongo DB is the Database used for this project. To test this with localhost you need to have mongo installed on your computer.
+
+#### Start with Mac
+
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
+
+```
+brew tap mongodb/brew
+brew install mongodb-community@5.0
+brew services start mongodb-community@5.0
+brew services stop mongodb-community@5.0
+```
+
 ### Download Volta
 
 Volta is used to ensure that all team members are using the same javascript tooling and environments.
