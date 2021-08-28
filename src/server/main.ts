@@ -4,21 +4,16 @@ const expressLayouts = require("express-ejs-layouts");
 import path from "path";
 import ServerManager from "./objects/ServerManager";
 import methodOverride from "method-override";
+import session from "express-session";
 import flash from "express-flash";
 import passport from "passport";
-
-import initializePassport from "./auth/passport-config.js";
-initializePassport(
-	passport,
-	(email) => users.find((user) => user.email === email),
-	(id) => users.find((user) => user.id === id),
-);
-
-const users: any[] = []; //TODO: CHANGE THIS TO MONGO
 
 import indexRouter from "./routes/index";
 import gameRouter from "./routes/game";
 import accountRouter from "./routes/account";
+
+// API keys and Passport configuration
+import * as passportConfig from "./auth/passport-config";
 
 const app = express();
 const server = new ServerManager(app);
@@ -30,6 +25,13 @@ app.set("layout", "layouts/main");
 
 app.use(expressLayouts);
 app.use(flash());
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+	}),
+);
 app.use(methodOverride("_method"));
 app.use(express.urlencoded({ limit: "10mb", extended: false }));
 app.use(express.static(path.join(__dirname, "../dist/public")));
@@ -41,7 +43,7 @@ app.use(passport.session());
 // Configure routes
 app.use("/", indexRouter);
 app.use("/game", gameRouter);
-app.use("/account", accountRouter);
+app.use("/account", passportConfig.isAuthenticated, accountRouter);
 app.use("*", (req, res) => {
 	res.redirect("/"); //catch all non-managed uri and redirect to homepage
 });

@@ -86,6 +86,7 @@ curl https://get.volta.sh | bash
 -   [Boilerplate Code][jsynowiec]
 -   [Websocket Typescript Example][websocket-ts-example]
 -   [Plant UML][plant-uml]
+-   [TS Node Example][ts-node-example]
 -   3D Models:
     -   [Battleship][battleship-model]
     -   [Submarine][submarine-model]
@@ -126,6 +127,7 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [websocket-ts-example]: https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate
 [plant-uml]: https://www.freecodecamp.org/news/inserting-uml-in-markdown-using-vscode/
 [volta]: https://docs.volta.sh/guide/getting-started
+[ts-node-example]: https://github.com/microsoft/TypeScript-Node-Starter
 [battleship-model]: https://sketchfab.com/3d-models/scharnhorst-0144f06264304b68a684d79cc13f1c62
 [submarine-model]: https://sketchfab.com/3d-models/u-557-ae10491added470c88e4e21bc8672cd1
 [destroyer-model]: https://sketchfab.com/3d-models/z-39-4bf9941a596b4b8b8a12302946d51181

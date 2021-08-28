@@ -1,34 +1,68 @@
-import { Strategy as LocalStrategy } from "passport-local";
-import { compare } from "bcryptjs";
-import passport, { PassportStatic } from "passport";
+import passport from "passport";
+import passportLocal from "passport-local";
 
-export default function initialize(
-	passport: PassportStatic,
-	getUserByEmail: (email: string) => any,
-	getUserById: (id: string) => any,
-) {
-	const authenticateUser = async (email, password, done) => {
-		const user = getUserByEmail(email);
-		if (user == null) {
-			return done(null, false, { message: "No user with that email" });
-		}
+// import { User, UserType } from '../models/User';
+import { User, UserDocument } from "../models/User";
+import { Request, Response, NextFunction } from "express";
+import { NativeError } from "mongoose";
 
-		try {
-			if (await compare(password, user.password)) {
-				return done(null, user);
-			} else {
-				return done(null, false, { message: "Password incorrect" });
-			}
-		} catch (e) {
-			return done(e);
-		}
-	};
+const LocalStrategy = passportLocal.Strategy;
 
-	passport.use(
-		new LocalStrategy({ usernameField: "email" }, authenticateUser),
+passport.serializeUser<any, any>((req, user, done) => {
+	done(undefined, user);
+});
+
+passport.deserializeUser((id, done) => {
+	User.findById(id, (err: NativeError, user: UserDocument) =>
+		done(err, user),
 	);
-	passport.serializeUser((user, done) => done(null, user.id));
-	passport.deserializeUser((id, done) => {
-		return done(null, getUserById(id));
-	});
-}
+});
+
+/**
+ * Sign in using Email and Password.
+ */
+passport.use(
+	new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
+		User.findOne(
+			{ email: email.toLowerCase() },
+			(err: NativeError, user: UserDocument) => {
+				if (err) {
+					return done(err);
+				}
+				if (!user) {
+					return done(undefined, false, {
+						message: `Email ${email} not found.`,
+					});
+				}
+				user.comparePassword(
+					password,
+					(err: Error, isMatch: boolean) => {
+						if (err) {
+							return done(err);
+						}
+						if (isMatch) {
+							return done(undefined, user);
+						}
+						return done(undefined, false, {
+							message: "Invalid email or password.",
+						});
+					},
+				);
+			},
+		);
+	}),
+);
+
+/**
+ * Login Required middleware.
+ */
+export const isAuthenticated = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect("account/login");
+};
