@@ -1,5 +1,6 @@
 import express from "express";
 import Account from "../models/Account";
+import bcryptjs from "bcryptjs";
 const router = express.Router();
 
 const id = "mitchid"; //TODO: NEED TO REMOVE THIS
@@ -19,14 +20,19 @@ router.get("/register", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-	const account = {
-		id: req.body.id,
-		displayName: req.body.displayName,
-		email: req.body.email,
-	};
-	res.send(account);
-	// res.redirect(`account/${account.id}`);
-	auth = true;
+	try {
+		const hashedPass = await bcryptjs.hash(req.body.password, 10);
+		const account = {
+			id: req.body.id,
+			displayName: req.body.displayName,
+			email: req.body.email,
+		};
+		res.send(account);
+		// res.redirect(`account/${account.id}`);
+		auth = true;
+	} catch {
+		res.redirect("account/register");
+	}
 });
 
 router.get("/:id", async (req, res) => {
