@@ -1,4 +1,4 @@
-import Game from "../server/models/Game";
+import Game from "../src/server/gameflow/Game";
 import TestUtils from "../utils/TestUtils";
 import GameRunner from "../utils/GameRunner";
 

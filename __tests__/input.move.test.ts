@@ -1,4 +1,4 @@
-import Move from "../server/models/Move";
+import Move from "../src/server/gameflow/Move";
 
 describe("Validate Player Move Requests", () => {
 	it("Accepts Correct Player Move", () => {

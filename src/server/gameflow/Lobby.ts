@@ -1,10 +1,9 @@
 import Game from "./Game";
-import ServerMessenger from "./ServerMessenger";
-import WSClientMessage from "./WSClientMessage";
-import WSServerMessage from "./WSServerMessage";
+import ServerMessenger from "../utils/ServerMessenger";
+import WSClientMessage from "../utils/WSClientMessage";
+import WSServerMessage from "../utils/WSServerMessage";
 import WebSocket from "ws";
 import Player from "./Player";
-import Statics from "./Statics";
 
 export default class Lobby {
 	games: Game[];

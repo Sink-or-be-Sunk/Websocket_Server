@@ -1,6 +1,5 @@
 import Board from "./Board";
 import Game from "./Game";
-import Layout from "./Layout";
 import Ship from "./Ship";
 
 class FleetBuilder {

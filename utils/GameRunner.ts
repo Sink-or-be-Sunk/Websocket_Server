@@ -1,9 +1,9 @@
-import Game from "../server/models/Game";
+import Game from "../src/server/gameflow/Game";
 import WebSocket from "ws";
-import Player from "../server/models/Player";
-import Board from "../server/models/Board";
-import Layout from "../server/models/Layout";
-import Move from "../server/models/Move";
+import Player from "../src/server/gameflow/Player";
+import Board from "../src/server/gameflow/Board";
+import Layout from "../src/server/gameflow/Layout";
+import Move from "../src/server/gameflow/Move";
 
 class GameRunner {
 	game: Game;

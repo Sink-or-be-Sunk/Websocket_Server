@@ -1,4 +1,4 @@
-import WSClientMessage from "../server/models/WSClientMessage";
+import WSClientMessage from "../src/server/utils/WSClientMessage";
 
 describe("Validate WS Client Messages", () => {
 	it("Accepts New Game Message", () => {

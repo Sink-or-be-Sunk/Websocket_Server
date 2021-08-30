@@ -1,14 +1,17 @@
 {
 	"compilerOptions": {
-		"baseUrl": "./",
 		"module": "commonjs",
-		"outDir": "./dist",
-		"strict": true,
-		"target": "ES2019",
-
 		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"removeComments": true
+		"allowSyntheticDefaultImports": true,
+		"target": "es6",
+		"noImplicitAny": true,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "dist",
+		"baseUrl": ".",
+		"paths": {
+			"*": ["node_modules/*", "src/types/*"]
+		}
 	},
-	"include": ["src/server/main.ts"]
+	"include": ["src/**/*"]
 }

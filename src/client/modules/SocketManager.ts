@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import WSClientMessage from "../../server/objects/WSClientMessage";
+import WSClientMessage from "../../server/models/WSClientMessage";
 
 export default class SocketManager {
 	socket: WebSocket;

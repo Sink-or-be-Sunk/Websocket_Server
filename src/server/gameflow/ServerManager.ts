@@ -1,10 +1,9 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
-import express from "express";
 import * as http from "http";
 import WebSocket from "ws";
 import Lobby from "./Lobby";
-import WSClientMessage from "./WSClientMessage";
-import ServerMessenger from "./ServerMessenger";
+import WSClientMessage from "../utils/WSClientMessage";
+import ServerMessenger from "../utils/ServerMessenger";
 
 export default class ServerManager {
 	private lobby: Lobby;

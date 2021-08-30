@@ -1,5 +1,5 @@
 {
-	"watch": ["src/", "public"],
+	"watch": ["src/server", "public"],
 	"ext": "ts, ejs, js",
 	"exec": "npm run build:ts:server && npm start"
 }

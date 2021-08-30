@@ -1,10 +1,10 @@
-import Lobby from "../server/models/Lobby";
-import Game from "../server/models/Game";
-import ServerMessenger from "../server/models/ServerMessenger";
-import WSClientMessage from "../server/models/WSClientMessage";
+import Lobby from "../src/server/gameflow/Lobby";
+import Game from "../src/server/gameflow/Game";
+import ServerMessenger from "../src/server/utils/ServerMessenger";
+import WSClientMessage from "../src/server/utils/WSClientMessage";
 import TestUtils from "../utils/TestUtils";
-import Move from "../server/models/Move";
-import Layout from "../server/models/Layout";
+import Move from "../src/server/gameflow/Move";
+import Layout from "../src/server/gameflow/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();

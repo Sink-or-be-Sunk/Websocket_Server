@@ -4,7 +4,6 @@ import Player from "./Player";
 import Move from "./Move";
 import Layout from "./Layout";
 import Ship from "./Ship";
-import FleetBuilder from "./FleetBuilder";
 class Game {
 	/**
 	 * List of all players in the game

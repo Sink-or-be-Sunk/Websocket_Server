@@ -1,6 +1,4 @@
-import { isNumericLiteral } from "typescript";
 import Board from "./Board";
-import Game from "./Game";
 import Layout from "./Layout";
 import Move from "./Move";
 

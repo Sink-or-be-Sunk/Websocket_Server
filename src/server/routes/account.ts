@@ -3,7 +3,7 @@ const router = express.Router();
 import { User, UserDocument, AuthToken } from "../models/User";
 import { CallbackError, NativeError } from "mongoose";
 
-import Account from "../models/Account";
+import Account from "../gameflow/Account";
 
 const id = "mitchid"; //TODO: NEED TO REMOVE THIS
 let auth = false; //TODO: ADD AUTH CHECK

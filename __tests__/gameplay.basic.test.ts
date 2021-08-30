@@ -1,9 +1,9 @@
-import Game from "../server/models/Game";
-import Player from "../server/models/Player";
-import Move from "../server/models/Move";
+import Game from "../src/server/gameflow/Game";
+import Player from "../src/server/gameflow/Player";
+import Move from "../src/server/gameflow/Move";
 import TestUtils from "../utils/TestUtils";
-import Ship from "../server/models/Ship";
-import Layout from "../server/models/Layout";
+import Ship from "../src/server/gameflow/Ship";
+import Layout from "../src/server/gameflow/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();

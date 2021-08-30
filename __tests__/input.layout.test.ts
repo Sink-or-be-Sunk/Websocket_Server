@@ -1,4 +1,4 @@
-import Layout from "../server/models/Layout";
+import Layout from "../src/server/gameflow/Layout";
 
 describe("Validate Layout Change from Client Message", () => {
 	it("Accepts valid single element list", () => {
