@@ -64,5 +64,5 @@ export const isAuthenticated = (
 	if (req.isAuthenticated()) {
 		return next();
 	}
-	res.redirect("account/login");
+	res.redirect("/login");
 };

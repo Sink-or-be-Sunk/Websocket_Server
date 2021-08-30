@@ -52,7 +52,7 @@ mongoose
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
-app.set("views", path.join(__dirname, "../src/server/views"));
+app.set("views", path.join(__dirname, "../../views"));
 app.set("view engine", "ejs");
 app.use(expressLayouts);
 app.set("layout", "layouts/main");
@@ -73,10 +73,10 @@ app.use(passport.session());
 app.use(flash());
 // app.use(lusca.xframe("SAMEORIGIN"));
 // app.use(lusca.xssProtection(true));
-// app.use((req, res, next) => {
-//     res.locals.user = req.user;
-//     next();
-// });
+app.use((req, res, next) => {
+	res.locals.user = req.user;
+	next();
+});
 app.use((req, res, next) => {
 	// After successful login, redirect back to the intended page
 	if (
@@ -92,7 +92,9 @@ app.use((req, res, next) => {
 	}
 	next();
 });
-app.use(express.static(path.join(__dirname, "../dist/public")));
+app.use(
+	express.static(path.join(__dirname, "../public"), { maxAge: 31557600000 }),
+);
 app.use(methodOverride("_method"));
 
 // Configure passport middleware

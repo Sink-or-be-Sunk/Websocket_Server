@@ -1,5 +1,5 @@
-<h2>Welcome <%- account.displayName %></h2>
-<form action="/account/<%= account.id %>?_method=PUT" method="POST">
+<h2>Welcome <%- user.profile.name %></h2>
+<form action="/account/profile?_method=PUT" method="POST">
 	<%- include('_common_fields.ejs') %>
 	<button type="submit" class="btn-primary btn">Update Profile</button>
 </form>

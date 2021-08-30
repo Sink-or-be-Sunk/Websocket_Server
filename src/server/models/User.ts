@@ -2,6 +2,18 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import mongoose from "mongoose";
 
+export class UserFields {
+	email: string;
+	password: string;
+	name: string;
+
+	constructor(email?: string, password?: string, name?: string) {
+		this.email = email;
+		this.password = password;
+		this.name = name;
+	}
+}
+
 export type UserDocument = mongoose.Document & {
 	email: string;
 	password: string;

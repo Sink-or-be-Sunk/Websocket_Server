@@ -1,26 +1,18 @@
 import express from "express";
 const router = express.Router();
-import { User, UserDocument, AuthToken } from "../models/User";
+import { User, UserDocument, AuthToken, UserFields } from "../models/User";
 import { CallbackError, NativeError } from "mongoose";
+import * as passportConfig from "../auth/passport-config";
 
-import Account from "../gameflow/Account";
-
-const id = "mitchid"; //TODO: NEED TO REMOVE THIS
-let auth = false; //TODO: ADD AUTH CHECK
-
-router.get("/", async (req, res) => {
-	if (auth) {
-		res.redirect(`account/${id}`);
-	} else {
-		res.redirect("account/register");
-	}
+router.get("/", passportConfig.isAuthenticated, async (req, res) => {
+	res.render("account/index");
 });
 
 router.get("/register", async (req, res) => {
 	if (req.user) {
 		return res.redirect("/");
 	}
-	res.render("account/register", { account: new Account() });
+	res.render("account/register", { account: new UserFields() });
 });
 
 router.post("/register", async (req, res, next) => {
@@ -32,7 +24,6 @@ router.post("/register", async (req, res, next) => {
 		};
 		res.send(account);
 		// res.redirect(`account/${account.id}`);
-		auth = true;
 	} catch {
 		res.redirect("account/register");
 	}
@@ -95,9 +86,8 @@ router.put("/:id", async (req, res) => {
 	let account;
 	try {
 		console.log(req.params.id);
-		account = await Account.findById(req.params.id);
+		account = await User.findById(req.params.id);
 		console.log(account);
-		account.displayName = req.body.displayName;
 		account.email = req.body.email;
 		await account.save();
 		res.redirect(`account`);
