@@ -1,0 +1,18 @@
+doctype
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		title #{title} - Sink or be Sunk
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+		link(rel='stylesheet',type="text/css", href='/styles/main.css')
+		script(src='/js/lib/bootstrap.min.js')
+		script(async defer src="https://buttons.github.io/buttons.js")
+	body
+		include partials/header
+
+		.container 
+			.inner-container
+				include partials/flash
+				block content

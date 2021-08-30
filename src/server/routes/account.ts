@@ -5,7 +5,7 @@ import { CallbackError, NativeError } from "mongoose";
 import * as passportConfig from "../auth/passport-config";
 
 router.get("/", passportConfig.isAuthenticated, async (req, res) => {
-	res.render("account/index");
+	res.render("account/profile");
 });
 
 router.get("/register", async (req, res) => {

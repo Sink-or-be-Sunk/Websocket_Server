@@ -13,7 +13,6 @@ import logger from "./utils/logger";
 
 import methodOverride from "method-override";
 // import ServerManager from "./objects/ServerManager";
-import expressLayouts from "express-ejs-layouts";
 
 //Routes
 import indexRouter from "./routes/index";
@@ -53,9 +52,7 @@ mongoose
 // Express configuration
 app.set("port", process.env.PORT || 3000);
 app.set("views", path.join(__dirname, "../../views"));
-app.set("view engine", "ejs");
-app.use(expressLayouts);
-app.set("layout", "layouts/main");
+app.set("view engine", "pug");
 // app.use(compression());
 app.use(express.urlencoded({ limit: "10mb", extended: false }));
 app.use(
