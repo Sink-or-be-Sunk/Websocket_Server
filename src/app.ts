@@ -38,17 +38,17 @@ app.set("port", process.env.PORT || 3000);
 app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "pug");
 app.use(compression());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(session({
     resave: true,
     saveUninitialized: true,
     secret: SESSION_SECRET,
     store: new MongoStore({
         mongoUrl,
-        mongoOptions: {
-            autoReconnect: true
-        }
+        // mongoOptions: {
+        //     autoReconnect: true,
+        // }
     })
 }));
 app.use(passport.initialize());
