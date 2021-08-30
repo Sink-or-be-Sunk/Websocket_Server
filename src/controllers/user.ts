@@ -2,13 +2,15 @@ import async from "async";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import passport from "passport";
-import { User, UserDocument, AuthToken } from "../models/User";
+import { User, UserDocument, AuthToken, USERNAME_REGEX } from "../models/User";
+import { Friend, FriendDocument } from "../models/Friend";
 import { Request, Response, NextFunction } from "express";
 import { IVerifyOptions } from "passport-local";
 import { WriteError } from "mongodb";
 import { body, check, validationResult } from "express-validator";
 import "../config/passport";
 import { CallbackError, NativeError } from "mongoose";
+import logger from "../util/logger";
 
 /**
  * Login page.
@@ -131,6 +133,7 @@ export const getAccount = (req: Request, res: Response): void => {
  */
 export const postUpdateProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await check("email", "Please enter a valid email address.").isEmail().run(req);
+    await check("username", "Please enter a valid username").matches(USERNAME_REGEX).run(req);
     await body("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
 
     const errors = validationResult(req);
@@ -144,10 +147,9 @@ export const postUpdateProfile = async (req: Request, res: Response, next: NextF
     User.findById(user.id, (err: NativeError, user: UserDocument) => {
         if (err) { return next(err); }
         user.email = req.body.email || "";
+        user.username = req.body.username || "";
         user.profile.name = req.body.name || "";
-        user.profile.gender = req.body.gender || "";
-        user.profile.location = req.body.location || "";
-        user.profile.website = req.body.website || "";
+        user.profile.device = req.body.device || "";
         user.save((err: WriteError & CallbackError) => {
             if (err) {
                 if (err.code === 11000) {
@@ -382,4 +384,54 @@ export const postForgot = async (req: Request, res: Response, next: NextFunction
         if (err) { return next(err); }
         res.redirect("/forgot");
     });
+};
+
+
+/**
+ * Update current password.
+ * @route POST /account/friend
+ */
+ export const postUpdateFriends = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        req.flash("errors", errors.array());
+        return res.redirect("/account");
+    }
+
+    // //A is requesting B
+    const userA = req.user as UserDocument;
+    const userB = await User.findOne({"username": req.body.friend});
+
+    logger.debug(userA);
+    logger.debug(userB);
+    if (!userB) {
+        req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
+        return res.redirect("/account");
+    } else {
+        req.flash("success", { msg: `Requested ${req.body.friend}` });
+        return res.redirect("/account");
+    }
+    //TODO: NEED TO IMPLEMENT FRIEND REQUESTS IN MONGO
+
+    // const docA = await Friend.findOneAndUpdate(
+    //     { requester: UserA, recipient: UserB },
+    //     { $set: { status: 1 }},
+    //     { upsert: true, new: true }
+    // );
+    // const docB = await Friend.findOneAndUpdate(
+    //     { recipient: UserA, requester: UserB },
+    //     { $set: { status: 2 }},
+    //     { upsert: true, new: true }
+    // );
+    // const updateUserA = await User.findOneAndUpdate(
+    //     { _id: UserA },
+    //     { $push: { friends: docA._id }}
+    // );
+    // const updateUserB = await User.findOneAndUpdate(
+    //     { _id: UserB },
+    //     { $push: { friends: docB._id }}
+    // );
 };

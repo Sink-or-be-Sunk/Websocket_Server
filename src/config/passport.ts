@@ -1,6 +1,5 @@
 import passport from "passport";
 import passportLocal from "passport-local";
-import { find } from "lodash";
 
 // import { User, UserType } from '../models/User';
 import { User, UserDocument } from "../models/User";

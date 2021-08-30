@@ -12,29 +12,17 @@ block content
       .col-sm-7
         input.form-control(type='email', name='email', id='email', value=user.email)
     .form-group.row.justify-content-md-center
+      label.col-sm-3.col-form-label.text-right.font-weight-bold(for='username') Username
+      .col-sm-7
+        input.form-control(type='text', name='username', id='username', value=user.username)
+    .form-group.row.justify-content-md-center
       label.col-sm-3.col-form-label.text-right.font-weight-bold(for='name') Name
       .col-sm-7
         input.form-control(type='text', name='name', id='name', value=user.profile.name)
-    .form-group.row.justify-content-md-center.align-items-center
-      label.col-sm-3.col-form-label.text-right.font-weight-bold Gender
-      .col-sm-7
-        .form-check.form-check-inline
-          input#option-male.form-check-input(type='radio', checked=user.profile.gender==='male', name='gender', value='male', data-toggle='radio')
-          label.form-check-label(for="option-male") Male
-        .form-check.form-check-inline
-          input#option-female.form-check-input(type='radio', checked=user.profile.gender==='female', name='gender', value='female', data-toggle='radio')
-          label.form-check-label(for="option-female") Female
-        .form-check.form-check-inline
-          input#option-other.form-check-input(type='radio', checked=user.profile.gender==='other', name='gender', value='other', data-toggle='radio')
-          label.form-check-label(for="option-other") Other
     .form-group.row.justify-content-md-center
-      label.col-sm-3.col-form-label.text-right.font-weight-bold(for='location') Location
+      label.col-sm-3.col-form-label.text-right.font-weight-bold(for='device') Device
       .col-sm-7
-        input.form-control(type='text', name='location', id='location', value=user.profile.location)
-    .form-group.row.justify-content-md-center
-      label.col-sm-3.col-form-label.text-right.font-weight-bold(for='website') Website
-      .col-sm-7
-        input.form-control(type='text', name='website', id='website', value=user.profile.website)
+        input.form-control(type='text', name='device', id='device', value=user.profile.device)
     .form-group.row.justify-content-md-center
       label.col-sm-3.col-form-label.text-right.font-weight-bold Gravatar
       .col-sm-7
@@ -44,6 +32,23 @@ block content
         button.btn.btn.btn-primary(type='submit')
           i.fa.fa-pencil
           | Update Profile
+
+  .page-header
+    h3 Manage Friends
+    hr
+
+  form.form-horizontal(action='/account/friend', method='POST')
+    input(type='hidden', name='_csrf', value=_csrf)
+    .form-group.row.justify-content-md-center
+      label.col-sm-3.col-form-label.text-right.font-weight-bold(for='friend') New Friend
+      .col-sm-7
+        input.form-control(type='text', name='friend', id='friend')
+    .form-group.row.justify-content-md-center
+      .col-sm-4
+        button.btn.btn-primary(type='submit')
+          i.fa.fa-user-plus
+          | Add Friend
+
 
   .page-header
     h3 Change Password

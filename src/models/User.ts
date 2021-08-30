@@ -2,8 +2,11 @@ import bcrypt from "bcrypt-nodejs";
 import crypto from "crypto";
 import mongoose from "mongoose";
 
+export const USERNAME_REGEX = /^[a-z](?:_?[a-z0-9])*$/;
+
 export type UserDocument = mongoose.Document & {
     email: string;
+    username: string;
     password: string;
     passwordResetToken: string;
     passwordResetExpires: Date;
@@ -13,11 +16,10 @@ export type UserDocument = mongoose.Document & {
 
     profile: {
         name: string;
-        gender: string;
-        location: string;
-        website: string;
-        picture: string;
+        device: string;
     };
+
+    friends: mongoose.Schema.Types.ObjectId[];
 
     comparePassword: comparePasswordFunction;
     gravatar: (size: number) => string;
@@ -33,6 +35,7 @@ export interface AuthToken {
 const userSchema = new mongoose.Schema<UserDocument>(
     {
         email: { type: String, unique: true },
+        username: {type: String, unique: true}, 
         password: String,
         passwordResetToken: String,
         passwordResetExpires: Date,
@@ -44,11 +47,9 @@ const userSchema = new mongoose.Schema<UserDocument>(
     
         profile: {
             name: String,
-            gender: String,
-            location: String,
-            website: String,
-            picture: String
-        }
+            device: String,
+        },
+        friends: [{ type: mongoose.Schema.Types.ObjectId, ref: "Friend"}]
     },
     { timestamps: true },
 );

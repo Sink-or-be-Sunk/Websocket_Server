@@ -1,7 +1,6 @@
 import express from "express";
 import compression from "compression";  // compresses requests
 import session from "express-session";
-import bodyParser from "body-parser";
 import lusca from "lusca";
 import MongoStore from "connect-mongo";
 import flash from "express-flash";
@@ -98,5 +97,5 @@ app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
 app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
-
+app.post("/account/friend", passportConfig.isAuthenticated, userController.postUpdateFriends );
 export default app;

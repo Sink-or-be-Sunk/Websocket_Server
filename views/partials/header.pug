@@ -1,8 +1,8 @@
 nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
   .container
     a.navbar-brand(href='/')
-      i.fa.fa-cube
-      | Project name
+      i.fa.fa-anchor
+      | Sink or be Sunk
     button.navbar-toggler(type='button', data-toggle='collapse', data-target='.navbar-collapse')
       span.navbar-toggler-icon
 
@@ -13,6 +13,12 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
           a.nav-link(href='/') Home
         li.nav-item(class=(title === 'Contact') ? 'active' : undefined)
           a.nav-link(href='/contact') Contact
+        //- Routes only shown to users that are logged in
+        if user
+          li.nav-item(class=(title === 'Game') ? 'active' : undefined)
+            a.nav-link(href='/game') Game
+
+
       ul.nav.navbar-nav
         if !user
           li.nav-item(class=(title === 'Login') ? 'active' : undefined)
