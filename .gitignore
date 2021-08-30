@@ -1,3 +1,5 @@
+.archive/**/*
+
 lib-cov
 *.seed
 *.log

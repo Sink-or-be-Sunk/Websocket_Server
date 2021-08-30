@@ -1,35 +1,52 @@
-/*Jest Launch Configuration for VSCode Debugging (Mac and Windows)*/
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Debug Jest Tests for Windows",
-			"type": "node",
-			"request": "launch",
-			"runtimeExecutable": "C:\\Users\\M85963\\Documents\\nodejs\\node.exe",
-			"args": ["gamerunner"],
-			"runtimeArgs": [
-				"--inspect-brk",
-				"${workspaceRoot}/node_modules/jest/bin/jest.js",
-				"--runInBand"
-			],
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"port": 9229
-		},
-		{
-			"name": "Debug Jest Tests for Mac",
-			"type": "node",
-			"request": "launch",
-			"args": ["matchmaking"],
-			"runtimeArgs": [
-				"--inspect-brk",
-				"${workspaceRoot}/node_modules/.bin/jest",
-				"--runInBand"
-			],
-			"console": "integratedTerminal",
-			"internalConsoleOptions": "neverOpen",
-			"port": 9229
-		}
-	]
+    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Program",
+            "type": "node",
+            "program": "${workspaceFolder}/dist/server.js",
+            "request": "launch",
+            "preLaunchTask": "npm: build"
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Current File",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": [
+                "${fileBasenameNoExtension}",
+                "--detectOpenHandles"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest all",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "test"
+            ],
+            "port": 9229,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+    ]
 }
