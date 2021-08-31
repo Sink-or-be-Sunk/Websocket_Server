@@ -1,0 +1,113 @@
+@startuml Class_Diagram
+package "Game Class Diagram" {
+        [Game_obj] -left- game_id
+        [Game_obj] -right- turn
+        [Game_obj] -down-> game_state : has 1
+        [Game_obj] -down-> [Rules] : has 1
+        [Game_obj] -down-> [Board] : has >= 2
+        [Game_obj] -down-> [Player] : has >= 2
+
+        node "Rules" {
+        }
+
+        node "Player" {
+        }
+
+        node "Board" {
+
+            node "Grid" {
+                node "Square" {
+                }
+            }
+
+            node "Ship" {
+                node "Ship_Type" {
+                }
+            }
+        }
+
+}
+@enduml
+
+@startuml Class_Diagram_Detail
+package "Game Class Diagram (Detail)" {
+        [Game_obj] -left- game_id
+        [Game_obj] -right- turn
+        [Game_obj] -down-> game_state : has 1
+        [Game_obj] -down-> [Rules] : has 1
+        [Game_obj] -down-> [Board] : has >= 2
+        [Game_obj] -down-> [Player] : has >= 2
+
+        game_state --> [Game_State] : of type
+
+        [Game_State] -down- IDLE
+        [Game_State] -down- STARTED
+        [Game_State] -down- OVER
+
+        node "Rules" {
+            [Rules_obj] -right- rules_type
+            [Rules_obj] -left- ships
+            [Rules_obj] -down- boardSize
+
+            rules_type -> [Rules_Type] : of type
+
+            [Rules_Type] -down- CLASSIC
+            [Rules_Type] -down- BASIC
+        }
+
+        node "Player" {
+            [Player_obj] -left- name
+            [Player_obj] -right- socket
+            [Player_obj] -down- player_id
+            [Player_obj] -down- ready
+        }
+
+        node "Board" {
+            [Board_obj] -left- board_id
+            [Board_obj] -down-> [grid]
+            [Board_obj] -down-> [Ship]
+            [Board_obj] -right- size
+            [grid] --> [Square] : has *
+
+            node "Square" {
+                [Square_obj] -right- square_state
+                [Square_obj] -left- col
+                [Square_obj] -down- row
+
+                square_state --> [Square_State] : of type
+
+                [Square_State] -down- empty
+                [Square_State] -down- filled
+                [Square_State] -down- hit
+                [Square_State] -down- miss
+            }
+
+            node "Ship" {
+                [Ship_obj] --> Square : has *
+                [Ship_obj] --> [Ship_Type] : has *
+                [Ship_obj] --> ship_state : has *
+
+                ship_state --> [Ship_State] : of type
+
+                [Ship_State] -down- WHOLE
+                [Ship_State] -down- DAMAGED
+                [Ship_State] -down- SUNK
+
+                node "Ship_Type" {
+                    [Ship_Type_Obj] -right- ship_descriptor
+                    [Ship_Type_Obj] -left- ship_name
+                    [Ship_Type_Obj] -down- ship_size
+                    
+                    ship_descriptor --> [Ship_Descriptor] : of type
+
+                    [Ship_Descriptor] -down- CARRIER
+                    [Ship_Descriptor] -down- BATTLESHIP
+                    [Ship_Descriptor] -down- DESTROYER
+                    [Ship_Descriptor] -down- SUBMARINE
+                    [Ship_Descriptor] -down- PathHoverColor
+                }
+            }
+        }
+
+}
+@enduml
