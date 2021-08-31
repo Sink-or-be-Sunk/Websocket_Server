@@ -1,14 +1,8 @@
-import nodemailer from "nodemailer";
 import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const transporter = nodemailer.createTransport({
-    service: "SendGrid",
-    auth: {
-        user: process.env.SENDGRID_USER,
-        pass: process.env.SENDGRID_PASSWORD
-    }
-});
 
 /**
  * Contact form page.
@@ -36,14 +30,16 @@ export const postContact = async (req: Request, res: Response) => {
         return res.redirect("/contact");
     }
 
+    const body = `from: ${req.body.name} <${req.body.email}>\ncontent: ${req.body.message}`;
+
     const mailOptions = {
-        to: "your@email.com", //TODO: UPDATE THIS FIELD
-        from: `${req.body.name} <${req.body.email}>`,
+        to: "mitchaarndt@gmail.com",//TODO: MAKE A NEW EMAIL CALLED SINK OR BE SUNK ROBOT as sender
+        from: "SinkOrBeSunk@gmail.com",//this would be the robot account (sender only) 
         subject: "Contact Form",
-        text: req.body.message
+        text: body
     };
 
-    transporter.sendMail(mailOptions, (err) => {
+    sgMail.send(mailOptions, undefined, (err)=> {
         if (err) {
             req.flash("errors", { msg: err.message });
             return res.redirect("/contact");

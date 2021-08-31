@@ -1,6 +1,5 @@
 import async from "async";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
 import passport from "passport";
 import { User, UserDocument, AuthToken, USERNAME_REGEX } from "../models/User";
 import { Friend, FriendDocument } from "../models/Friend";
@@ -11,6 +10,8 @@ import { body, check, validationResult } from "express-validator";
 import "../config/passport";
 import { CallbackError, NativeError } from "mongoose";
 import logger from "../util/logger";
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
  * Login page.
@@ -31,7 +32,7 @@ export const getLogin = (req: Request, res: Response): void => {
  */
 export const postLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await check("email", "Email is not valid").isEmail().run(req);
-    await check("password", "Password cannot be blank").isLength({min: 1}).run(req);
+    await check("password", "Password cannot be blank").isLength({ min: 1 }).run(req);
     await body("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
 
     const errors = validationResult(req);
@@ -44,7 +45,7 @@ export const postLogin = async (req: Request, res: Response, next: NextFunction)
     passport.authenticate("local", (err: Error, user: UserDocument, info: IVerifyOptions) => {
         if (err) { return next(err); }
         if (!user) {
-            req.flash("errors", {msg: info.message});
+            req.flash("errors", { msg: info.message });
             return res.redirect("/login");
         }
         req.logIn(user, (err) => {
@@ -285,20 +286,13 @@ export const postReset = async (req: Request, res: Response, next: NextFunction)
                 });
         },
         function sendResetPasswordEmail(user: UserDocument, done: (err: Error) => void) {
-            const transporter = nodemailer.createTransport({
-                service: "SendGrid",
-                auth: {
-                    user: process.env.SENDGRID_USER,
-                    pass: process.env.SENDGRID_PASSWORD
-                }
-            });
             const mailOptions = {
                 to: user.email,
-                from: "express-ts@starter.com",
+                from: "SinkOrBeSunk@gmail.com",
                 subject: "Your password has been changed",
                 text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`
             };
-            transporter.sendMail(mailOptions, (err) => {
+            sgMail.send(mailOptions, undefined, (err) => {
                 req.flash("success", { msg: "Success! Your password has been changed." });
                 done(err);
             });
@@ -359,23 +353,16 @@ export const postForgot = async (req: Request, res: Response, next: NextFunction
             });
         },
         function sendForgotPasswordEmail(token: AuthToken, user: UserDocument, done: (err: Error) => void) {
-            const transporter = nodemailer.createTransport({
-                service: "SendGrid",
-                auth: {
-                    user: process.env.SENDGRID_USER,
-                    pass: process.env.SENDGRID_PASSWORD
-                }
-            });
             const mailOptions = {
                 to: user.email,
-                from: "hackathon@starter.com",
-                subject: "Reset your password on Hackathon Starter",
+                from: "SinkOrBeSunk@gmail.com",
+                subject: "Reset your password on Sink or be Sunk",
                 text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n
           If you did not request this, please ignore this email and your password will remain unchanged.\n`
             };
-            transporter.sendMail(mailOptions, (err) => {
+            sgMail.send(mailOptions, undefined, (err) => {
                 req.flash("info", { msg: `An e-mail has been sent to ${user.email} with further instructions.` });
                 done(err);
             });
@@ -391,7 +378,7 @@ export const postForgot = async (req: Request, res: Response, next: NextFunction
  * Update current password.
  * @route POST /account/friend
  */
- export const postUpdateFriends = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const postUpdateFriends = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
 
     const errors = validationResult(req);
@@ -403,7 +390,7 @@ export const postForgot = async (req: Request, res: Response, next: NextFunction
 
     // //A is requesting B
     const userA = req.user as UserDocument;
-    const userB = await User.findOne({"username": req.body.friend});
+    const userB = await User.findOne({ "username": req.body.friend });
 
     logger.debug(userA);
     logger.debug(userB);
