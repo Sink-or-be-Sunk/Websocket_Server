@@ -50,6 +50,7 @@
     "express-session": "1.17.1",
     "express-validator": "6.9.2",
     "fbgraph": "1.4.4",
+    "fs": "0.0.1-security",
     "lusca": "1.6.1",
     "mongoose": "5.11.15",
     "passport": "0.4.1",

@@ -1,10 +1,22 @@
-// Example: snowpack.config.mjs
-// The added "@type" comment will enable TypeScript type information via VSCode, etc.
+// Snowpack Configuration File
+// See all supported options: https://www.snowpack.dev/reference/configuration
 
 /** @type {import("snowpack").SnowpackUserConfig } */
-export default {
-    plugins: [
-      /* ... */
-    ],
-    workspaceRoot: "src/public/js"
-  };
+module.exports = {
+  mount: {
+    /* ... */
+  },
+  plugins: [
+    /* ... */
+  ],
+  packageOptions: {
+    /* ... */
+  },
+  devOptions: {
+    /* ... */
+  },
+  buildOptions: {
+    out: "dist/public/js",
+  },
+  root: "src/public/js",
+};
