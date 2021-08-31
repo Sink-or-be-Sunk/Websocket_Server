@@ -1,8 +1,8 @@
-import Move from "../../src/models/gameplay/Move";
+import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
 
 describe("Validate Player Move Requests", () => {
 	it("Accepts Correct Player Move", () => {
-		const obj = { c: 1, r: 2, type: Move.TYPE.SOLO, at: "joe" };
+		const obj = { c: 1, r: 2, type: MOVE_TYPE.SOLO, at: "joe" };
 		const str = JSON.stringify(obj);
 		const move = new Move(str);
 		expect(move).toEqual({
@@ -14,20 +14,20 @@ describe("Validate Player Move Requests", () => {
 	});
 
 	it("Accepts Player move with stringified numbers", () => {
-		const obj = { c: "1", r: "2", type: Move.TYPE.SOLO, at: "joe" };
+		const obj = { c: "1", r: "2", type: MOVE_TYPE.SOLO, at: "joe" };
 		const str = JSON.stringify(obj);
 		const move = new Move(str);
-		expect(move).toEqual({ c: 1, r: 2, type: Move.TYPE.SOLO, at: obj.at });
+		expect(move).toEqual({ c: 1, r: 2, type: MOVE_TYPE.SOLO, at: obj.at });
 	});
 
 	it("Rejects Invalid String Numbers", () => {
-		const obj = { c: "1a", r: "2b", type: Move.TYPE.SOLO, at: "joe" };
+		const obj = { c: "1a", r: "2b", type: MOVE_TYPE.SOLO, at: "joe" };
 		const str = JSON.stringify(obj);
 		const move = new Move(str);
 		expect(move).toEqual({
 			c: -1,
 			r: -1,
-			type: Move.TYPE.INVALID,
+			type: MOVE_TYPE.INVALID,
 			at: "",
 		});
 	});
@@ -38,15 +38,15 @@ describe("Validate Player Move Requests", () => {
 		expect(move).toEqual({
 			c: -1,
 			r: -1,
-			type: Move.TYPE.BAD_FORMAT,
+			type: MOVE_TYPE.BAD_FORMAT,
 			at: "",
 		});
 	});
 
 	it("Rejects Object without all Fields", () => {
-		const obj = { c: 1, type: Move.TYPE.SOLO, at: "joe" };
+		const obj = { c: 1, type: MOVE_TYPE.SOLO, at: "joe" };
 		const str = JSON.stringify(obj);
 		const move = new Move(str);
-		expect(move).toEqual({ c: -1, r: -1, type: Move.TYPE.INVALID, at: "" });
+		expect(move).toEqual({ c: -1, r: -1, type: MOVE_TYPE.INVALID, at: "" });
 	});
 });

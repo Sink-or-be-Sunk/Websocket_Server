@@ -1,10 +1,10 @@
 import Lobby from "../../src/models/gameplay/Lobby";
-import Game from "../../src/models/gameplay/Game";
+import { GAME_TYPE, ResponseHeader, Response } from "../../src/models/gameplay/Game";
 import ServerMessenger from "../../src/util/ServerMessenger";
 import { WSClientMessage, REQ_TYPE } from "../../src/util/WSClientMessage";
 import TestUtils from "../../testUtils/TestUtils";
-import Move from "../../src/models/gameplay/Move";
-import { Layout, Position, TYPE } from "../../src/models/gameplay/Layout";
+import { MOVE_TYPE } from "../../src/models/gameplay/Move";
+import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -25,7 +25,7 @@ describe("Basic Matchmaking", () => {
 		const req = {
 			id: "one",
 			req: REQ_TYPE.NEW_GAME,
-			data: Game.TYPE.BASIC,
+			data: GAME_TYPE.BASIC,
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
@@ -44,10 +44,10 @@ describe("Basic Matchmaking", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Position(0, 0, TYPE.PATROL);
-		const pos1 = new Position(0, 1, TYPE.PATROL);
-		const pos2 = new Position(1, 0, TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
+		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
+		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const req = {
@@ -61,10 +61,10 @@ describe("Basic Matchmaking", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Position(0, 0, TYPE.PATROL);
-		const pos1 = new Position(0, 1, TYPE.PATROL);
-		const pos2 = new Position(1, 0, TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
+		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
+		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const req = {
@@ -84,7 +84,7 @@ describe("Basic Matchmaking", () => {
 			data: JSON.stringify({
 				c: 0,
 				r: 0,
-				type: Move.TYPE.SOLO,
+				type: MOVE_TYPE.SOLO,
 				at: "two",
 			}),
 		};
@@ -100,7 +100,7 @@ describe("Basic Matchmaking", () => {
 			data: JSON.stringify({
 				c: 1,
 				r: 2,
-				type: Move.TYPE.SOLO,
+				type: MOVE_TYPE.SOLO,
 				at: "one",
 			}),
 		};
@@ -116,14 +116,14 @@ describe("Basic Matchmaking", () => {
 			data: JSON.stringify({
 				c: 3,
 				r: 2,
-				type: Move.TYPE.SOLO,
+				type: MOVE_TYPE.SOLO,
 				at: "one",
 			}),
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
 		const resp = lobby.handleReq(utils.getSocket(req.id), msg);
 		expect(resp).toStrictEqual(
-			ServerMessenger.invalid_move(Game.ResponseHeader.TURN_ERROR),
+			ServerMessenger.invalid_move(ResponseHeader.TURN_ERROR),
 		);
 	});
 });

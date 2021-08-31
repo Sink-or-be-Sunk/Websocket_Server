@@ -1,6 +1,6 @@
-import Game from "../../src/models/gameplay/Game";
+import { GAME_TYPE } from "../../src/models/gameplay/Game";
 import TestUtils from "../../testUtils/TestUtils";
-import GameRunner from "../../testUtils/GameRunner";
+import { GameRunner, RUNNER_POSITION } from "../../testUtils/GameRunner";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -14,9 +14,9 @@ afterAll(async () => {
 });
 
 describe("Validate GameRunner Match with Player1 Winning", () => {
-	const E = GameRunner.POSITIONS.E;
-	const P = GameRunner.POSITIONS.P;
-	const D = GameRunner.POSITIONS.D;
+	const E = RUNNER_POSITION.E;
+	const P = RUNNER_POSITION.P;
+	const D = RUNNER_POSITION.D;
 
 	const b1 = [
 		[E, E, E, E, E, E],
@@ -38,7 +38,7 @@ describe("Validate GameRunner Match with Player1 Winning", () => {
 
 	const runner = new GameRunner(
 		utils.getSocket("one"),
-		Game.TYPE.BASIC,
+		GAME_TYPE.BASIC,
 		boards,
 	);
 
@@ -50,9 +50,9 @@ describe("Validate GameRunner Match with Player1 Winning", () => {
 });
 
 describe("Validate GameRunner Match with Player2 Winning", () => {
-	const E = GameRunner.POSITIONS.E;
-	const P = GameRunner.POSITIONS.P;
-	const D = GameRunner.POSITIONS.D;
+	const E = RUNNER_POSITION.E;
+	const P = RUNNER_POSITION.P;
+	const D = RUNNER_POSITION.D;
 
 	const b1 = [
 		[E, E, E, E, P, P],
@@ -74,7 +74,7 @@ describe("Validate GameRunner Match with Player2 Winning", () => {
 
 	const runner = new GameRunner(
 		utils.getSocket("one"),
-		Game.TYPE.BASIC,
+		GAME_TYPE.BASIC,
 		boards,
 	);
 
