@@ -14,6 +14,7 @@ import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
 import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as contactController from "./controllers/contact";
+import * as gameController from "./controllers/game";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -98,4 +99,5 @@ app.post("/account/profile", passportConfig.isAuthenticated, userController.post
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.post("/account/friend", passportConfig.isAuthenticated, userController.postUpdateFriends );
+app.get("/game", passportConfig.isAuthenticated, gameController.getGame );
 export default app;
