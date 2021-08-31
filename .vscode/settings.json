@@ -23,5 +23,8 @@
   "typescript.referencesCodeLens.enabled": true,
   "editor.renderWhitespace": "boundary",
   "appService.zipIgnorePattern": [".vscode{,/**}"],
-  "appService.deploySubpath": ""
+  "appService.deploySubpath": "",
+  "cSpell.words": [
+    "gameplay"
+  ]
 }
