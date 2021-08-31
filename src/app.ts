@@ -79,21 +79,6 @@ app.use(
     express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
 
-import snowpack from "snowpack";
-const snowpackConfig = snowpack.createConfiguration({root: "src/public/js", buildOptions: {out: "dist/public/js"}});
-const server = await snowpack.startServer({config: snowpackConfig});
-
-// Example: Express
-// On request, build each file on request and respond with its built contents
-app.use(async (req, res, next) => {
-  try {
-    const buildResult = await server.loadUrl(req.url);
-    res.send(buildResult.contents);
-  } catch (err) {
-    next(err);
-  }
-});
-
 /**
  * Primary app routes.
  */

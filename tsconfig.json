@@ -4,7 +4,7 @@
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "target": "es6",
-        "noImplicitAny": true,
+        "noImplicitAny": false,
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "dist",
@@ -12,14 +12,16 @@
         "paths": {
             "*": [
                 "node_modules/*",
+                "node_modules/@types/three/examples/jsm/loaders/*",
                 "src/types/*"
             ]
         }
     },
+    "types": ["three"],
     "include": [
         "src/**/*"
     ],
     "exclude": [
-        "src/public/**/*"
+        "src/public/**/*",
     ]
 }
