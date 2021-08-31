@@ -1,62 +1,62 @@
-import Layout from "../../src/models/gameplay/Layout";
+import { Layout, TYPE, Position } from "../../src/models/gameplay/Layout";
 
 describe("Validate Layout Change from Client Message", () => {
 	it("Accepts valid single element list", () => {
-		const obj = { c: 0, r: 0, t: Layout.TYPE.PATROL };
+		const obj = { c: 0, r: 0, t: TYPE.PATROL };
 		const list = [obj];
 		const str = JSON.stringify(list);
 		const msg = new Layout(str);
 		expect(msg).toEqual({
-			list: [new Layout.Position(obj.c, obj.r, obj.t)],
-			type: Layout.TYPE.VALID,
+			list: [new Position(obj.c, obj.r, obj.t)],
+			type: TYPE.VALID,
 		});
 	});
 
 	it("Accepts valid two element list", () => {
-		const obj1 = { c: 0, r: 0, t: Layout.TYPE.PATROL };
-		const obj2 = { c: 1, r: 2, t: Layout.TYPE.PATROL };
+		const obj1 = { c: 0, r: 0, t: TYPE.PATROL };
+		const obj2 = { c: 1, r: 2, t: TYPE.PATROL };
 		const list = [obj1, obj2];
 		const str = JSON.stringify(list);
 		const msg = new Layout(str);
 		expect(msg).toEqual({
 			list: [
-				new Layout.Position(obj1.c, obj1.r, obj1.t),
-				new Layout.Position(obj2.c, obj2.r, obj2.t),
+				new Position(obj1.c, obj1.r, obj1.t),
+				new Position(obj2.c, obj2.r, obj2.t),
 			],
-			type: Layout.TYPE.VALID,
+			type: TYPE.VALID,
 		});
 	});
 
 	it("Accepts valid single element list with string (c,r)", () => {
-		const obj = { c: "0", r: "0", t: Layout.TYPE.PATROL };
+		const obj = { c: "0", r: "0", t: TYPE.PATROL };
 		const list = [obj];
 		const str = JSON.stringify(list);
 		const msg = new Layout(str);
 		expect(msg).toEqual({
-			list: [new Layout.Position(0, 0, obj.t)],
-			type: Layout.TYPE.VALID,
+			list: [new Position(0, 0, obj.t)],
+			type: TYPE.VALID,
 		});
 	});
 
 	it("Rejects single element list with invalid string numbers", () => {
-		const obj = { c: "0a", r: "0b", t: Layout.TYPE.PATROL };
+		const obj = { c: "0a", r: "0b", t: TYPE.PATROL };
 		const list = [obj];
 		const str = JSON.stringify(list);
 		const msg = new Layout(str);
 		expect(msg).toEqual({
 			list: [],
-			type: Layout.TYPE.BAD_POSITION_OBJ,
+			type: TYPE.BAD_POSITION_OBJ,
 		});
 	});
 
 	it("Rejects element that isn't an array", () => {
-		const obj = { c: "0", r: "0", t: Layout.TYPE.PATROL };
+		const obj = { c: "0", r: "0", t: TYPE.PATROL };
 		const list = obj;
 		const str = JSON.stringify(list);
 		const msg = new Layout(str);
 		expect(msg).toEqual({
 			list: [],
-			type: Layout.TYPE.BAD_ARRAY,
+			type: TYPE.BAD_ARRAY,
 		});
 	});
 
@@ -65,7 +65,7 @@ describe("Validate Layout Change from Client Message", () => {
 		const msg = new Layout(str);
 		expect(msg).toEqual({
 			list: [],
-			type: Layout.TYPE.BAD_JSON,
+			type: TYPE.BAD_JSON,
 		});
 	});
 });

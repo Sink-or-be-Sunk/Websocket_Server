@@ -1,32 +1,27 @@
-import Board from "./Board";
-import Game from "./Game";
-import Layout from "./Layout";
+import { Square } from "./Board";
+import { Rules, Response, ResponseHeader } from "./Game";
 import Ship from "./Ship";
 
-class FleetBuilder {
+export default class FleetBuilder {
 	fleet: Ship[];
-	grid: Board.Square[][];
-	rules: Game.Rules;
+	grid: Square[][];
+	rules: Rules;
 
-	constructor(grid: Board.Square[][], rules: Game.Rules) {
+	constructor(grid: Square[][], rules: Rules) {
 		this.grid = grid;
 		this.rules = rules;
 		this.fleet = [];
 	}
 
-	add(ship: Ship): Game.Response {
+	add(ship: Ship): Response {
 		if (this.rules.validShip(ship, this.fleet, this.grid)) {
 			this.fleet.push(ship);
-			return new Game.Response(true);
+			return new Response(true);
 		} else {
-			return new Game.Response(
+			return new Response(
 				false,
-				Game.ResponseHeader.SHIP_BROKE_RULES,
+				ResponseHeader.SHIP_BROKE_RULES,
 			);
 		}
 	}
 }
-
-namespace FleetBuilder {}
-
-export default FleetBuilder;

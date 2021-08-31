@@ -1,7 +1,7 @@
 import Game from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import TestUtils from "../../testUtils/TestUtils";
-import Layout from "../../src/models/gameplay/Layout";
+import { Layout, Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -48,10 +48,10 @@ describe("Validate basic back and forth game", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical basic ", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
-		const pos1 = new Layout.Position(1, 0, Layout.TYPE.PATROL);
-		const pos2 = new Layout.Position(0, 1, Layout.TYPE.DESTROYER);
-		const pos3 = new Layout.Position(2, 1, Layout.TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
+		const pos1 = new Position(1, 0, LAYOUT_TYPE.PATROL);
+		const pos2 = new Position(0, 1, LAYOUT_TYPE.DESTROYER);
+		const pos3 = new Position(2, 1, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const resp = game.positionShips(p1.id, str);
@@ -68,10 +68,10 @@ describe("Validate basic back and forth game", () => {
 	});
 
 	it("Allow Player 2 to position ships horizontal basic", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
-		const pos1 = new Layout.Position(1, 0, Layout.TYPE.PATROL);
-		const pos2 = new Layout.Position(0, 1, Layout.TYPE.DESTROYER);
-		const pos3 = new Layout.Position(2, 1, Layout.TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
+		const pos1 = new Position(1, 0, LAYOUT_TYPE.PATROL);
+		const pos2 = new Position(0, 1, LAYOUT_TYPE.DESTROYER);
+		const pos3 = new Position(2, 1, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const resp = game.positionShips(p2.id, str);

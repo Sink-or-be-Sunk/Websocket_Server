@@ -1,10 +1,10 @@
 import Lobby from "../../src/models/gameplay/Lobby";
 import Game from "../../src/models/gameplay/Game";
 import ServerMessenger from "../../src/util/ServerMessenger";
-import  {WSClientMessage, REQ_TYPE }from "../../src/util/WSClientMessage";
+import { WSClientMessage, REQ_TYPE } from "../../src/util/WSClientMessage";
 import TestUtils from "../../testUtils/TestUtils";
 import Move from "../../src/models/gameplay/Move";
-import Layout from "../../src/models/gameplay/Layout";
+import { Layout, Position, TYPE } from "../../src/models/gameplay/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -44,10 +44,10 @@ describe("Basic Matchmaking", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
-		const pos1 = new Layout.Position(0, 1, Layout.TYPE.PATROL);
-		const pos2 = new Layout.Position(1, 0, Layout.TYPE.DESTROYER);
-		const pos3 = new Layout.Position(1, 2, Layout.TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, TYPE.PATROL);
+		const pos1 = new Position(0, 1, TYPE.PATROL);
+		const pos2 = new Position(1, 0, TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const req = {
@@ -61,10 +61,10 @@ describe("Basic Matchmaking", () => {
 	});
 
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Layout.Position(0, 0, Layout.TYPE.PATROL);
-		const pos1 = new Layout.Position(0, 1, Layout.TYPE.PATROL);
-		const pos2 = new Layout.Position(1, 0, Layout.TYPE.DESTROYER);
-		const pos3 = new Layout.Position(1, 2, Layout.TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, TYPE.PATROL);
+		const pos1 = new Position(0, 1, TYPE.PATROL);
+		const pos2 = new Position(1, 0, TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const str = JSON.stringify(list);
 		const req = {

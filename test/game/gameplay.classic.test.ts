@@ -2,7 +2,7 @@ import Game from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import Move from "../../src/models/gameplay/Move";
 import TestUtils from "../../testUtils/TestUtils";
-import Layout from "../../src/models/gameplay/Layout";
+import { Position, TYPE } from "../../src/models/gameplay/Layout";
 
 const utils = new TestUtils();
 TestUtils.silenceLog();
@@ -41,28 +41,28 @@ describe("Validate classic back and forth game", () => {
 		const list = [];
 		list.push(
 			//PATROL
-			new Layout.Position(1, 5, Layout.TYPE.PATROL),
-			new Layout.Position(1, 6, Layout.TYPE.PATROL),
+			new Position(1, 5, TYPE.PATROL),
+			new Position(1, 6, TYPE.PATROL),
 		);
 		list.push(
 			//BATTLESHIP
-			new Layout.Position(4, 7, Layout.TYPE.BATTLESHIP),
-			new Layout.Position(4, 4, Layout.TYPE.BATTLESHIP),
+			new Position(4, 7, TYPE.BATTLESHIP),
+			new Position(4, 4, TYPE.BATTLESHIP),
 		);
 		list.push(
 			//CARRIER
-			new Layout.Position(3, 4, Layout.TYPE.CARRIER),
-			new Layout.Position(3, 0, Layout.TYPE.CARRIER),
+			new Position(3, 4, TYPE.CARRIER),
+			new Position(3, 0, TYPE.CARRIER),
 		);
 		list.push(
 			//DESTROYER
-			new Layout.Position(4, 3, Layout.TYPE.DESTROYER),
-			new Layout.Position(6, 3, Layout.TYPE.DESTROYER),
+			new Position(4, 3, TYPE.DESTROYER),
+			new Position(6, 3, TYPE.DESTROYER),
 		);
 		list.push(
 			//SUBMARINE
-			new Layout.Position(0, 1, Layout.TYPE.SUBMARINE),
-			new Layout.Position(2, 1, Layout.TYPE.SUBMARINE),
+			new Position(0, 1, TYPE.SUBMARINE),
+			new Position(2, 1, TYPE.SUBMARINE),
 		);
 		const str = JSON.stringify(list);
 		const resp = game.positionShips(p1.id, str);
@@ -86,28 +86,28 @@ describe("Validate classic back and forth game", () => {
 		const list = [];
 		list.push(
 			//PATROL
-			new Layout.Position(4, 6, Layout.TYPE.PATROL),
-			new Layout.Position(4, 5, Layout.TYPE.PATROL),
+			new Position(4, 6, TYPE.PATROL),
+			new Position(4, 5, TYPE.PATROL),
 		);
 		list.push(
 			//BATTLESHIP
-			new Layout.Position(0, 5, Layout.TYPE.BATTLESHIP),
-			new Layout.Position(3, 5, Layout.TYPE.BATTLESHIP),
+			new Position(0, 5, TYPE.BATTLESHIP),
+			new Position(3, 5, TYPE.BATTLESHIP),
 		);
 		list.push(
 			//CARRIER
-			new Layout.Position(0, 0, Layout.TYPE.CARRIER),
-			new Layout.Position(0, 4, Layout.TYPE.CARRIER),
+			new Position(0, 0, TYPE.CARRIER),
+			new Position(0, 4, TYPE.CARRIER),
 		);
 		list.push(
 			//DESTROYER
-			new Layout.Position(3, 3, Layout.TYPE.DESTROYER),
-			new Layout.Position(3, 1, Layout.TYPE.DESTROYER),
+			new Position(3, 3, TYPE.DESTROYER),
+			new Position(3, 1, TYPE.DESTROYER),
 		);
 		list.push(
 			//SUBMARINE
-			new Layout.Position(4, 3, Layout.TYPE.SUBMARINE),
-			new Layout.Position(6, 3, Layout.TYPE.SUBMARINE),
+			new Position(4, 3, TYPE.SUBMARINE),
+			new Position(6, 3, TYPE.SUBMARINE),
 		);
 		const str = JSON.stringify(list);
 		const resp = game.positionShips(p2.id, str);
