@@ -42,8 +42,9 @@ curl https://get.volta.sh | bash
 
 -   `npm i`
     -   `npm audit` or `npm audit fix` if needed
--   `npm run dev` --> for starting server in development mode
--   `npm run start` --> for starting server in production mode
+-   `npm run build` &rarr; for building the project
+-   `npm run watch` &rarr; for starting server in development mode
+-   `npm run start` &rarr; for starting server in production mode
 
 ### Configure Prettier Formatter
 
@@ -63,14 +64,19 @@ curl https://get.volta.sh | bash
 -   `start` - deploy application,
 -   `build` - build application,
 -   `dev` - start application in development mode with live server reload
+-   TODO: NEEDS UPDATING: THERE ARE MANY MORE (SEE PACKAGE.JSON)
 
 ## References
 
 -   [Heroku Typescript Getting Started][heroku-getting-started]
+    -   `NOTE` This was the original template used but has since been updated to the Typescript Node Starter below
+-   [TypeScript Node Starter][ts-node-starter]
+    -   [Great Original Readme from project](docs/Template.md)
 -   [Fireship.io TS Tutorial](https://www.youtube.com/watch?v=ahCwqrYpIuM)
 -   [Boilerplate Code][jsynowiec]
 -   [Websocket Typescript Example][websocket-ts-example]
 -   [Plant UML][plant-uml]
+-   [Friend Requests][friend-request]
 -   3D Models:
     -   [Battleship][battleship-model]
     -   [Submarine][submarine-model]
@@ -111,6 +117,10 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [websocket-ts-example]: https://github.com/Sean-Bradley/Three.js-TypeScript-Boilerplate
 [plant-uml]: https://www.freecodecamp.org/news/inserting-uml-in-markdown-using-vscode/
 [volta]: https://docs.volta.sh/guide/getting-started
+
+[ts-node-starter]: https://github.com/microsoft/TypeScript-Node-Starter
+[friend-request]: https://stackoverflow.com/questions/50363220/modelling-for-friends-schema-in-mongoose
+
 [battleship-model]: https://sketchfab.com/3d-models/scharnhorst-0144f06264304b68a684d79cc13f1c62
 [submarine-model]: https://sketchfab.com/3d-models/u-557-ae10491added470c88e4e21bc8672cd1
 [destroyer-model]: https://sketchfab.com/3d-models/z-39-4bf9941a596b4b8b8a12302946d51181
