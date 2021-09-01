@@ -379,29 +379,35 @@ export const postForgot = async (req: Request, res: Response, next: NextFunction
  * @route POST /account/friend
  */
 export const postUpdateFriends = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-        req.flash("errors", errors.array());
-        return res.redirect("/account");
-    }
-
-    // //A is requesting B
-    const userA = req.user as UserDocument;
-    const userB = await User.findOne({ "username": req.body.friend });
-
-    logger.debug(userA);
-    logger.debug(userB);
-    if (!userB) {
-        req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
-        return res.redirect("/account");
-    } else {
-        req.flash("success", { msg: `Requested ${req.body.friend}` });
-        return res.redirect("/account");
-    }
     //TODO: NEED TO IMPLEMENT FRIEND REQUESTS IN MONGO
+
+    req.flash("errors", { msg: "Sorry, this feature is not yet implemented! 😬" });
+    return res.redirect("/account");
+
+    // await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
+
+    // const errors = validationResult(req);
+
+    // if (!errors.isEmpty()) {
+    //     req.flash("errors", errors.array());
+    //     return res.redirect("/account");
+    // }
+
+    // // //A is requesting B
+    // const userA = req.user as UserDocument;
+    // const userB = await User.findOne({ "username": req.body.friend });
+
+    // logger.debug(userA);
+    // logger.debug(userB);
+    // if (!userB) {
+    //     req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
+    //     return res.redirect("/account");
+    // } else {
+    //     req.flash("success", { msg: `Requested ${req.body.friend}` });
+    //     return res.redirect("/account");
+    // }
+
+    //NOTE: LEFT OFF HERE WITH VALIDATION OF USERNAME WORKING
 
     // const docA = await Friend.findOneAndUpdate(
     //     { requester: UserA, recipient: UserB },
