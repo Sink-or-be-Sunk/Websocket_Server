@@ -65,7 +65,7 @@ export class GameRunner {
 
   //PUBLIC
 
-  addPlayers() {
+  addPlayers(): void {
     for (let i = 1; i < this.players.length; i++) {
       const player = this.players[i];
       const resp = this.game.add(player);
@@ -75,7 +75,7 @@ export class GameRunner {
     }
   }
 
-  setLayouts() {
+  setLayouts(): void {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
       const board = this.boards[i];
@@ -172,7 +172,7 @@ export class GameRunner {
     }
   }
 
-  makeMoves(winner: number) {
+  makeMoves(winner: number): void {
     for (let timeout = 0; timeout < 10000; timeout++) {
       for (let i = 0; i < this.players.length; i++) {
         const player = this.players[i];

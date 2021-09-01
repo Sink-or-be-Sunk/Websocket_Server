@@ -1,6 +1,6 @@
 import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
-import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
+import { MOVE_TYPE } from "../../src/models/gameplay/Move";
 import TestUtils from "../../testUtils/TestUtils";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
