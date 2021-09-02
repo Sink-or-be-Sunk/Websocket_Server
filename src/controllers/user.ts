@@ -216,7 +216,7 @@ export const postUpdateProfile = async (
             if (err) {
                 if (err.code === 11000) {
                     req.flash("errors", {
-                        msg: "The email address you have entered is already associated with an account.",
+                        msg: "The email or username you have entered is already associated with an account.",
                     });
                     return res.redirect("/account");
                 }
