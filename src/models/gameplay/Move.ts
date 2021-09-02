@@ -5,40 +5,40 @@ export class Move {
   r: number;
 
   constructor(raw: string) {
-    this.c = -1;
-    this.r = -1;
-    this.at = "";
+  	this.c = -1;
+  	this.r = -1;
+  	this.at = "";
 
-    try {
-      const parse = JSON.parse(raw) as Move;
-      if (isInstance(parse)) {
-        this.type = parse.type;
-        this.c = +parse.c; //+str provides shorthand for converting "1" to 1
-        this.r = +parse.r;
-        this.at = parse.at;
-      } else {
-        this.type = MOVE_TYPE.INVALID;
-      }
-    } catch (err) {
-      this.type = MOVE_TYPE.BAD_FORMAT;
-    }
+  	try {
+  		const parse = JSON.parse(raw) as Move;
+  		if (isInstance(parse)) {
+  			this.type = parse.type;
+  			this.c = +parse.c; //+str provides shorthand for converting "1" to 1
+  			this.r = +parse.r;
+  			this.at = parse.at;
+  		} else {
+  			this.type = MOVE_TYPE.INVALID;
+  		}
+  	} catch (err) {
+  		this.type = MOVE_TYPE.BAD_FORMAT;
+  	}
   }
 
   isValid(grid: number) {
-    if (this.type == MOVE_TYPE.INVALID || this.type == MOVE_TYPE.BAD_FORMAT) {
-      return false;
-    }
-    if (this.c >= grid || this.r >= grid) {
-      return false;
-    }
-    if (this.c < 0 || this.r < 0) {
-      return false;
-    }
-    return true;
+  	if (this.type == MOVE_TYPE.INVALID || this.type == MOVE_TYPE.BAD_FORMAT) {
+  		return false;
+  	}
+  	if (this.c >= grid || this.r >= grid) {
+  		return false;
+  	}
+  	if (this.c < 0 || this.r < 0) {
+  		return false;
+  	}
+  	return true;
   }
 
   toString() {
-    return JSON.stringify(this);
+  	return JSON.stringify(this);
   }
 }
 
@@ -50,16 +50,16 @@ export enum MOVE_TYPE {
   BAD_FORMAT = "bad_format",
 }
 export function isInstance(object: any) {
-  if ("c" in object && "r" in object && "at" in object && "type" in object) {
-    if (!isNaN(object.c) && !isNaN(object.r)) {
-      if (
-        object.type === MOVE_TYPE.SOLO ||
+	if ("c" in object && "r" in object && "at" in object && "type" in object) {
+		if (!isNaN(object.c) && !isNaN(object.r)) {
+			if (
+				object.type === MOVE_TYPE.SOLO ||
         object.type === MOVE_TYPE.SALVO ||
         object.type === MOVE_TYPE.EXPLOSIVE
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
+			) {
+				return true;
+			}
+		}
+	}
+	return false;
 }

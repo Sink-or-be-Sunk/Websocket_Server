@@ -19,9 +19,9 @@
     },
     "types": ["three"],
     "include": [
-        "src/**/*"
+        "src/**/*",
     ],
     "exclude": [
-        "src/public/**/*",
+        "src/public/bundle/**/*",
     ]
 }

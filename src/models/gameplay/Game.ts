@@ -31,22 +31,22 @@ export class Game {
   state: STATE;
 
   constructor(id: string, socket: WebSocket, type: GAME_TYPE) {
-    this.id = id;
-    this.rules = new Rules(type);
-    this.players = new Array<Player>();
-    this.boards = new Array<Board>();
-    console.log(`New ${this.rules.type} Game Created: <${this.id}>`);
-    this.add(new Player(id, socket));
-    this.turn = 0;
-    this.state = STATE.IDLE; //wait for ship positions to be locked in;
+  	this.id = id;
+  	this.rules = new Rules(type);
+  	this.players = new Array<Player>();
+  	this.boards = new Array<Board>();
+  	console.log(`New ${this.rules.type} Game Created: <${this.id}>`);
+  	this.add(new Player(id, socket));
+  	this.turn = 0;
+  	this.state = STATE.IDLE; //wait for ship positions to be locked in;
   }
 
   isStarted(): boolean {
-    return this.state == STATE.STARTED;
+  	return this.state == STATE.STARTED;
   }
 
   isOver(): boolean {
-    return this.state == STATE.OVER;
+  	return this.state == STATE.OVER;
   }
 
   /**
@@ -55,25 +55,25 @@ export class Game {
    * @returns true if game is empty, false otherwise
    */
   remove(player: Player): boolean {
-    for (let i = 0; i < this.players.length; i++) {
-      const p = this.players[i];
-      if (player == p) {
-        this.players.splice(i, 1); // remove player from game
-        this.boards.splice(i, 1); //remove players board from game
-        console.log(`Player <${player.id}> Removed From Game <${this.id}`);
-        if (this.players.length == 0) {
-          return true; //game is empty
-        }
-      }
-    }
-    return false;
+  	for (let i = 0; i < this.players.length; i++) {
+  		const p = this.players[i];
+  		if (player == p) {
+  			this.players.splice(i, 1); // remove player from game
+  			this.boards.splice(i, 1); //remove players board from game
+  			console.log(`Player <${player.id}> Removed From Game <${this.id}`);
+  			if (this.players.length == 0) {
+  				return true; //game is empty
+  			}
+  		}
+  	}
+  	return false;
   }
 
   private newPlayer(player: Player): void {
-    console.log(`Player <${player.id}> added to Game <${this.id}>`);
+  	console.log(`Player <${player.id}> added to Game <${this.id}>`);
 
-    this.players.push(player);
-    this.boards.push(new Board(player.id, this.rules));
+  	this.players.push(player);
+  	this.boards.push(new Board(player.id, this.rules));
   }
 
   /**
@@ -82,30 +82,30 @@ export class Game {
    * @returns - true if player was added, false otherwise
    */
   add(player: Player): boolean {
-    for (let i = 0; i < this.players.length; i++) {
-      const p = this.players[i];
-      if (player == p) {
-        return false;
-      }
-    }
-    this.newPlayer(player);
-    return true;
+  	for (let i = 0; i < this.players.length; i++) {
+  		const p = this.players[i];
+  		if (player == p) {
+  			return false;
+  		}
+  	}
+  	this.newPlayer(player);
+  	return true;
   }
 
   private readyUp(id: string): void {
-    this.state = STATE.STARTED;
-    for (let i = 0; i < this.players.length; i++) {
-      const player = this.players[i];
-      if (id == player.id) {
-        player.ready = true;
-      }
-      if (!player.ready) {
-        this.state = STATE.IDLE;
-      }
-    }
-    if (this.state == STATE.STARTED) {
-      console.log("Game Started");
-    }
+  	this.state = STATE.STARTED;
+  	for (let i = 0; i < this.players.length; i++) {
+  		const player = this.players[i];
+  		if (id == player.id) {
+  			player.ready = true;
+  		}
+  		if (!player.ready) {
+  			this.state = STATE.IDLE;
+  		}
+  	}
+  	if (this.state == STATE.STARTED) {
+  		console.log("Game Started");
+  	}
   }
 
   /**
@@ -114,13 +114,13 @@ export class Game {
    * @returns player if player is in game, false otherwise
    */
   getPlayerByID(id: string): Player | false {
-    for (let i = 0; i < this.players.length; i++) {
-      const player = this.players[i];
-      if (player.id == id) {
-        return player;
-      }
-    }
-    return false;
+  	for (let i = 0; i < this.players.length; i++) {
+  		const player = this.players[i];
+  		if (player.id == id) {
+  			return player;
+  		}
+  	}
+  	return false;
   }
 
   /**
@@ -129,13 +129,13 @@ export class Game {
    * @returns board of player if player is in game, false otherwise
    */
   getBoardByID(id: string): Board | false {
-    for (let i = 0; i < this.players.length; i++) {
-      const player = this.players[i];
-      if (player.id == id) {
-        return this.boards[i];
-      }
-    }
-    return false;
+  	for (let i = 0; i < this.players.length; i++) {
+  		const player = this.players[i];
+  		if (player.id == id) {
+  			return this.boards[i];
+  		}
+  	}
+  	return false;
   }
 
   /**
@@ -145,100 +145,100 @@ export class Game {
    * @returns true if move is valid, false otherwise
    */
   makeMove(id: string, moveRaw: string): Response {
-    if (this.players[this.turn].id == id) {
-      if (this.isStarted()) {
-        const move = new Move(moveRaw);
-        if (move.isValid(this.rules.boardSize)) {
-          const board = this.getBoardByID(move.at);
-          if (board) {
-            const res = board.makeMove(move);
-            if (res.valid) {
-              console.log(`player <${id}> made move ${move.toString()}`);
-              if (res.meta.includes(ResponseHeader.GAME_OVER)) {
-                this.state = STATE.OVER;
-              }
-              this.nextTurn();
-            }
-            return res;
-          } else {
-            return new Response(false, ResponseHeader.BAD_AT_PLAYER);
-          }
-        } else {
-          return new Response(false, ResponseHeader.MOVE_INVALID);
-        }
-      } else if (this.isOver()) {
-        return new Response(false, ResponseHeader.GAME_OVER);
-      } else {
-        return new Response(false, ResponseHeader.GAME_NOT_STARTED);
-      }
-    } else {
-      return new Response(false, ResponseHeader.TURN_ERROR);
-    }
+  	if (this.players[this.turn].id == id) {
+  		if (this.isStarted()) {
+  			const move = new Move(moveRaw);
+  			if (move.isValid(this.rules.boardSize)) {
+  				const board = this.getBoardByID(move.at);
+  				if (board) {
+  					const res = board.makeMove(move);
+  					if (res.valid) {
+  						console.log(`player <${id}> made move ${move.toString()}`);
+  						if (res.meta.includes(ResponseHeader.GAME_OVER)) {
+  							this.state = STATE.OVER;
+  						}
+  						this.nextTurn();
+  					}
+  					return res;
+  				} else {
+  					return new Response(false, ResponseHeader.BAD_AT_PLAYER);
+  				}
+  			} else {
+  				return new Response(false, ResponseHeader.MOVE_INVALID);
+  			}
+  		} else if (this.isOver()) {
+  			return new Response(false, ResponseHeader.GAME_OVER);
+  		} else {
+  			return new Response(false, ResponseHeader.GAME_NOT_STARTED);
+  		}
+  	} else {
+  		return new Response(false, ResponseHeader.TURN_ERROR);
+  	}
   }
 
   positionShips(id: string, positionsRaw: string): Response {
-    if (this.isStarted()) {
-      return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
-    } else {
-      //NOTE: We don't check this.turn because player is allowed to continually change ship positions util game start
-      const layout = new Layout(positionsRaw);
-      if (layout.type == LAYOUT_TYPE.VALID) {
-        const board = this.getBoardByID(id);
-        if (board) {
-          const res = board.updateShipLayout(layout, this.rules);
-          if (res.valid) {
-            this.readyUp(id);
-            if (this.isStarted()) {
-              res.addDetail(ResponseHeader.GAME_STARTED);
-            }
-            this.nextTurn();
-          }
-          return res;
-        } else {
-          return new Response(false, ResponseHeader.BOARD_NOT_FOUND);
-        }
-      } else {
-        return new Response(false, ResponseHeader.BAD_LAYOUT);
-      }
-    }
+  	if (this.isStarted()) {
+  		return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
+  	} else {
+  		//NOTE: We don't check this.turn because player is allowed to continually change ship positions util game start
+  		const layout = new Layout(positionsRaw);
+  		if (layout.type == LAYOUT_TYPE.VALID) {
+  			const board = this.getBoardByID(id);
+  			if (board) {
+  				const res = board.updateShipLayout(layout, this.rules);
+  				if (res.valid) {
+  					this.readyUp(id);
+  					if (this.isStarted()) {
+  						res.addDetail(ResponseHeader.GAME_STARTED);
+  					}
+  					this.nextTurn();
+  				}
+  				return res;
+  			} else {
+  				return new Response(false, ResponseHeader.BOARD_NOT_FOUND);
+  			}
+  		} else {
+  			return new Response(false, ResponseHeader.BAD_LAYOUT);
+  		}
+  	}
   }
 
   changeGameType(id: string, gameType: string): Response {
-    //TODO: do we want only the player that created the game to be able to change game type?
-    let ready = false;
-    for (let i = 0; i < this.players.length; i++) {
-      const player = this.players[i];
-      if (player.ready) {
-        ready = true;
-        break;
-      }
-    }
-    if (this.isStarted()) {
-      return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
-    } else if (ready) {
-      return new Response(false, ResponseHeader.PLAYER_READY);
-    } else {
-      const type = parseGameType(gameType);
-      this.rules = new Rules(type);
-      return new Response(
-        true,
-        ResponseHeader.GAME_TYPE_CHANGED,
-        this.rules.type
-      );
-    }
+  	//TODO: do we want only the player that created the game to be able to change game type?
+  	let ready = false;
+  	for (let i = 0; i < this.players.length; i++) {
+  		const player = this.players[i];
+  		if (player.ready) {
+  			ready = true;
+  			break;
+  		}
+  	}
+  	if (this.isStarted()) {
+  		return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
+  	} else if (ready) {
+  		return new Response(false, ResponseHeader.PLAYER_READY);
+  	} else {
+  		const type = parseGameType(gameType);
+  		this.rules = new Rules(type);
+  		return new Response(
+  			true,
+  			ResponseHeader.GAME_TYPE_CHANGED,
+  			this.rules.type
+  		);
+  	}
   }
 
   private nextTurn(): void {
-    const prevTurn = this.turn;
-    this.turn++;
-    if (this.turn >= this.players.length) {
-      this.turn = 0;
-    }
-    console.log(
-      `Turn changed from <${this.players[prevTurn].id}> to <${
-        this.players[this.turn].id
-      }>`
-    );
+  	const prevTurn = this.turn;
+  	this.turn++;
+  	if (this.turn >= this.players.length) {
+  		this.turn = 0;
+  	}
+  	console.log(
+  		`Turn changed from <${this.players[prevTurn].id}> to <${
+  			this.players[this.turn].id
+  		}>`
+  	);
   }
 }
 
@@ -254,14 +254,14 @@ export enum STATE {
 }
 
 export function parseGameType(raw: string): GAME_TYPE {
-  if (raw === GAME_TYPE.CLASSIC) {
-    return GAME_TYPE.CLASSIC;
-  } else if (raw === GAME_TYPE.BASIC) {
-    return GAME_TYPE.BASIC;
-  } else {
-    console.log("Invalid Game Type Request: Defaulting to Classic");
-    return GAME_TYPE.CLASSIC;
-  }
+	if (raw === GAME_TYPE.CLASSIC) {
+		return GAME_TYPE.CLASSIC;
+	} else if (raw === GAME_TYPE.BASIC) {
+		return GAME_TYPE.BASIC;
+	} else {
+		console.log("Invalid Game Type Request: Defaulting to Classic");
+		return GAME_TYPE.CLASSIC;
+	}
 }
 
 export enum ResponseHeader {
@@ -304,29 +304,29 @@ export class Rules {
   boardSize: number;
 
   constructor(type: GAME_TYPE) {
-    this.type = type;
-    this.ships = this.initShips(type);
-    this.boardSize = this.initBoard(type);
+  	this.type = type;
+  	this.ships = this.initShips(type);
+  	this.boardSize = this.initBoard(type);
   }
 
   private initShips(type: GAME_TYPE): number {
-    if (type == GAME_TYPE.CLASSIC) {
-      return 5;
-    } else if (type == GAME_TYPE.BASIC) {
-      return 2;
-    } else {
-      throw new Error("Invalid Rule Type: This should never happen");
-    }
+  	if (type == GAME_TYPE.CLASSIC) {
+  		return 5;
+  	} else if (type == GAME_TYPE.BASIC) {
+  		return 2;
+  	} else {
+  		throw new Error("Invalid Rule Type: This should never happen");
+  	}
   }
 
   private initBoard(type: GAME_TYPE): number {
-    if (type == GAME_TYPE.CLASSIC) {
-      return 8;
-    } else if (type == GAME_TYPE.BASIC) {
-      return 6;
-    } else {
-      throw new Error("Invalid Rule Type: This should never happen");
-    }
+  	if (type == GAME_TYPE.CLASSIC) {
+  		return 8;
+  	} else if (type == GAME_TYPE.BASIC) {
+  		return 6;
+  	} else {
+  		throw new Error("Invalid Rule Type: This should never happen");
+  	}
   }
 
   /**
@@ -337,53 +337,53 @@ export class Rules {
    * @returns boolean on if the rules allow adding new ship to fleet
    */
   validShip(ship: Ship, curFleet: Ship[], grid: Square[][]): boolean {
-    //TODO: check if ships overlap
+  	//TODO: check if ships overlap
 
-    const size = ship.type.size;
-    if (this.type == GAME_TYPE.BASIC) {
-      if (curFleet.length < 2) {
-        if (
-          ship.type.descriptor == SHIP_DESCRIPTOR.PATROL ||
+  	const size = ship.type.size;
+  	if (this.type == GAME_TYPE.BASIC) {
+  		if (curFleet.length < 2) {
+  			if (
+  				ship.type.descriptor == SHIP_DESCRIPTOR.PATROL ||
           ship.type.descriptor == SHIP_DESCRIPTOR.DESTROYER
-        ) {
-          for (let i = 0; i < curFleet.length; i++) {
-            const s = curFleet[i];
-            if (s.type.descriptor == ship.type.descriptor) {
-              return false; //cannot have more than one ship per type
-            }
-          }
-          return true;
-        }
-      }
-    } else if (this.type == GAME_TYPE.CLASSIC) {
-      // class mode allows for one of each ship type/descriptor (two size 3 ships)
-      if (curFleet.length >= 5) {
-        return false;
-      }
-      for (let i = 0; i < curFleet.length; i++) {
-        const s = curFleet[i];
-        if (s.type.descriptor == ship.type.descriptor) {
-          return false; //cannot have more than one ship per type
-        }
-      }
-      return true;
-    } else {
-      throw new Error(
-        "Invalid Game Type When Checking if ship is allowed: This should never happen"
-      );
-    }
-    return false;
+  			) {
+  				for (let i = 0; i < curFleet.length; i++) {
+  					const s = curFleet[i];
+  					if (s.type.descriptor == ship.type.descriptor) {
+  						return false; //cannot have more than one ship per type
+  					}
+  				}
+  				return true;
+  			}
+  		}
+  	} else if (this.type == GAME_TYPE.CLASSIC) {
+  		// class mode allows for one of each ship type/descriptor (two size 3 ships)
+  		if (curFleet.length >= 5) {
+  			return false;
+  		}
+  		for (let i = 0; i < curFleet.length; i++) {
+  			const s = curFleet[i];
+  			if (s.type.descriptor == ship.type.descriptor) {
+  				return false; //cannot have more than one ship per type
+  			}
+  		}
+  		return true;
+  	} else {
+  		throw new Error(
+  			"Invalid Game Type When Checking if ship is allowed: This should never happen"
+  		);
+  	}
+  	return false;
   }
 
   count(size: number, ships: Ship[]): number {
-    let count = 0;
-    for (let i = 0; i < ships.length; i++) {
-      const ship = ships[i];
-      if (ship.type.size == size) {
-        count++;
-      }
-    }
-    return count;
+  	let count = 0;
+  	for (let i = 0; i < ships.length; i++) {
+  		const ship = ships[i];
+  		if (ship.type.size == size) {
+  			count++;
+  		}
+  	}
+  	return count;
   }
 }
 export class Response {
@@ -391,14 +391,14 @@ export class Response {
   meta: string;
 
   constructor(valid: boolean, meta?: ResponseHeader, detail?: string) {
-    this.valid = valid;
-    this.meta = meta ?? ResponseHeader.NO_META;
-    if (detail) {
-      this.addDetail(detail);
-    }
+  	this.valid = valid;
+  	this.meta = meta ?? ResponseHeader.NO_META;
+  	if (detail) {
+  		this.addDetail(detail);
+  	}
   }
 
   addDetail(detail: string) {
-    this.meta += `-${detail}`;
+  	this.meta += `-${detail}`;
   }
 }

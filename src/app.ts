@@ -15,6 +15,7 @@ import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as contactController from "./controllers/contact";
 import * as gameController from "./controllers/game";
+import * as connectController from "./controllers/connect";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -27,10 +28,10 @@ const mongoUrl = MONGODB_URI;
 mongoose.Promise = bluebird;
 
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(
-    () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
+	() => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
 ).catch(err => {
-    console.log(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
-    // process.exit();
+	console.log(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
+	// process.exit();
 });
 
 // Express configuration
@@ -41,15 +42,15 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: SESSION_SECRET,
-    store: new MongoStore({
-        mongoUrl,
-        // mongoOptions: {
-        //     autoReconnect: true,
-        // }
-    })
+	resave: true,
+	saveUninitialized: true,
+	secret: SESSION_SECRET,
+	store: new MongoStore({
+		mongoUrl,
+		// mongoOptions: {
+		//     autoReconnect: true,
+		// }
+	})
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -57,26 +58,26 @@ app.use(flash());
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
-    res.locals.user = req.user;
-    next();
+	res.locals.user = req.user;
+	next();
 });
 app.use((req, res, next) => {
-    // After successful login, redirect back to the intended page
-    if (!req.user &&
+	// After successful login, redirect back to the intended page
+	if (!req.user &&
         req.path !== "/login" &&
         req.path !== "/signup" &&
         !req.path.match(/^\/auth/) &&
         !req.path.match(/\./)) {
-        req.session.returnTo = req.path;
-    } else if (req.user &&
+		req.session.returnTo = req.path;
+	} else if (req.user &&
         req.path == "/account") {
-        req.session.returnTo = req.path;
-    }
-    next();
+		req.session.returnTo = req.path;
+	}
+	next();
 });
 
 app.use(
-    express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
+	express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
 
 /**
@@ -100,4 +101,5 @@ app.post("/account/password", passportConfig.isAuthenticated, userController.pos
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.post("/account/friend", passportConfig.isAuthenticated, userController.postUpdateFriends);
 app.get("/game", passportConfig.isAuthenticated, gameController.getGame);
+app.get("/connect", passportConfig.isAuthenticated, connectController.getConnect);
 export default app;

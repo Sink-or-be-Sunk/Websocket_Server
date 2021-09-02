@@ -8,17 +8,17 @@ export default class FleetBuilder {
   rules: Rules;
 
   constructor(grid: Square[][], rules: Rules) {
-    this.grid = grid;
-    this.rules = rules;
-    this.fleet = [];
+  	this.grid = grid;
+  	this.rules = rules;
+  	this.fleet = [];
   }
 
   add(ship: Ship): Response {
-    if (this.rules.validShip(ship, this.fleet, this.grid)) {
-      this.fleet.push(ship);
-      return new Response(true);
-    } else {
-      return new Response(false, ResponseHeader.SHIP_BROKE_RULES);
-    }
+  	if (this.rules.validShip(ship, this.fleet, this.grid)) {
+  		this.fleet.push(ship);
+  		return new Response(true);
+  	} else {
+  		return new Response(false, ResponseHeader.SHIP_BROKE_RULES);
+  	}
   }
 }
