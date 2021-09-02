@@ -85,6 +85,7 @@ mongod --dbpath /data/db
 | navigation | `use <db-name>`                                       | equivalent to cd into a database directory                                   |
 | list       | `db.<collection>.find({"doc_property": "query"})`     | equivalent to ls for a database collection with an optional query parameter  |
 | delete     | `db.<collection>.deleteOne({"doc_property":"query"})` | equivalent to a rm with a query parameter for a certain doc property         |
+| delete all | `db.<collection>.deleteMany({})`                      | removes all documents in a collection                                        |
 
 for more information view the [MongoDB documentation](https://docs.mongodb.com/mongodb-shell/crud/)
 
