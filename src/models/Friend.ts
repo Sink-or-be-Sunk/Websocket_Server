@@ -15,13 +15,11 @@ export type FriendDocument = mongoose.Document & {
 
 
 const friendSchema = new mongoose.Schema<FriendDocument>({
-	requester: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
-	recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User"},
+	requester: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+	recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 	status: {
 		type: Number,
 		enums: FriendStatus
 	}
-}, {timestamps: true});
-module.exports = mongoose.model("Friend", friendSchema);
-
+}, { timestamps: true });
 export const Friend = mongoose.model<FriendDocument>("Friend", friendSchema);

@@ -470,10 +470,10 @@ export const postForgot = async (
 			function setRandomToken(
 				token: AuthToken,
 				done: (
-                    err: NativeError | WriteError,
-                    token?: AuthToken,
-                    user?: UserDocument
-                ) => void
+					err: NativeError | WriteError,
+					token?: AuthToken,
+					user?: UserDocument
+				) => void
 			) {
 				User.findOne(
 					{ email: req.body.email },
@@ -535,54 +535,51 @@ export const postUpdateFriends = async (
 	res: Response,
 	next: NextFunction
 ): Promise<void> => {
-	//TODO: NEED TO IMPLEMENT FRIEND REQUESTS IN MONGO
+	await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
 
-	req.flash("errors", {
-		msg: "Sorry, this feature is not yet implemented! 😬",
-	});
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		req.flash("errors", errors.array());
+		return res.redirect("/account");
+	}
+
+	// //A is requesting B
+	const userA = req.user as UserDocument;
+	const userB = await User.findOne({ "username": req.body.friend });
+
+	logger.debug(userA);
+	logger.debug(userB);
+	if (!userB) {
+		req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
+		return res.redirect("/account");
+	}
+	// else {
+	// 	req.flash("success", { msg: `Requested ${req.body.friend}` });
+	// 	return res.redirect("/account");
+	// }
+
+	// NOTE: LEFT OFF HERE WITH VALIDATION OF USERNAME WORKING
+
+	const docA = await Friend.findOneAndUpdate(
+		{ requester: userA.id, recipient: userB.id },
+		{ $set: { status: 1 } },
+		{ upsert: true, new: true }
+	);
+	const docB = await Friend.findOneAndUpdate(
+		{ recipient: userA.id, requester: userB.id },
+		{ $set: { status: 2 } },
+		{ upsert: true, new: true }
+	);
+	const updateUserA = await User.findOneAndUpdate(
+		{ _id: userA.id },
+		{ $push: { friends: docA._id } }
+	);
+	const updateUserB = await User.findOneAndUpdate(
+		{ _id: userB.id },
+		{ $push: { friends: docB._id } }
+	);
+	logger.debug("userA: ", updateUserA);
+	logger.debug("userB: ", updateUserB);
 	return res.redirect("/account");
-
-	// await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
-
-	// const errors = validationResult(req);
-
-	// if (!errors.isEmpty()) {
-	//     req.flash("errors", errors.array());
-	//     return res.redirect("/account");
-	// }
-
-	// // //A is requesting B
-	// const userA = req.user as UserDocument;
-	// const userB = await User.findOne({ "username": req.body.friend });
-
-	// logger.debug(userA);
-	// logger.debug(userB);
-	// if (!userB) {
-	//     req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
-	//     return res.redirect("/account");
-	// } else {
-	//     req.flash("success", { msg: `Requested ${req.body.friend}` });
-	//     return res.redirect("/account");
-	// }
-
-	//NOTE: LEFT OFF HERE WITH VALIDATION OF USERNAME WORKING
-
-	// const docA = await Friend.findOneAndUpdate(
-	//     { requester: UserA, recipient: UserB },
-	//     { $set: { status: 1 }},
-	//     { upsert: true, new: true }
-	// );
-	// const docB = await Friend.findOneAndUpdate(
-	//     { recipient: UserA, requester: UserB },
-	//     { $set: { status: 2 }},
-	//     { upsert: true, new: true }
-	// );
-	// const updateUserA = await User.findOneAndUpdate(
-	//     { _id: UserA },
-	//     { $push: { friends: docA._id }}
-	// );
-	// const updateUserB = await User.findOneAndUpdate(
-	//     { _id: UserB },
-	//     { $push: { friends: docB._id }}
-	// );
 };

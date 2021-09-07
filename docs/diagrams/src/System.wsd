@@ -5,7 +5,6 @@ package "Server" {
             node "Game Logic" {
             }
         }
-        [Server_Manager_Obj] -left- port
         [Server_Manager_Obj] -down-> [HTTP Server]
         [Server_Manager_Obj] -down-> [Websocket Server]
         [Server_Manager_Obj] -right-> Lobby
@@ -16,15 +15,10 @@ package "Server" {
     [HTTP Server] --> Lobby : handle
 }
 
-package "Client" {
-    [WiFi] - [USART_A]
-}
-
 package "MCU" {
-    [USART_B] --> [Controller]
-
-    [Controller] <-left- Inputs
-    [Controller] -right-> Outputs
+    [WiFi] -> [Controller]
+    [Controller] <-down- Inputs
+    [Controller] -down-> Outputs
 
     node "Inputs" {
     }
@@ -45,6 +39,5 @@ package "MCU" {
     [SPI] -down-> LCD_Display
 }
 
-[USART_A] <--> [USART_B]
 [Websocket Server] <--> [WiFi]
 @enduml

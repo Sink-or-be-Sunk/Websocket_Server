@@ -20,11 +20,11 @@
     "**/dist": true,
     "**/coverage": true
   },
+  "plantuml.diagramsRoot": "docs/diagrams/src",
+  "plantuml.exportOutDir": "docs/diagrams/dest",
   "typescript.referencesCodeLens.enabled": true,
   "editor.renderWhitespace": "boundary",
   "appService.zipIgnorePattern": [".vscode{,/**}"],
   "appService.deploySubpath": "",
-  "cSpell.words": [
-    "gameplay"
-  ]
+  "cSpell.words": ["gameplay"]
 }
