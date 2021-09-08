@@ -23,6 +23,7 @@
     "build:bundle": "webpack --config webpack.config.js",
     "build": "npm-run-all build:** lint copy-static-assets",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
+    "export-client-cmds": "ts-node exportClientCmds.ts",
     "debug": "npm run build && npm run watch:debug",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts,pug}\" --quiet --fix",
     "serve:debug": "nodemon --inspect dist/server.js",

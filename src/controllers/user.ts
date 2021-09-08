@@ -193,6 +193,7 @@ export const postUpdateProfile = async (
 	await check("username", "Please enter a valid username")
 		.matches(USERNAME_REGEX)
 		.run(req);
+	await check("username", "Username has a max of 32 characters").isLength({ max: 32 }).run(req);
 	await body("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
 
 	const errors = validationResult(req);
@@ -536,6 +537,7 @@ export const postUpdateFriends = async (
 	next: NextFunction
 ): Promise<void> => {
 	await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
+	await check("friend", "Username has a max of 32 characters").isLength({ max: 32 }).run(req);
 
 	const errors = validationResult(req);
 

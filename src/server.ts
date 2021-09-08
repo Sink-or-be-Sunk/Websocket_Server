@@ -35,9 +35,9 @@ export const wss = new WebSocket.Server({ server });
 wss.on("connection", (ws) => {
 	logger.info("Websocket Connected");
 	ws.send(ServerMessenger.CONNECTED.toString());
-
 	ws.on("message", (raw: WebSocket.Data) => {
 		_onWSMessage(ws, raw);
+
 	});
 
 	ws.on("close", () => {
@@ -49,7 +49,7 @@ function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 	const req = new WSClientMessage(raw.toString());
 	if (
 		req.req == REQ_TYPE.INVALID ||
-        req.req == REQ_TYPE.BAD_FORMAT
+		req.req == REQ_TYPE.BAD_FORMAT
 	) {
 		console.error(`${req.id}: client message:\n${raw}`);
 		socket.send(ServerMessenger.bad_client_msg(raw.toString()).toString());
