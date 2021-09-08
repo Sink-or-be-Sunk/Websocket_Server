@@ -32,10 +32,17 @@ export default class ServerMessenger {
 	static readonly GAME_CREATED: WSServerMessage = new WSServerMessage(
 		"GAME CREATED",
 	);
+	static readonly REGISTER_PENDING: WSServerMessage = new WSServerMessage(
+		"REGISTER PENDING",
+	);
+	static readonly REGISTER_SUCCESS: WSServerMessage = new WSServerMessage(
+		"REGISTER SUCCESS",
+	);
 
 	// DYNAMIC MESSAGE BUILDERS
-	static bad_client_msg(meta: string): WSServerMessage {
-		return new WSServerMessage(this.FORMAT_ERROR_HEADER, meta);
+	static bad_client_msg(meta: string, tag?: string): WSServerMessage {
+		const msg = tag ? `${tag}: ${meta}` : meta;
+		return new WSServerMessage(this.FORMAT_ERROR_HEADER, msg);
 	}
 	static invalid_layout(meta: string): WSServerMessage {
 		return new WSServerMessage(this.INVALID_LAYOUT_HEADER, meta);

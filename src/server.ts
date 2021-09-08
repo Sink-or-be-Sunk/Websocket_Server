@@ -46,15 +46,18 @@ wss.on("connection", (ws) => {
 });
 
 function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
-	const req = new WSClientMessage(raw.toString());
+	const msg = new WSClientMessage(raw.toString());
 	if (
-		req.req == REQ_TYPE.INVALID ||
-		req.req == REQ_TYPE.BAD_FORMAT
+		msg.req == REQ_TYPE.INVALID ||
+		msg.req == REQ_TYPE.BAD_FORMAT
 	) {
-		console.error(`${req.id}: client message:\n${raw}`);
+		console.error(`${msg.id}: client message:\n${raw}`);
 		socket.send(ServerMessenger.bad_client_msg(raw.toString()).toString());
-	} else {
-		const resp = lobby.handleReq(socket, req);
+	} else if (
+		msg.req == REQ_TYPE.REGISTER ||
+		msg.req == REQ_TYPE.CONFIRM_REGISTER
+	) { } else {
+		const resp = lobby.handleReq(socket, msg);
 		socket.send(resp.toString());
 	}
 }

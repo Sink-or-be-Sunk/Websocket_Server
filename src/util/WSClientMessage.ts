@@ -34,7 +34,9 @@ export class WSClientMessage {
 				object.req === REQ_TYPE.MAKE_MOVE ||
 				object.req === REQ_TYPE.JOIN_GAME ||
 				object.req === REQ_TYPE.GAME_TYPE ||
-				object.req === REQ_TYPE.POSITION_SHIPS
+				object.req === REQ_TYPE.POSITION_SHIPS ||
+				object.req === REQ_TYPE.REGISTER ||
+				object.req === REQ_TYPE.CONFIRM_REGISTER
 			) {
 				return true;
 			}
@@ -56,4 +58,6 @@ export enum REQ_TYPE {
 	POSITION_SHIPS = "POSITION SHIPS",
 	JOIN_GAME = "JOIN GAME",
 	GAME_TYPE = "GAME TYPE",
+	REGISTER = "REGISTER",
+	CONFIRM_REGISTER = "CONFIRM REGISTER",
 }

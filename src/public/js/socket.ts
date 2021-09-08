@@ -1,7 +1,7 @@
 
 const protocol = location.protocol == "https" ? "wss" : "ws";
 // const uri = protocol + "//" + location.hostname + ":3000/"
-const uri = protocol + "://" + location.hostname + ":" + location.port + "/connect"
+const uri = protocol + "://" + location.hostname + ":" + location.port
 
 console.log(uri);
 

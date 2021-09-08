@@ -1,0 +1,35 @@
+@startuml Board_Registration_Sequence_Diagram
+ESP32 -> SERVER: Register Request
+note left 
+Payload:
+id, ssid
+end note
+SERVER --> ESP32: Register Pending
+rnote over SERVER
+add device to 
+connect list
+end rnote
+rnote over ESP32: wait for server
+hnote over SERVER: user clicks device
+SERVER--> ESP32: Register Initiated
+rnote over ESP32
+wait for user
+with 30 second
+timeout
+end rnote
+hnote over ESP32
+user confirms 
+device
+end hnote
+ESP32-> SERVER: Register Confirm
+rnote over SERVER
+remove device
+from connect
+list
+end rnote
+SERVER -->ESP32: Register Success
+note right 
+Payload:
+username
+end note
+@enduml
