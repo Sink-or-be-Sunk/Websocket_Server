@@ -1,23 +1,32 @@
 export class RegisterRequest {
-    id: string;
+    type: REGISTER_TYPE;
     ssid: string;
-    valid: boolean;
 
     constructor(raw: string) {
-        this.id = "";
+        this.type = REGISTER_TYPE.INVALID;
         this.ssid = "";
-        this.valid = false;
 
         try {
             const parse = JSON.parse(raw) as RegisterRequest;
             if (isInstance(parse)) {
-                this.id = parse.id;
                 this.ssid = parse.ssid;
+                this.type = parse.type;
             } else {
-                this.valid = false;
+                this.type = REGISTER_TYPE.INVALID;
             }
         } catch (err) {
-            this.valid = false;
+            this.type = REGISTER_TYPE.BAD_FORMAT;
+        }
+    }
+
+    isValid(): boolean {
+        if (
+            this.type == REGISTER_TYPE.BAD_FORMAT ||
+            this.type == REGISTER_TYPE.INVALID
+        ) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -26,8 +35,20 @@ export class RegisterRequest {
     }
 }
 export function isInstance(object: any) {
-    if ("id" in object && "ssid" in object) {
-        return true;
+    if ("ssid" in object) {
+        if (
+            object.type === REGISTER_TYPE.INIT ||
+            object.type === REGISTER_TYPE.CONFIRM
+        ) {
+            return true;
+        }
     }
     return false;
+}
+
+export enum REGISTER_TYPE {
+    INIT = "INIT",
+    CONFIRM = "CONFIRM",
+    INVALID = "INVALID",
+    BAD_FORMAT = "BAD FORMAT"
 }

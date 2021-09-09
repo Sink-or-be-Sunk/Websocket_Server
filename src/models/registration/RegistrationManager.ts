@@ -4,44 +4,35 @@ import WSServerMessage from "../../util/WSServerMessage";
 import WebSocket from "ws";
 import { RegisterRequest } from "./RegisterRequest";
 export class RegistrationManager {
-    private pending: RegisterRequest[]
+    private pending: Map<string, RegisterRequest>
     static readonly TAG = "REGISTRATION"
 
     constructor() {
-        this.pending = [];
+        this.pending = new Map();
     }
 
     public handleReq(
         socket: WebSocket,
         message: WSClientMessage,
     ): WSServerMessage {
-        if (message.req == REQ_TYPE.REGISTER) {
+        const req = new RegisterRequest(message.data);
 
-            if (this.isPending(message.id)) {
+        if (req.isValid()) {
+            if (message.req == REQ_TYPE.REGISTER) {
+                if (!this.pending.has(message.id)) {
+                    this.pending.set(message.id, req);
+                }
                 return ServerMessenger.REGISTER_PENDING;
-            } else {
-                const req = new RegisterRequest(message.data);
-                if (req.valid) {
-                    return ServerMessenger.REGISTER_PENDING;
+            } else if (message.req == REQ_TYPE.CONFIRM_REGISTER) {
+                if (this.pending.has(message.id)) {
+                    return ServerMessenger.REGISTER_SUCCESS;
                 } else {
-                    return ServerMessenger.bad_client_msg(message.data, RegistrationManager.TAG);
+                    return ServerMessenger.bad_client_msg("CONFIRM BEFORE REGISTER", RegistrationManager.TAG);
                 }
             }
-            //attempt to create new game
-            if (this.getGame(message.id)) {
-                return ServerMessenger.reqError("Game Already Exists");
-            }
-            const type = parseGameType(message.data);
-            const game = new Game(message.id, socket, type); //use the unique MAC address of MCU to generate game id
-            this.games.push(game);
-            return ServerMessenger.GAME_CREATED;
         } else {
-            throw Error("WSMessage is not valid.  This should never occur");
+            return ServerMessenger.bad_client_msg(message.data, RegistrationManager.TAG);
         }
-    }
-
-    private isPending(id: string): boolean {
 
     }
-
 }

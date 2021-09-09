@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="592px" preserveAspectRatio="none" style="width:314px;height:592px;background:#FFFFFF;" version="1.1" viewBox="0 0 314 592" width="314px" zoomAndPan="magnify"><defs><filter height="300%" id="f1dcy6iw2rjaz5" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="87" x2="87" y1="40.4883" y2="549.3887"/><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:5.0,5.0;" x1="217.5" x2="217.5" y1="40.4883" y2="549.3887"/><rect fill="#FEFECE" filter="url(#f1dcy6iw2rjaz5)" height="30.4883" style="stroke:#A80036;stroke-width:1.5;" width="56" x="57" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="42" x="64" y="25.5352">ESP32</text><rect fill="#FEFECE" filter="url(#f1dcy6iw2rjaz5)" height="30.4883" style="stroke:#A80036;stroke-width:1.5;" width="56" x="57" y="548.3887"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="42" x="64" y="568.9238">ESP32</text><rect fill="#FEFECE" filter="url(#f1dcy6iw2rjaz5)" height="30.4883" style="stroke:#A80036;stroke-width:1.5;" width="65" x="183.5" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="190.5" y="25.5352">SERVER</text><rect fill="#FEFECE" filter="url(#f1dcy6iw2rjaz5)" height="30.4883" style="stroke:#A80036;stroke-width:1.5;" width="65" x="183.5" y="548.3887"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="190.5" y="568.9238">SERVER</text><polygon fill="#A80036" points="206,80.4541,216,84.4541,206,88.4541,210,84.4541" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;" x1="87" x2="212" y1="84.4541" y2="84.4541"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="105" x="94" y="79.7119">Register Request</text><path d="M5,55.4883 L5,95.4883 L78,95.4883 L78,65.4883 L68,55.4883 L5,55.4883 " fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" style="stroke:#A80036;stroke-width:1.0;"/><path d="M68,55.4883 L68,65.4883 L78,65.4883 L68,55.4883 " fill="#FBFB77" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="52" x="11" y="73.0566">Payload:</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="46" x="11" y="88.3672">id, ssid</text><polygon fill="#A80036" points="98,122.4199,88,126.4199,98,130.4199,94,126.4199" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="92" x2="217" y1="126.4199" y2="126.4199"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="105" x="104" y="121.6777">Register Pending</text><rect fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" height="38" style="stroke:#A80036;stroke-width:1.0;" width="96" x="170" y="139.4199"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="84" x="174" y="155.9883">add device to</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="74" x="174" y="171.2988">connect list</text><rect fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" height="23" style="stroke:#A80036;stroke-width:1.0;" width="98" x="38" y="188.041"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="90" x="42" y="204.6094">wait for server</text><polygon fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" points="160,221.3516,276,221.3516,286,232.3516,276,244.3516,160,244.3516,150,232.3516,160,221.3516" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="112" x="162" y="237.9199">user clicks device</text><polygon fill="#A80036" points="98,266.9727,88,270.9727,98,274.9727,94,270.9727" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="92" x2="217" y1="270.9727" y2="270.9727"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="107" x="104" y="266.2305">Register Initiated</text><rect fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" height="53" style="stroke:#A80036;stroke-width:1.0;" width="104" x="35" y="283.9727"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="79" x="39" y="300.541">wait for user</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="96" x="39" y="315.8516">with 30 second</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="49" x="39" y="331.1621">timeout</text><polygon fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" points="39,347.9043,134,347.9043,144,366.9043,134,385.9043,39,385.9043,29,366.9043,39,347.9043" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="41" y="364.4727">user confirms</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="40" x="41" y="379.7832">device</text><polygon fill="#A80036" points="206,408.8359,216,412.8359,206,416.8359,210,412.8359" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;" x1="87" x2="212" y1="412.8359" y2="412.8359"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="106" x="94" y="408.0938">Register Confirm</text><rect fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" height="53" style="stroke:#A80036;stroke-width:1.0;" width="98" x="169" y="425.8359"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="90" x="173" y="442.4043">remove device</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="84" x="173" y="457.7148">from connect</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="20" x="173" y="473.0254">list</text><polygon fill="#A80036" points="98,514.7334,88,518.7334,98,522.7334,94,518.7334" style="stroke:#A80036;stroke-width:1.0;"/><line style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:2.0,2.0;" x1="92" x2="217" y1="518.7334" y2="518.7334"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="105" x="104" y="513.9912">Register Success</text><path d="M223,489.7676 L223,529.7676 L305,529.7676 L305,499.7676 L295,489.7676 L223,489.7676 " fill="#FBFB77" filter="url(#f1dcy6iw2rjaz5)" style="stroke:#A80036;stroke-width:1.0;"/><path d="M295,489.7676 L295,499.7676 L305,499.7676 L295,489.7676 " fill="#FBFB77" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="52" x="229" y="507.3359">Payload:</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="61" x="229" y="522.6465">username</text><!--MD5=[b9f0a451855834c052bdd11a844e9b34]
+@startuml Board_Registration_Sequence_Diagram
+ESP32 -> SERVER: Register Request
+note left 
+Payload:
+id, ssid
+end note
+SERVER - -> ESP32: Register Pending
+rnote over SERVER
+add device to 
+connect list
+end rnote
+rnote over ESP32: wait for server
+hnote over SERVER: user clicks device
+SERVER- -> ESP32: Register Initiated
+rnote over ESP32
+wait for user
+with 30 second
+timeout
+end rnote
+hnote over ESP32
+user confirms 
+device
+end hnote
+ESP32-> SERVER: Register Confirm
+rnote over SERVER
+remove device
+from connect
+list
+end rnote
+SERVER - ->ESP32: Register Success
+note right 
+Payload:
+username
+end note
+@enduml
+
+PlantUML version 1.2021.7(Sun May 23 08:40:07 EDT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
