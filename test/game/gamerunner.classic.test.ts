@@ -44,7 +44,6 @@ describe("Validate GameRunner Match with Player1 Winning", () => {
 	const boards = [b1, b2];
 
 	const runner = new GameRunner(
-		utils.getSocket("one"),
 		GAME_TYPE.CLASSIC,
 		boards,
 	);
@@ -87,7 +86,6 @@ describe("Validate GameRunner Match with Player2 Winning", () => {
 	const boards = [b1, b2];
 
 	const runner = new GameRunner(
-		utils.getSocket("one"),
 		GAME_TYPE.CLASSIC,
 		boards,
 	);
