@@ -42,7 +42,7 @@ describe("Validate WS Client Messages", () => {
 	});
 
 	it("Rejects Message with bad json formatting", () => {
-		const str = "{req: \"newGame\"; id: \"one\"}";
+		const str = `{"req": "${REQ_TYPE.NEW_GAME}"; "id": "one"}`;
 		const msg = new WSClientMessage(str);
 		expect(msg).toEqual({
 			req: REQ_TYPE.BAD_FORMAT,

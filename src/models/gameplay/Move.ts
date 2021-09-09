@@ -9,22 +9,18 @@ export class Move {
 		this.r = -1;
 		this.at = "";
 
-		try {
-			if (isInstance(raw)) {
-				this.type = raw.type;
-				this.c = +raw.c; //+str provides shorthand for converting "1" to 1
-				this.r = +raw.r;
-				this.at = raw.at;
-			} else {
-				this.type = MOVE_TYPE.INVALID;
-			}
-		} catch (err) {
-			this.type = MOVE_TYPE.BAD_FORMAT;
+		if (isInstance(raw)) {
+			this.type = raw.type;
+			this.c = +raw.c; //+str provides shorthand for converting "1" to 1
+			this.r = +raw.r;
+			this.at = raw.at;
+		} else {
+			this.type = MOVE_TYPE.INVALID;
 		}
 	}
 
 	isValid(grid: number) {
-		if (this.type == MOVE_TYPE.INVALID || this.type == MOVE_TYPE.BAD_FORMAT) {
+		if (this.type == MOVE_TYPE.INVALID) {
 			return false;
 		}
 		if (this.c >= grid || this.r >= grid) {
@@ -42,11 +38,10 @@ export class Move {
 }
 
 export enum MOVE_TYPE {
-	SOLO = "solo",
-	SALVO = "salvo",
-	EXPLOSIVE = "explosive",
-	INVALID = "invalid",
-	BAD_FORMAT = "bad_format",
+	SOLO = "SOLO",
+	SALVO = "SALVO",
+	EXPLOSIVE = "EXPLOSIVE",
+	INVALID = "INVALID",
 }
 export function isInstance(object: any) {
 	if ("c" in object && "r" in object && "at" in object && "type" in object) {

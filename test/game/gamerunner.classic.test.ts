@@ -1,17 +1,5 @@
 import { GAME_TYPE } from "../../src/models/gameplay/Game";
-import TestUtils from "../../testUtils/TestUtils";
 import { GameRunner, RUNNER_POSITION } from "../../testUtils/GameRunner";
-
-const utils = new TestUtils();
-TestUtils.silenceLog();
-
-beforeAll(async () => {
-	await utils.setup();
-});
-
-afterAll(async () => {
-	await utils.tearDown();
-});
 
 describe("Validate GameRunner Match with Player1 Winning", () => {
 	const e = RUNNER_POSITION.E;

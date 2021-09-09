@@ -3,30 +3,26 @@ export class Layout {
 	list: Position[];
 	constructor(raw: any) {
 		this.list = [];
-		try {
-			if (Array.isArray(raw)) {
-				for (let i = 0; i < raw.length; i++) {
-					const el = raw[i];
-					if (Position.isInstance(el)) {
-						this.list.push(new Position(el.c, el.r, el.t));
-					} else {
-						this.list = [];
-						this.type = LAYOUT_TYPE.BAD_POSITION_OBJ;
-						return;
-					}
+		if (Array.isArray(raw)) {
+			for (let i = 0; i < raw.length; i++) {
+				const el = raw[i];
+				if (Position.isInstance(el)) {
+					this.list.push(new Position(el.c, el.r, el.t));
+				} else {
+					this.list = [];
+					this.type = LAYOUT_TYPE.BAD_POSITION_OBJ;
+					return;
 				}
-				this.type = LAYOUT_TYPE.VALID;
-			} else {
-				this.type = LAYOUT_TYPE.BAD_ARRAY;
 			}
-		} catch (err) {
-			this.type = LAYOUT_TYPE.BAD_JSON;
+			this.type = LAYOUT_TYPE.VALID;
+		} else {
+			this.type = LAYOUT_TYPE.BAD_ARRAY;
 		}
+
 	}
 }
 
 export enum LAYOUT_TYPE {
-	BAD_JSON = "BAD JSON",
 	BAD_ARRAY = "BAD ARRAY",
 	BAD_POSITION_OBJ = "BAD POSITION OBJ",
 	VALID = "VALID",

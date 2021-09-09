@@ -25,6 +25,7 @@ export class GameRunner {
 		}
 		const p1 = this.players[0];
 		this.game = new Game(p1.id, type);
+		this.game.add(p1);
 		it(`${p1.id} Creates Game`, () => {
 			expect(this.game).toBeTruthy();
 		});
