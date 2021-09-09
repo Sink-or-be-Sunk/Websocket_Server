@@ -4,9 +4,9 @@ import WSServerMessage from "../../util/WSServerMessage";
 import WebSocket from "ws";
 import { RegisterRequest } from "./RegisterRequest";
 export class RegistrationManager {
+    static readonly TAG = "REGISTRATION";
+    static readonly ORDER_ERROR = "CONFIRM BEFORE REGISTER";
     private pending: Map<string, RegisterRequest>
-    static readonly TAG = "REGISTRATION"
-
     constructor() {
         this.pending = new Map();
     }
@@ -26,7 +26,7 @@ export class RegistrationManager {
                 if (this.pending.has(message.id)) {
                     return ServerMessenger.REGISTER_SUCCESS;
                 } else {
-                    return ServerMessenger.bad_client_msg("CONFIRM BEFORE REGISTER", RegistrationManager.TAG);
+                    return ServerMessenger.bad_client_msg(RegistrationManager.ORDER_ERROR, RegistrationManager.TAG);
                 }
             }
         } else {

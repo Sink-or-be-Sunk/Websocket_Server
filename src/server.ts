@@ -5,8 +5,10 @@ import WebSocket from "ws";
 import { WSClientMessage, REQ_TYPE } from "./util/WSClientMessage";
 import ServerMessenger from "./util/ServerMessenger";
 import Lobby from "./models/gameplay/Lobby";
+import { RegistrationManager } from "./models/registration/RegistrationManager";
 
 const lobby = new Lobby();
+const registrar = new RegistrationManager();
 
 /**
  * Error Handler. Provides full stack
@@ -56,7 +58,10 @@ function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 	} else if (
 		msg.req == REQ_TYPE.REGISTER ||
 		msg.req == REQ_TYPE.CONFIRM_REGISTER
-	) { } else {
+	) {
+		const resp = registrar.handleReq(msg);
+		socket.send(resp.toString());
+	} else {
 		const resp = lobby.handleReq(socket, msg);
 		socket.send(resp.toString());
 	}
