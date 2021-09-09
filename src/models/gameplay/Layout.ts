@@ -1,14 +1,12 @@
 export class Layout {
 	type: LAYOUT_TYPE;
 	list: Position[];
-	constructor(raw: string) {
+	constructor(raw: any) {
 		this.list = [];
 		try {
-			const parse = JSON.parse(raw) as Array<Position>;
-
-			if (Array.isArray(parse)) {
-				for (let i = 0; i < parse.length; i++) {
-					const el = parse[i];
+			if (Array.isArray(raw)) {
+				for (let i = 0; i < raw.length; i++) {
+					const el = raw[i];
 					if (Position.isInstance(el)) {
 						this.list.push(new Position(el.c, el.r, el.t));
 					} else {

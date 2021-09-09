@@ -1,7 +1,10 @@
 export class WSClientMessage {
+	/** Request enum type */
 	req: string;
+	/** Client username */
 	id: string;
-	data: string;
+	/** Optional data field holding json object */
+	data: string; //TODO: MAYBE CHANGE THIS TO NULL OBJECT?
 
 	constructor(data: string) {
 		this.req = "";
@@ -42,6 +45,16 @@ export class WSClientMessage {
 			}
 		}
 		return false;
+	}
+
+	isValid(): boolean {
+		if (
+			this.req == REQ_TYPE.INVALID ||
+			this.req == REQ_TYPE.BAD_FORMAT) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	toString(): string {

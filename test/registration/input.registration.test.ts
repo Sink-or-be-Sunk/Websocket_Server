@@ -1,6 +1,6 @@
 import { RegisterRequest, REGISTER_TYPE } from "../../src/models/registration/RegisterRequest";
 
-describe("Validate Registration Client Messages", () => {
+describe("Handle Registration Requests", () => {
     it("Accepts Init Message", () => {
         const obj = { type: REGISTER_TYPE.INIT, ssid: "wifi" };
         const msg = new RegisterRequest(obj);

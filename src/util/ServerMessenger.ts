@@ -5,6 +5,7 @@ export default class ServerMessenger {
 	private static readonly REQ_ERROR_HEADER: string = "REQ ERROR";
 	private static readonly JOINED_HEADER: string = "JOINED GAME";
 	private static readonly INVALID_MOVE_HEADER: string = "INVALID MOVE";
+	private static readonly INVALID_JOIN_HEADER: string = "INVALID JOIN HEADER";
 	private static readonly INVALID_LAYOUT_HEADER: string = "INVALID LAYOUT";
 	private static readonly INVALID_GAME_TYPE_HEADER: string =
 		"INVALID GAME TYPE";
@@ -52,6 +53,9 @@ export default class ServerMessenger {
 	}
 	static invalid_move(meta: string): WSServerMessage {
 		return new WSServerMessage(this.INVALID_MOVE_HEADER, meta);
+	}
+	static invalid_join(meta: string): WSServerMessage {
+		return new WSServerMessage(this.INVALID_JOIN_HEADER, meta);
 	}
 	static joined(id: string): WSServerMessage {
 		return new WSServerMessage(this.JOINED_HEADER, id);

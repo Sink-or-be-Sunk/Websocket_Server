@@ -2,28 +2,27 @@ import { Game, Response, ResponseHeader, parseGameType } from "./Game";
 import ServerMessenger from "../../../src/util/ServerMessenger";
 import { WSClientMessage, REQ_TYPE } from "../../../src/util/WSClientMessage";
 import WSServerMessage from "../../util/WSServerMessage";
-import WebSocket from "ws";
 import Player from "./Player";
 
 export default class Lobby {
-	games: Game[];
+	games: Map<string, Game>;
 
 	constructor() {
-		this.games = [];
+		this.games = new Map<string, Game>();
 	}
 
 	public handleReq(
-		socket: WebSocket,
 		message: WSClientMessage,
 	): WSServerMessage {
 		if (message.req == REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
-			if (this.getGame(message.id)) {
+			if (this.games.has(message.id)) {
 				return ServerMessenger.reqError("Game Already Exists");
 			}
-			const type = parseGameType(message.data);
-			const game = new Game(message.id, socket, type); //use the unique MAC address of MCU to generate game id
-			this.games.push(game);
+			const type = parseGameType(message.data); //if type is excluded, game defaults to classic mode
+			const game = new Game(message.id, type); //use the unique username
+			game.add(new Player(message.id));
+			this.games.set(game.id, game);
 			return ServerMessenger.GAME_CREATED;
 		} else if (message.req === REQ_TYPE.MAKE_MOVE) {
 			const resp = this.makeMove(message.id, message.data);
@@ -33,10 +32,11 @@ export default class Lobby {
 				return ServerMessenger.invalid_move(resp.meta);
 			}
 		} else if (message.req == REQ_TYPE.JOIN_GAME) {
-			if (this.joinGame(new Player(message.id, socket), message.data)) {
+			const resp = this.joinGame(new Player(message.id), message.data);
+			if (resp.valid) {
 				return ServerMessenger.joined(message.data);
 			} else {
-				return ServerMessenger.NO_SUCH_GAME;
+				return ServerMessenger.invalid_join(resp.meta);
 			}
 		} else if (message.req == REQ_TYPE.POSITION_SHIPS) {
 			const resp = this.positionShips(message.id, message.data);
@@ -64,8 +64,7 @@ export default class Lobby {
 	 * @returns - true if move is valid, false otherwise
 	 */
 	private makeMove(playerID: string, move: string): Response {
-		for (let i = 0; i < this.games.length; i++) {
-			const game = this.games[i];
+		for (const [gameID, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
 				return game.makeMove(playerID, move);
@@ -75,19 +74,18 @@ export default class Lobby {
 	}
 
 	private positionShips(playerID: string, positions: string): Response {
-		for (let i = 0; i < this.games.length; i++) {
-			const game = this.games[i];
+		for (const [gameID, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
 				return game.positionShips(playerID, positions);
 			}
 		}
+
 		return new Response(false, ResponseHeader.NO_SUCH_GAME);
 	}
 
 	private changeGameType(playerID: string, positions: string): Response {
-		for (let i = 0; i < this.games.length; i++) {
-			const game = this.games[i];
+		for (const [gameID, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
 				return game.changeGameType(playerID, positions);
@@ -96,44 +94,44 @@ export default class Lobby {
 		return new Response(false, ResponseHeader.NO_SUCH_GAME);
 	}
 
-	private joinGame(player: Player, toJoinID: string): boolean {
-		for (let i = 0; i < this.games.length; i++) {
-			const game = this.games[i];
-			if (game.id == toJoinID) {
-				return game.add(player);
+	private joinGame(player: Player, toJoinID: string): Response {
+		const game = this.games.get(toJoinID);
+		if (game) {
+			if (game.add(player)) {
+				return new Response(true);
+			} else {
+				return new Response(false, ResponseHeader.ALREADY_IN_GAME);
 			}
+		} else {
+			return new Response(false, ResponseHeader.NO_SUCH_GAME);
 		}
-		return false;
 	}
 
-	public leaveGame(socket: WebSocket) {
-		for (let i = 0; i < this.games.length; i++) {
-			const game = this.games[i];
+	public leaveGame(socketID: string) {
+		const game = this.games.get(socketID);
+		if (game) {
+			console.log(`Host <${socketID}> Ended Game by Leaving`);
+			//player leaving game is the "game owner"/created the game
+			for (let i = 0; i < game.players.length; i++) {
+				const player = game.players[i];
+				if (player.id != socketID) {
+					console.log(`Booting Player: <${player.id}>`);
+					//TODO: SEND WS MESSAGE TO PLAYERS KICKED FROM GAME
+				}
+			}
+			this.games.delete(socketID); //remove game from lobby
+		}
+		for (const [gameID, game] of this.games) {
 			const players = game.players;
 			for (let j = 0; j < players.length; j++) {
 				const player = players[j];
-
-				if (player.socket == socket) {
+				if (player.id == socketID) {
 					if (game.remove(player)) {
-						this.games.splice(i, 1); //remove game from lobby
-						console.log(`Game <${game.id}> removed from Lobby`);
+						console.log(`Game #${gameID}<${game.id}> removed from Lobby`);
+						//TODO: SEND WS MESSAGE TO PLAYERS STILL IN GAME
 					}
 				}
 			}
 		}
-	}
-
-	private getGame(id: string): Game | null {
-		for (let i = 0; i < this.games.length; i++) {
-			const game = this.games[i];
-			if (game.id == id) {
-				return game;
-			}
-		}
-		return null;
-	}
-
-	private addGame(game: Game) {
-		this.games.push(game);
 	}
 }

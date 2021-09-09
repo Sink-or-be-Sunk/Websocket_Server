@@ -1,26 +1,16 @@
 import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import { MOVE_TYPE } from "../../src/models/gameplay/Move";
-import TestUtils from "../../testUtils/TestUtils";
 import { SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
-const utils = new TestUtils();
-TestUtils.silenceLog();
-
-beforeAll(async () => {
-	await utils.setup();
-});
-
-afterAll(async () => {
-	await utils.tearDown();
-});
 
 describe("Validate basic back and forth game", () => {
-	const p1 = new Player("one", utils.getSocket("one"));
-	const p2 = new Player("two", utils.getSocket("two"));
+	const p1 = new Player("one");
+	const p2 = new Player("two");
 
-	const game = new Game(p1.id, p1.socket, GAME_TYPE.BASIC);
+	const game = new Game(p1.id, GAME_TYPE.BASIC);
+	game.add(p1);
 
 	it("Reject Player 1 from making a move until game has started", () => {
 		const move = JSON.stringify({ type: MOVE_TYPE.SOLO, c: 0, r: 0 });
@@ -57,8 +47,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(true, ResponseHeader.SHIP_POSITIONED),
 		);
@@ -81,8 +70,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p2.id, str);
+		const resp = game.positionShips(p2.id, list);
 		expect(resp).toEqual(
 			new Response(
 				true,
@@ -104,12 +92,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to make a move", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
 			r: 0,
 			at: p2.id,
-		});
+		};
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -126,23 +114,23 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to make a move", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
 			r: 0,
 			at: p1.id,
-		});
+		};
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
 
 	it("Reject Player 1 from repeating same move", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
 			r: 0,
 			at: p2.id,
-		});
+		};
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
 			new Response(false, ResponseHeader.MOVE_REPEATED),
@@ -161,12 +149,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to Sink the Patrol Boat", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
 			r: 1,
 			at: p2.id,
-		});
+		};
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
 			new Response(
@@ -189,12 +177,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to hit a Destroyer", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 0,
 			at: p1.id,
-		});
+		};
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -211,12 +199,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to hit the Destroyer", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 0,
 			at: p2.id,
-		});
+		};
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -233,12 +221,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to miss", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 2,
 			r: 0,
 			at: p1.id,
-		});
+		};
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
 	});
@@ -255,12 +243,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to hit the Destroyer 2nd time", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 1,
 			at: p2.id,
-		});
+		};
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -277,12 +265,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to hit the Destroyer 2nd time", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 2,
 			at: p1.id,
-		});
+		};
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -299,12 +287,12 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to hit and sink the Destroyer to win", () => {
-		const move = JSON.stringify({
+		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 2,
 			at: p2.id,
-		});
+		};
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
 			new Response(

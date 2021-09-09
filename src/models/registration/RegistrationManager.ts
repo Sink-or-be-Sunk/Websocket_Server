@@ -8,7 +8,7 @@ export class RegistrationManager {
     static readonly ORDER_ERROR = "CONFIRM BEFORE REGISTER";
     private pending: Map<string, RegisterRequest>
     constructor() {
-        this.pending = new Map();
+        this.pending = new Map<string, RegisterRequest>();
     }
 
     public handleReq(

@@ -6,6 +6,7 @@ import { WSClientMessage, REQ_TYPE } from "./util/WSClientMessage";
 import ServerMessenger from "./util/ServerMessenger";
 import Lobby from "./models/gameplay/Lobby";
 import { RegistrationManager } from "./models/registration/RegistrationManager";
+import { assert } from "console";
 
 const lobby = new Lobby();
 const registrar = new RegistrationManager();
@@ -35,11 +36,10 @@ export default server;
  */
 export const wss = new WebSocket.Server({ server });
 wss.on("connection", (ws) => {
-	logger.info("Websocket Connected");
+	logger.info(`Websocket Connected:`);
 	ws.send(ServerMessenger.CONNECTED.toString());
 	ws.on("message", (raw: WebSocket.Data) => {
 		_onWSMessage(ws, raw);
-
 	});
 
 	ws.on("close", () => {
@@ -49,24 +49,37 @@ wss.on("connection", (ws) => {
 
 function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 	const msg = new WSClientMessage(raw.toString());
-	if (
-		msg.req == REQ_TYPE.INVALID ||
-		msg.req == REQ_TYPE.BAD_FORMAT
-	) {
-		console.error(`${msg.id}: client message:\n${raw}`);
-		socket.send(ServerMessenger.bad_client_msg(raw.toString()).toString());
-	} else if (
-		msg.req == REQ_TYPE.REGISTER ||
-		msg.req == REQ_TYPE.CONFIRM_REGISTER
-	) {
-		const resp = registrar.handleReq(msg);
-		socket.send(resp.toString());
+
+	if (msg.isValid()) {
+		if (!socket.id) {
+			// socket id assigned to client username
+			// essentially makes each user have their "own"
+			// socket in the eyes of the server
+			// TODO: add security where socket must authenticate username with password
+			// TODO: check that the user has been registered to a device
+			socket.id = msg.id;
+		}
+
+		assert(socket.id == msg.id); //FIXME: ADD A BETTER CHECK HERE
+
+		if (
+			msg.req == REQ_TYPE.REGISTER ||
+			msg.req == REQ_TYPE.CONFIRM_REGISTER
+		) {
+			const resp = registrar.handleReq(msg);
+			socket.send(resp.toString());
+		} else {
+			const resp = lobby.handleReq(msg);
+			socket.send(resp.toString());
+		}
 	} else {
-		const resp = lobby.handleReq(socket, msg);
-		socket.send(resp.toString());
+		console.error(`id:${msg.id}; client message:\n${raw}`);
+		socket.send(ServerMessenger.bad_client_msg(raw.toString()).toString());
 	}
+
+
 }
 
 function _onWSClose(ws: WebSocket) {
-	lobby.leaveGame(ws);
+	lobby.leaveGame(ws.id);
 }
