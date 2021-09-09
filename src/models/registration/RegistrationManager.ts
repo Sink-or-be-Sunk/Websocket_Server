@@ -12,7 +12,6 @@ export class RegistrationManager {
     }
 
     public handleReq(
-        socket: WebSocket,
         message: WSClientMessage,
     ): WSServerMessage {
         const req = new RegisterRequest(message.data);
@@ -31,7 +30,7 @@ export class RegistrationManager {
                 }
             }
         } else {
-            return ServerMessenger.bad_client_msg(message.data, RegistrationManager.TAG);
+            return ServerMessenger.bad_client_msg(JSON.stringify(message.data), RegistrationManager.TAG);
         }
 
     }

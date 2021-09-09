@@ -2,15 +2,14 @@ export class RegisterRequest {
     type: REGISTER_TYPE;
     ssid: string;
 
-    constructor(raw: string) {
+    constructor(raw: any) {
         this.type = REGISTER_TYPE.INVALID;
         this.ssid = "";
 
         try {
-            const parse = JSON.parse(raw) as RegisterRequest;
-            if (isInstance(parse)) {
-                this.ssid = parse.ssid;
-                this.type = parse.type;
+            if (isInstance(raw)) {
+                this.ssid = raw.ssid;
+                this.type = raw.type;
             } else {
                 this.type = REGISTER_TYPE.INVALID;
             }
@@ -35,7 +34,7 @@ export class RegisterRequest {
     }
 }
 export function isInstance(object: any) {
-    if ("ssid" in object) {
+    if ("ssid" in object && "type" in object) {
         if (
             object.type === REGISTER_TYPE.INIT ||
             object.type === REGISTER_TYPE.CONFIRM

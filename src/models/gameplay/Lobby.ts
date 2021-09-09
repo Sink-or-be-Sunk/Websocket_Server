@@ -1,6 +1,6 @@
 import { Game, Response, ResponseHeader, parseGameType } from "./Game";
-import ServerMessenger from "../../util/ServerMessenger";
-import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
+import ServerMessenger from "../../../src/util/ServerMessenger";
+import { WSClientMessage, REQ_TYPE } from "../../../src/util/WSClientMessage";
 import WSServerMessage from "../../util/WSServerMessage";
 import WebSocket from "ws";
 import Player from "./Player";
