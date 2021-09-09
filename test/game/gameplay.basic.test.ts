@@ -4,7 +4,6 @@ import { MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
-
 describe("Validate basic back and forth game", () => {
 	const p1 = new Player("one");
 	const p2 = new Player("two");
