@@ -205,7 +205,7 @@ export class Game {
 		}
 	}
 
-	changeGameType(id: string, gameType: string): Response {
+	changeGameType(id: string, type: GAME_TYPE): Response {
 		//TODO: do we want only the player that created the game to be able to change game type?
 		let ready = false;
 		for (let i = 0; i < this.players.length; i++) {
@@ -220,7 +220,6 @@ export class Game {
 		} else if (ready) {
 			return new Response(false, ResponseHeader.PLAYER_READY);
 		} else {
-			const type = parseGameType(gameType);
 			this.rules = new Rules(type);
 			return new Response(
 				true,

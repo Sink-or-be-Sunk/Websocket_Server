@@ -27,7 +27,7 @@ export class WSServerMessage {
 		if (this.payload) {
 			obj.payload = this.payload;
 		}
-		return JSON.stringify(obj)
+		return JSON.stringify(obj);
 	}
 }
 

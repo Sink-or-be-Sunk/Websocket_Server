@@ -36,7 +36,7 @@ export default server;
  */
 export const wss = new WebSocket.Server({ server });
 wss.on("connection", (ws) => {
-	logger.info(`Websocket Connected:`);
+	logger.info("Websocket Connected:");
 	ws.send(new WSServerMessage({ header: SERVER_HEADERS.CONNECTED, at: "" }).toString());
 	ws.on("message", (raw: WebSocket.Data) => {
 		_onWSMessage(ws, raw);

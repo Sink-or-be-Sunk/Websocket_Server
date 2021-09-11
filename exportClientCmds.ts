@@ -12,15 +12,15 @@ if (!fs.existsSync(dir)) {
 }
 
 fs.writeFileSync(output, "#pragma once\n"); //header
-fs.appendFileSync(output, `\n`);
-fs.appendFileSync(output, `#include "cJSON.h"\n`);
-fs.appendFileSync(output, `#include "<string.h>"\n`);
-fs.appendFileSync(output, `#include "<stdio.h>"\n`);
-fs.appendFileSync(output, `#include "<esp_wifi.h>"\n`);
-fs.appendFileSync(output, `\n`);
+fs.appendFileSync(output, "\n");
+fs.appendFileSync(output, "#include \"cJSON.h\"\n");
+fs.appendFileSync(output, "#include \"<string.h>\"\n");
+fs.appendFileSync(output, "#include \"<stdio.h>\"\n");
+fs.appendFileSync(output, "#include \"<esp_wifi.h>\"\n");
+fs.appendFileSync(output, "\n");
 
-fs.appendFileSync(output, `namespace req_type\n`);
-fs.appendFileSync(output, `{\n`);
+fs.appendFileSync(output, "namespace req_type\n");
+fs.appendFileSync(output, "{\n");
 for (const req in WSClientMessage.REQ_TYPE) {
 	// const msg = JSON.stringify({
 	// 	id: "Player_ID",
@@ -29,6 +29,6 @@ for (const req in WSClientMessage.REQ_TYPE) {
 	// });
 	fs.appendFileSync(output, `\tconstexpr char ${req}[] = "${WSClientMessage.REQ_TYPE[req]}";\n`);
 }
-fs.appendFileSync(output, `}\n`);
+fs.appendFileSync(output, "}\n");
 
-console.log('...commands exported');
+console.log("...commands exported");
