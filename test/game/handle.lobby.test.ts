@@ -55,9 +55,16 @@ describe("Handle Lobby Requests ", () => {
         const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
         const str = JSON.stringify(obj);
         const msg = new WSClientMessage(str);
-        const resp = lobby.handleReq(msg);
-        const result = [new WSServerMessage({ header: SERVER_HEADERS.POSITIONED_SHIPS, at: obj.id })];
-        expect(resp.toString()).toEqual(result.toString());
+        const responses = lobby.handleReq(msg);
+        const results = [
+            new WSServerMessage({ header: SERVER_HEADERS.POSITIONED_SHIPS, at: obj.id }),
+            new WSServerMessage({ header: SERVER_HEADERS.POSITIONED_SHIPS, at: "two", meta: obj.id }),
+        ];
+        for (let i = 0; i < results.length; i++) {
+            const result = results[i];
+            const resp = responses[i];
+            expect(resp).toEqual(result);
+        }
     });
 
     it("Allow Player 2 to position ships", () => {
@@ -69,9 +76,16 @@ describe("Handle Lobby Requests ", () => {
         const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
         const str = JSON.stringify(obj);
         const msg = new WSClientMessage(str);
-        const resp = lobby.handleReq(msg);
-        const result = [new WSServerMessage({ header: SERVER_HEADERS.POSITIONED_SHIPS, at: obj.id })];
-        expect(resp.toString()).toEqual(result.toString());
+        const responses = lobby.handleReq(msg);
+        const results = [
+            new WSServerMessage({ header: SERVER_HEADERS.POSITIONED_SHIPS, at: obj.id }),
+            new WSServerMessage({ header: SERVER_HEADERS.POSITIONED_SHIPS, at: "one", meta: obj.id }),
+        ];
+        for (let i = 0; i < results.length; i++) {
+            const result = results[i];
+            const resp = responses[i];
+            expect(resp).toEqual(result);
+        }
     });
 
     it("Allow Player 1 to make a move", () => {
