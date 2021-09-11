@@ -77,6 +77,7 @@ export default class Lobby {
 	 */
 	private makeMove(playerID: string, moveRaw: Object): [Response, Move] {
 		const move = new Move(moveRaw);
+		move.from = playerID;
 		if (move.isValid()) {
 			for (const [gameID, game] of this.games) {
 				const player = game.getPlayerByID(playerID);

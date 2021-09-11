@@ -72,17 +72,17 @@ describe("Handle Lobby Requests ", () => {
             type: MOVE_TYPE.SOLO,
             c: 0,
             r: 0,
-            from: "one",
             to: "two",
         };
         const move_res = new Move(move);
+        move_res.from = "one";
         move_res.result = MOVE_RESULT.HIT;
-        const obj = { req: REQ_TYPE.MAKE_MOVE, id: move.from, data: move };
+        const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
         const str = JSON.stringify(obj);
         const msg = new WSClientMessage(str);
         const responses = lobby.handleReq(msg);
         const results = [
-            new WSServerMessage({ header: SERVER_HEADERS.MOVE_MADE, at: move.from, payload: move_res }),
+            new WSServerMessage({ header: SERVER_HEADERS.MOVE_MADE, at: obj.id, payload: move_res }),
             new WSServerMessage({ header: SERVER_HEADERS.MOVE_MADE, at: move.to, payload: move_res }),
         ];
         for (let i = 0; i < results.length; i++) {
@@ -97,17 +97,17 @@ describe("Handle Lobby Requests ", () => {
             type: MOVE_TYPE.SOLO,
             c: 0,
             r: 0,
-            from: "two",
             to: "one",
         };
         const move_res = new Move(move);
+        move_res.from = "two"
         move_res.result = MOVE_RESULT.HIT;
-        const obj = { req: REQ_TYPE.MAKE_MOVE, id: move.from, data: move };
+        const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
         const str = JSON.stringify(obj);
         const msg = new WSClientMessage(str);
         const responses = lobby.handleReq(msg);
         const results = [
-            new WSServerMessage({ header: SERVER_HEADERS.MOVE_MADE, at: move.from, payload: move_res }),
+            new WSServerMessage({ header: SERVER_HEADERS.MOVE_MADE, at: obj.id, payload: move_res }),
             new WSServerMessage({ header: SERVER_HEADERS.MOVE_MADE, at: move.to, payload: move_res }),
         ];
         for (let i = 0; i < results.length; i++) {
@@ -122,18 +122,17 @@ describe("Handle Lobby Requests ", () => {
             type: MOVE_TYPE.SOLO,
             c: 0,
             r: 0,
-            from: "two",
             to: "one",
         };
         const req = {
-            id: move.from,
+            id: "two",
             req: REQ_TYPE.MAKE_MOVE,
             data: move,
         };
         const msg = new WSClientMessage(JSON.stringify(req));
         const resp = lobby.handleReq(msg);
         const result = [
-            new WSServerMessage({ header: SERVER_HEADERS.INVALID_MOVE, at: move.from, meta: ResponseHeader.TURN_ERROR })];
+            new WSServerMessage({ header: SERVER_HEADERS.INVALID_MOVE, at: req.id, meta: ResponseHeader.TURN_ERROR })];
         expect(resp.toString()).toEqual(result.toString());
     });
 });

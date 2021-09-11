@@ -2,7 +2,7 @@ import { ShipType } from "./Ship";
 
 export class Move {
 	type: MOVE_TYPE;
-	readonly from: string;
+	from: string;
 	readonly to: string;
 	readonly c: number;
 	readonly r: number;
@@ -25,7 +25,6 @@ export class Move {
 			this.c = +move.c; //+str provides shorthand for converting "1" to 1
 			this.r = +move.r;
 			this.to = move.to;
-			this.from = move.from;
 		} else {
 			this.type = MOVE_TYPE.INVALID;
 		}
@@ -64,7 +63,7 @@ export enum MOVE_TYPE {
 	INVALID = "INVALID",
 }
 export function isInstance(object: any) {
-	if ("c" in object && "r" in object && "to" in object && "from" in object && "type" in object) {
+	if ("c" in object && "r" in object && "to" in object && "type" in object) {
 		if (!isNaN(object.c) && !isNaN(object.r)) {
 			if (
 				object.type === MOVE_TYPE.SOLO ||
