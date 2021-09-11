@@ -46,7 +46,9 @@ export default class Lobby {
 		} else if (message.req == REQ_TYPE.JOIN_GAME) {
 			const resp = this.joinGame(new Player(message.id), message.data);
 			if (resp.valid) {
-				return [new WSServerMessage({ header: SERVER_HEADERS.JOINED_GAME, at: message.id, meta: message.data })]; //FIXME: BROADCAST JOINING GAME TO ALL OTHER PLAYERS
+				const list = [new WSServerMessage({ header: SERVER_HEADERS.JOINED_GAME, at: message.id, meta: message.data })];
+				list.push(...this.broadcastJoin(message.id))
+				return list;
 			} else {
 				return [new WSServerMessage({ header: SERVER_HEADERS.INVALID_JOIN, at: message.id, meta: resp.meta })]
 			}
@@ -116,6 +118,22 @@ export default class Lobby {
 		throw new Error("Couldn't find source game to broadcast move: this should never happen")
 	}
 
+	private broadcastJoin(sourceID: string): WSServerMessage[] {
+		for (const [gameID, game] of this.games) {
+			const player = game.getPlayerByID(sourceID);
+			if (player) {
+				//found game
+				const list = [];
+				const players = game.getPlayers(player.id);
+				for (let i = 0; i < players.length; i++) {
+					const p = players[i];
+					list.push(new WSServerMessage({ header: SERVER_HEADERS.JOINED_GAME, at: p.id, meta: sourceID }))
+				}
+				return list;
+			}
+		}
+		throw new Error("Couldn't find source game to broadcast join: this should never happen")
+	}
 	private positionShips(playerID: string, positions: string): Response {
 		for (const [gameID, game] of this.games) {
 			const player = game.getPlayerByID(playerID);

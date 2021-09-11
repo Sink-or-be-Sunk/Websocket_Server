@@ -19,9 +19,16 @@ describe("Handle Lobby Requests ", () => {
     it("Accept Join Game Request", () => {
         const obj = { req: REQ_TYPE.JOIN_GAME, id: "two", data: "one" };
         const msg = new WSClientMessage(JSON.stringify(obj));
-        const resp = lobby.handleReq(msg);
-        const result = [new WSServerMessage({ header: SERVER_HEADERS.JOINED_GAME, at: obj.id, meta: obj.data })];
-        expect(resp.toString()).toEqual(result.toString());
+        const responses = lobby.handleReq(msg);
+        const results = [
+            new WSServerMessage({ header: SERVER_HEADERS.JOINED_GAME, at: obj.id, meta: obj.data }),
+            new WSServerMessage({ header: SERVER_HEADERS.JOINED_GAME, at: obj.data, meta: obj.id }),
+        ];
+        for (let i = 0; i < results.length; i++) {
+            const result = results[i];
+            const resp = responses[i];
+            expect(resp).toEqual(result);
+        }
     });
 
     it("Reject Join Game Request from Player One already in game", () => {
