@@ -3,7 +3,7 @@ import app from "./app";
 import logger from "./util/logger";
 import WebSocket from "ws";
 import { WSClientMessage, REQ_TYPE } from "./util/WSClientMessage";
-import ServerMessenger from "./util/ServerMessenger";
+import { SERVER_HEADERS, WSServerMessage } from "./util/WSServerMessage";
 import Lobby from "./models/gameplay/Lobby";
 import { RegistrationManager } from "./models/registration/RegistrationManager";
 import { assert } from "console";
@@ -37,7 +37,7 @@ export default server;
 export const wss = new WebSocket.Server({ server });
 wss.on("connection", (ws) => {
 	logger.info(`Websocket Connected:`);
-	ws.send(ServerMessenger.CONNECTED.toString());
+	ws.send(new WSServerMessage({ header: SERVER_HEADERS.CONNECTED, at: "" }).toString());
 	ws.on("message", (raw: WebSocket.Data) => {
 		_onWSMessage(ws, raw);
 	});
@@ -74,7 +74,7 @@ function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 		}
 	} else {
 		console.error(`id:${msg.id}; client message:\n${raw}`);
-		socket.send(ServerMessenger.bad_client_msg(raw.toString()).toString());
+		socket.send(new WSServerMessage({ header: SERVER_HEADERS.BAD_CLIENT_MSG, at: msg.id, meta: raw.toString() }).toString());
 	}
 
 

@@ -1,7 +1,7 @@
 export class Layout {
 	type: LAYOUT_TYPE;
 	list: Position[];
-	constructor(raw: any) {
+	constructor(raw: Object) {
 		this.list = [];
 		if (Array.isArray(raw)) {
 			for (let i = 0; i < raw.length; i++) {

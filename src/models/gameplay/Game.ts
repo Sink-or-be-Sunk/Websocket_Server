@@ -48,6 +48,10 @@ export class Game {
 		return this.state == STATE.OVER;
 	}
 
+	getPlayers(ignoreID: string): Player[] {
+		return this.players.filter(player => player.id != ignoreID);
+	}
+
 	/**
 	 *
 	 * @param player - player to remove from game
@@ -143,12 +147,11 @@ export class Game {
 	 * @param move - move being made
 	 * @returns true if move is valid, false otherwise
 	 */
-	makeMove(id: string, moveRaw: any): Response {
+	makeMove(id: string, move: Move): Response {
 		if (this.players[this.turn].id == id) {
 			if (this.isStarted()) {
-				const move = new Move(moveRaw);
 				if (move.isValid(this.rules.boardSize)) {
-					const board = this.getBoardByID(move.at);
+					const board = this.getBoardByID(move.to);
 					if (board) {
 						const res = board.makeMove(move);
 						if (res.valid) {
@@ -175,7 +178,7 @@ export class Game {
 		}
 	}
 
-	positionShips(id: string, positionsRaw: any): Response {
+	positionShips(id: string, positionsRaw: Object): Response {
 		if (this.isStarted()) {
 			return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
 		} else {
@@ -184,7 +187,7 @@ export class Game {
 			if (layout.type == LAYOUT_TYPE.VALID) {
 				const board = this.getBoardByID(id);
 				if (board) {
-					const res = board.updateShipLayout(layout, this.rules);
+					const res = board.updateShipLayout(layout, this.rules, id);
 					if (res.valid) {
 						this.readyUp(id);
 						if (this.isStarted()) {

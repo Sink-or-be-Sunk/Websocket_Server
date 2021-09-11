@@ -1,7 +1,5 @@
-import ServerMessenger from "../../util/ServerMessenger";
 import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
-import WSServerMessage from "../../util/WSServerMessage";
-import WebSocket from "ws";
+import { WSServerMessage } from "../../util/WSServerMessage";
 import { RegisterRequest } from "./RegisterRequest";
 export class RegistrationManager {
     static readonly TAG = "REGISTRATION";
@@ -21,6 +19,7 @@ export class RegistrationManager {
                 if (!this.pending.has(message.id)) {
                     this.pending.set(message.id, req);
                 }
+
                 return ServerMessenger.REGISTER_PENDING;
             } else if (message.req == REQ_TYPE.CONFIRM_REGISTER) {
                 if (this.pending.has(message.id)) {
