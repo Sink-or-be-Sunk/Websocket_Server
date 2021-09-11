@@ -7,7 +7,7 @@ import {
 import Player from "../src/models/gameplay/Player";
 import { BOARD_STATE, MoveAllowed } from "../src/models/gameplay/Board";
 import { LAYOUT_TYPE, Position } from "../src/models/gameplay/Layout";
-import { MOVE_TYPE } from "../src/models/gameplay/Move";
+import { Move, MOVE_TYPE } from "../src/models/gameplay/Move";
 
 export class GameRunner {
 	game: Game;
@@ -119,7 +119,7 @@ export class GameRunner {
 								type: MOVE_TYPE.SOLO,
 								c: square.c,
 								r: square.r,
-								at: attack.id,
+								to: attack.id,
 							};
 
 							let exp = new Response(true, ResponseHeader.HIT);
@@ -138,7 +138,7 @@ export class GameRunner {
 								}
 							}
 
-							return { move: move, exp: exp };
+							return { move: new Move(move), exp: exp };
 						}
 					}
 				}
@@ -155,10 +155,10 @@ export class GameRunner {
 								type: MOVE_TYPE.SOLO,
 								c: square.c,
 								r: square.r,
-								at: attack.id,
+								to: attack.id,
 							};
 							const exp = new Response(true, ResponseHeader.MISS);
-							return { move: move, exp: exp };
+							return { move: new Move(move), exp: exp };
 						}
 					}
 				}
@@ -198,6 +198,6 @@ export enum RUNNER_POSITION {
 }
 
 export interface MoveResp {
-	move: any;
+	move: Move;
 	exp: Response;
 }

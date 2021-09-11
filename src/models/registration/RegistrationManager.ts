@@ -1,5 +1,5 @@
 import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
-import { WSServerMessage } from "../../util/WSServerMessage";
+import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import { RegisterRequest } from "./RegisterRequest";
 export class RegistrationManager {
     static readonly TAG = "REGISTRATION";
@@ -20,16 +20,16 @@ export class RegistrationManager {
                     this.pending.set(message.id, req);
                 }
 
-                return ServerMessenger.REGISTER_PENDING;
+                return new WSServerMessage({ header: SERVER_HEADERS.REGISTER_PENDING, at: message.id });
             } else if (message.req == REQ_TYPE.CONFIRM_REGISTER) {
                 if (this.pending.has(message.id)) {
-                    return ServerMessenger.REGISTER_SUCCESS;
+                    return new WSServerMessage({ header: SERVER_HEADERS.REGISTER_SUCCESS, at: message.id });
                 } else {
-                    return ServerMessenger.bad_client_msg(RegistrationManager.ORDER_ERROR, RegistrationManager.TAG);
+                    return new WSServerMessage({ header: SERVER_HEADERS.REGISTER_ORDER_ERROR, at: message.id });
                 }
             }
         } else {
-            return ServerMessenger.bad_client_msg(JSON.stringify(message.data), RegistrationManager.TAG);
+            return new WSServerMessage({ header: SERVER_HEADERS.BAD_CLIENT_MSG, at: message.id, meta: RegistrationManager.TAG });
         }
 
     }

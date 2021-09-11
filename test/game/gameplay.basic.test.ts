@@ -182,12 +182,13 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to hit a Destroyer", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 0,
-			at: p1.id,
+			to: p1.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -204,12 +205,13 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to hit the Destroyer", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 0,
-			at: p2.id,
+			to: p2.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -226,12 +228,13 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to miss", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 2,
 			r: 0,
-			at: p1.id,
+			to: p1.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
 	});
@@ -248,12 +251,13 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to hit the Destroyer 2nd time", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 1,
-			at: p2.id,
+			to: p2.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -270,12 +274,13 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to hit the Destroyer 2nd time", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 2,
-			at: p1.id,
+			to: p1.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -292,12 +297,13 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to hit and sink the Destroyer to win", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 2,
-			at: p2.id,
+			to: p2.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
 			new Response(

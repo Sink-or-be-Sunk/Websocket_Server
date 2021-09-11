@@ -1,6 +1,6 @@
 import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
-import { MOVE_TYPE } from "../../src/models/gameplay/Move";
+import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
 describe("Validate classic back and forth game", () => {
@@ -119,12 +119,13 @@ describe("Validate classic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to HIT battleship", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 3,
 			r: 5,
-			at: p2.id,
+			to: p2.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -141,12 +142,13 @@ describe("Validate classic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to MISS", () => {
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 3,
 			r: 5,
-			at: p1.id,
+			to: p1.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
 	});
@@ -164,12 +166,13 @@ describe("Validate classic back and forth game", () => {
 	 */
 	it("Allow Player 1 to HIT PT Boat", () => {
 		const obj = { me: p1, them: p2 };
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 4,
 			r: 5,
-			at: obj.them.id,
+			to: obj.them.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -187,12 +190,13 @@ describe("Validate classic back and forth game", () => {
 	 */
 	it("Allow Player 2 to HIT Carrier", () => {
 		const obj = { me: p2, them: p1 };
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 4,
 			r: 5,
-			at: obj.them.id,
+			to: obj.them.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -210,12 +214,13 @@ describe("Validate classic back and forth game", () => {
 	 */
 	it("Allow Player 1 to HIT Battleship", () => {
 		const obj = { me: p1, them: p2 };
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 2,
 			r: 5,
-			at: obj.them.id,
+			to: obj.them.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -233,12 +238,13 @@ describe("Validate classic back and forth game", () => {
 	 */
 	it("Allow Player 2 to Miss", () => {
 		const obj = { me: p2, them: p1 };
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 2,
 			r: 5,
-			at: obj.them.id,
+			to: obj.them.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
 	});
@@ -256,12 +262,13 @@ describe("Validate classic back and forth game", () => {
 	 */
 	it("Allow Player 1 to HIT Battleship", () => {
 		const obj = { me: p1, them: p2 };
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 5,
-			at: obj.them.id,
+			to: obj.them.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});
@@ -279,12 +286,13 @@ describe("Validate classic back and forth game", () => {
 	 */
 	it("Allow Player 2 to HIT PT", () => {
 		const obj = { me: p2, them: p1 };
-		const move = {
+		const move_obj = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
 			r: 5,
-			at: obj.them.id,
+			to: obj.them.id,
 		};
+		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
 		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
 	});

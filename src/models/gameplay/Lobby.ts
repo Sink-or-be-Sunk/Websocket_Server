@@ -1,5 +1,5 @@
 import { Game, Response, ResponseHeader, parseGameType } from "./Game";
-import { WSClientMessage, REQ_TYPE } from "../../../src/util/WSClientMessage";
+import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage"
 import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import Player from "./Player";
 import { Move } from "./Move";
