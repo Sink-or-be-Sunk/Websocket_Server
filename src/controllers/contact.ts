@@ -33,13 +33,13 @@ export const postContact = async (req: Request, res: Response) => {
 	const body = `from: ${req.body.name} <${req.body.email}>\ncontent: ${req.body.message}`;
 
 	const mailOptions = {
-		to: "mitchaarndt@gmail.com",//TODO: MAKE A NEW EMAIL CALLED SINK OR BE SUNK ROBOT as sender
-		from: "SinkOrBeSunk@gmail.com",//this would be the robot account (sender only) 
+		to: "SinkOrBeSunk@gmail.com",
+		from: "SinkOrBeSunkRobot@gmail.com",//this would be the robot account (sender only) 
 		subject: "Contact Form",
 		text: body
 	};
 
-	sgMail.send(mailOptions, undefined, (err)=> {
+	sgMail.send(mailOptions, undefined, (err) => {
 		if (err) {
 			req.flash("errors", { msg: err.message });
 			return res.redirect("/contact");
