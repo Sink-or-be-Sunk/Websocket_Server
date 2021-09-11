@@ -1,7 +1,6 @@
 import { Game, Response, ResponseHeader, parseGameType } from "./Game";
-import ServerMessenger from "../../../src/util/ServerMessenger";
 import { WSClientMessage, REQ_TYPE } from "../../../src/util/WSClientMessage";
-import WSServerMessage from "../../util/WSServerMessage";
+import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import Player from "./Player";
 
 export default class Lobby {
@@ -17,19 +16,21 @@ export default class Lobby {
 		if (message.req == REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
 			if (this.games.has(message.id)) {
-				return ServerMessenger.reqError("Game Already Exists");
+				return new WSServerMessage(SERVER_HEADERS.GAME_ALREADY_EXISTS, { meta: message.id });
 			}
 			const type = parseGameType(message.data); //if type is excluded, game defaults to classic mode
 			const game = new Game(message.id, type); //use the unique username
 			game.add(new Player(message.id));
 			this.games.set(game.id, game);
-			return ServerMessenger.GAME_CREATED;
+			return new WSServerMessage(SERVER_HEADERS.GAME_CREATED, { meta: game.id });
 		} else if (message.req === REQ_TYPE.MAKE_MOVE) {
 			const resp = this.makeMove(message.id, message.data);
 			if (resp.valid) {
-				return ServerMessenger.MOVE_MADE;
+				const list = [new WSServerMessage(SERVER_HEADERS.MADE_MOVE, { response: resp })];
+				list.push(this.broadcastMove(message.id, message.data))
+				return list;
 			} else {
-				return ServerMessenger.invalid_move(resp.meta);
+				return new WSServerMessage(SERVER_HEADERS.INVALID_MOVE, { response: resp });
 			}
 		} else if (message.req == REQ_TYPE.JOIN_GAME) {
 			const resp = this.joinGame(new Player(message.id), message.data);
@@ -71,6 +72,16 @@ export default class Lobby {
 			}
 		}
 		return new Response(false, ResponseHeader.NO_SUCH_GAME);
+	}
+
+	/**
+	 * generate a Response obj for the other players in the game
+	 * that were moved against by sourceID player
+	 * @param sourceID 
+	 * @param move 
+	 */
+	private broadcastMove(sourceID: string, move: string): Response {
+
 	}
 
 	private positionShips(playerID: string, positions: string): Response {
