@@ -37,6 +37,16 @@ block content
 	.page-header
 		h3 Manage Friends
 		hr
+	.form-horizontal
+		each friend in user.friends
+			form.form-group.row.justify-content-md-center(action=`/account/friend/delete/${friend._id}`, method="POST")
+				.col-sm-3.text-right
+					button.col-form-label.font-weight-bold.btn.btn-danger(type="submit")
+						i.fa.fa-trash
+						| Remove
+				.col-sm-7
+					- var friend_username = friend.requester.username == user.username ? friend.recipient.username : friend.requester.username
+					a.form-control(href="#") #{friend_username}
 
 	form.form-horizontal(action='/account/friend', method='POST')
 		input(type='hidden', name='_csrf', value=_csrf)

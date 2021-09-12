@@ -615,3 +615,27 @@ export const postUpdateFriends = async (
 	});
 	return res.redirect("/account");
 };
+
+/**
+ * Delete user friend.
+ * @route POST /account/friend/delete
+ */
+export const postFriendDeleteAction = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): void => {
+	const user = req.user as UserDocument;
+	// User.deleteOne({ _id: user.id }, undefined, (err) => {
+	// 	if (err) {
+	// 		return next(err);
+	// 	}
+	// 	req.logout();
+	// 	req.flash("info", { msg: "Your account has been deleted." });
+	// 	res.redirect("/");
+	// });
+	const id = req.params.id;
+	logger.debug(id);
+	req.flash("info", { msg: `Friend Removed` });
+	return res.redirect("/account");
+};

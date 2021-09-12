@@ -129,6 +129,11 @@ app.post(
 	passportConfig.isAuthenticated,
 	userController.postUpdateFriends,
 );
+app.post(
+	"/account/friend/delete/:id",
+	passportConfig.isAuthenticated,
+	userController.postFriendDeleteAction,
+);
 app.get("/game", passportConfig.isAuthenticated, gameController.getGame);
 app.get(
 	"/connect",
