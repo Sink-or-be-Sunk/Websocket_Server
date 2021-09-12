@@ -30,7 +30,7 @@ export class Move {
 		}
 	}
 
-	isValid(grid?: number) {
+	isValid(grid?: number): boolean {
 		if (this.type == MOVE_TYPE.INVALID) {
 			return false;
 		}
@@ -45,7 +45,7 @@ export class Move {
 		return true;
 	}
 
-	toString() {
+	toString(): string {
 		return JSON.stringify(this);
 	}
 }

@@ -148,7 +148,7 @@ export default class Lobby {
 		const move = new Move(moveRaw);
 		move.from = playerID;
 		if (move.isValid()) {
-			for (const [gameID, game] of this.games) {
+			for (const [, game] of this.games) {
 				const player = game.getPlayerByID(playerID);
 				if (player) {
 					const resp = game.makeMove(playerID, move);
@@ -168,7 +168,7 @@ export default class Lobby {
 	 * @param move
 	 */
 	private broadcastMove(sourceID: string, move: Move): WSServerMessage[] {
-		for (const [gameID, game] of this.games) {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
@@ -193,7 +193,7 @@ export default class Lobby {
 	}
 
 	private broadcastJoin(sourceID: string): WSServerMessage[] {
-		for (const [gameID, game] of this.games) {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
@@ -218,7 +218,7 @@ export default class Lobby {
 	}
 
 	private broadcastPosition(sourceID: string): WSServerMessage[] {
-		for (const [gameID, game] of this.games) {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
@@ -246,7 +246,7 @@ export default class Lobby {
 		sourceID: string,
 		type: GAME_TYPE,
 	): WSServerMessage[] {
-		for (const [gameID, game] of this.games) {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
@@ -271,7 +271,7 @@ export default class Lobby {
 	}
 
 	private positionShips(playerID: string, positions: string): Response {
-		for (const [gameID, game] of this.games) {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
 				return game.positionShips(playerID, positions);
@@ -286,7 +286,7 @@ export default class Lobby {
 		gameType: string,
 	): [Response, GAME_TYPE] {
 		const type = parseGameType(gameType);
-		for (const [gameID, game] of this.games) {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
 				return [game.changeGameType(playerID, type), type];
@@ -308,7 +308,7 @@ export default class Lobby {
 		}
 	}
 
-	public leaveGame(socketID: string) {
+	public leaveGame(socketID: string): void {
 		const game = this.games.get(socketID);
 		if (game) {
 			console.log(`Host <${socketID}> Ended Game by Leaving`);

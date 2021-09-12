@@ -30,11 +30,11 @@ export class RegisterRequest {
 		}
 	}
 
-	toString() {
+	toString(): string {
 		return JSON.stringify(this);
 	}
 }
-export function isInstance(object: any) {
+export function isInstance(object: any): boolean {
 	if ("ssid" in object && "type" in object) {
 		if (
 			object.type === REGISTER_TYPE.INIT ||
