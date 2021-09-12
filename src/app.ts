@@ -19,6 +19,7 @@ import * as connectController from "./controllers/connect";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
+import logger from "./util/logger";
 
 // Create Express server
 const app = express();
@@ -69,7 +70,7 @@ app.use(flash());
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
-	res.locals.user = req.user;
+	res.locals.user = req.user; //provide user profile into to page
 	next();
 });
 app.use((req, res, next) => {

@@ -12,10 +12,21 @@ passport.serializeUser<any, any>((req, user, done) => {
 	done(undefined, user);
 });
 
-passport.deserializeUser((id, done) => {
-	User.findById(id, (err: NativeError, user: UserDocument) =>
-		done(err, user),
-	);
+passport.deserializeUser(async (id, done) => {
+	try {
+		const user = await User.findById(id)
+			.populate({
+				path: "friends",
+				populate: {
+					path: "recipient requester",
+					select: "username profile.name",
+				},
+			})
+			.exec();
+		done(undefined, user);
+	} catch (err) {
+		done(err);
+	}
 });
 
 /**

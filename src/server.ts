@@ -46,7 +46,7 @@ wss.on("connection", (ws) => {
 			at: "",
 		}).toString(),
 	);
-	ws.on("message", (raw: WebSocket.Data) => {
+	ws.on("message", async (raw: WebSocket.Data) => {
 		_onWSMessage(ws, raw);
 	});
 
@@ -55,7 +55,7 @@ wss.on("connection", (ws) => {
 	});
 });
 
-function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
+async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 	const msg = new WSClientMessage(raw.toString());
 
 	if (msg.isValid()) {
@@ -71,8 +71,8 @@ function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 		assert(socket.id == msg.id); //FIXME: ADD A BETTER CHECK HERE
 
 		if (dbManager.handles(msg.req)) {
-			const resp = dbManager.handleReq(msg);
-			socket.send(resp.toString());
+			// const resp = await dbManager.handleReq(msg);
+			// socket.send(resp.toString());
 		} else if (lobby.handles(msg.req)) {
 			const resp = lobby.handleReq(msg);
 			socket.send(resp.toString());

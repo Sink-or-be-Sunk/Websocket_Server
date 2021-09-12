@@ -2,7 +2,7 @@ import async from "async";
 import crypto from "crypto";
 import passport from "passport";
 import { User, UserDocument, AuthToken, USERNAME_REGEX } from "../models/User";
-import { Friend, FriendDocument } from "../models/Friend";
+import { Friend, FriendDocument, FriendStatus } from "../models/Friend";
 import { Request, Response, NextFunction } from "express";
 import { IVerifyOptions } from "passport-local";
 import { WriteError } from "mongodb";
@@ -11,6 +11,7 @@ import "../config/passport";
 import { CallbackError, NativeError } from "mongoose";
 import logger from "../util/logger";
 import sgMail from "@sendgrid/mail";
+import mongoose from "mongoose";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
@@ -172,7 +173,12 @@ export const postSignup = async (
  * Profile page.
  * @route GET /account
  */
-export const getAccount = (req: Request, res: Response): void => {
+export const getAccount = async (
+	req: Request,
+	res: Response,
+): Promise<void> => {
+	//get info on friends
+
 	res.render("account/profile", {
 		title: "Account Management",
 	});
@@ -564,38 +570,48 @@ export const postUpdateFriends = async (
 	const userA = req.user as UserDocument;
 	const userB = await User.findOne({ username: req.body.friend });
 
-	logger.debug(userA);
-	logger.debug(userB);
+	// logger.debug("userA before: ");
+	// logger.debug(userA);
+	// logger.debug("userB before: ");
+	// logger.debug(userB);
 	if (!userB) {
 		req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
 		return res.redirect("/account");
 	}
-	// else {
-	// 	req.flash("success", { msg: `Requested ${req.body.friend}` });
-	// 	return res.redirect("/account");
-	// }
-
-	// NOTE: LEFT OFF HERE WITH VALIDATION OF USERNAME WORKING
 
 	const docA = await Friend.findOneAndUpdate(
 		{ requester: userA.id, recipient: userB.id },
-		{ $set: { status: 1 } },
+		{ $set: { status: FriendStatus.REQUESTED } },
 		{ upsert: true, new: true },
 	);
 	const docB = await Friend.findOneAndUpdate(
 		{ recipient: userA.id, requester: userB.id },
-		{ $set: { status: 2 } },
+		{ $set: { status: FriendStatus.PENDING } },
 		{ upsert: true, new: true },
 	);
 	const updateUserA = await User.findOneAndUpdate(
-		{ _id: userA.id },
+		{ _id: userA.id, friends: { $ne: docA._id } },
 		{ $push: { friends: docA._id } },
 	);
 	const updateUserB = await User.findOneAndUpdate(
-		{ _id: userB.id },
+		{ _id: userB.id, friends: { $ne: docB._id } },
 		{ $push: { friends: docB._id } },
 	);
-	logger.debug("userA: ", updateUserA);
-	logger.debug("userB: ", updateUserB);
+
+	if (!updateUserA) {
+		req.flash("errors", {
+			msg: `You have already requested ${req.body.friend}`,
+		});
+		return res.redirect("/account");
+	}
+
+	logger.debug("userA after: ");
+	logger.debug(updateUserA);
+	logger.debug("userB after: ");
+	logger.debug(updateUserB);
+
+	req.flash("success", {
+		msg: `Success! You have friend requested ${userB.profile.name} (${userB.username})`,
+	});
 	return res.redirect("/account");
 };
