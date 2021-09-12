@@ -1,4 +1,3 @@
-import WebSocket from "ws";
 import { Board, Square } from "./Board";
 import Player from "./Player";
 import { Move } from "./Move";
@@ -49,7 +48,7 @@ export class Game {
 	}
 
 	getPlayers(ignoreID: string): Player[] {
-		return this.players.filter(player => player.id != ignoreID);
+		return this.players.filter((player) => player.id != ignoreID);
 	}
 
 	/**
@@ -63,7 +62,9 @@ export class Game {
 			if (player == p) {
 				this.players.splice(i, 1); // remove player from game
 				this.boards.splice(i, 1); //remove players board from game
-				console.log(`Player <${player.id}> Removed From Game <${this.id}`);
+				console.log(
+					`Player <${player.id}> Removed From Game <${this.id}`,
+				);
 				if (this.players.length == 0) {
 					return true; //game is empty
 				}
@@ -155,7 +156,9 @@ export class Game {
 					if (board) {
 						const res = board.makeMove(move);
 						if (res.valid) {
-							console.log(`player <${id}> made move ${move.toString()}`);
+							console.log(
+								`player <${id}> made move ${move.toString()}`,
+							);
 							if (res.meta.includes(ResponseHeader.GAME_OVER)) {
 								this.state = STATE.OVER;
 							}
@@ -163,7 +166,10 @@ export class Game {
 						}
 						return res;
 					} else {
-						return new Response(false, ResponseHeader.BAD_AT_PLAYER);
+						return new Response(
+							false,
+							ResponseHeader.BAD_AT_PLAYER,
+						);
 					}
 				} else {
 					return new Response(false, ResponseHeader.MOVE_INVALID);
@@ -178,7 +184,7 @@ export class Game {
 		}
 	}
 
-	positionShips(id: string, positionsRaw: Object): Response {
+	positionShips(id: string, positionsRaw: any): Response {
 		if (this.isStarted()) {
 			return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
 		} else {
@@ -200,7 +206,11 @@ export class Game {
 					return new Response(false, ResponseHeader.BOARD_NOT_FOUND);
 				}
 			} else {
-				return new Response(false, ResponseHeader.BAD_LAYOUT, layout.type);
+				return new Response(
+					false,
+					ResponseHeader.BAD_LAYOUT,
+					layout.type,
+				);
 			}
 		}
 	}
@@ -224,7 +234,7 @@ export class Game {
 			return new Response(
 				true,
 				ResponseHeader.GAME_TYPE_CHANGED,
-				this.rules.type
+				this.rules.type,
 			);
 		}
 	}
@@ -236,8 +246,9 @@ export class Game {
 			this.turn = 0;
 		}
 		console.log(
-			`Turn changed from <${this.players[prevTurn].id}> to <${this.players[this.turn].id
-			}>`
+			`Turn changed from <${this.players[prevTurn].id}> to <${
+				this.players[this.turn].id
+			}>`,
 		);
 	}
 }
@@ -318,13 +329,10 @@ export class Rules {
 				LAYOUT_TYPE.SUBMARINE,
 				LAYOUT_TYPE.DESTROYER,
 				LAYOUT_TYPE.BATTLESHIP,
-				LAYOUT_TYPE.CARRIER
+				LAYOUT_TYPE.CARRIER,
 			];
 		} else if (type == GAME_TYPE.BASIC) {
-			return [
-				LAYOUT_TYPE.PATROL,
-				LAYOUT_TYPE.DESTROYER,
-			];
+			return [LAYOUT_TYPE.PATROL, LAYOUT_TYPE.DESTROYER];
 		} else {
 			throw new Error("Invalid Rule Type: This should never happen");
 		}
@@ -380,7 +388,7 @@ export class Rules {
 			return true;
 		} else {
 			throw new Error(
-				"Invalid Game Type When Checking if ship is allowed: This should never happen"
+				"Invalid Game Type When Checking if ship is allowed: This should never happen",
 			);
 		}
 		return false;

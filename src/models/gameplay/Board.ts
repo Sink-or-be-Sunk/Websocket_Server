@@ -65,14 +65,14 @@ export class Board {
 						return new Response(
 							true,
 							ResponseHeader.SUNK,
-							ship.type.toString()
+							ship.type.toString(),
 						);
 					} else {
 						move.result = MOVE_RESULT.SUNK;
 						return new Response(
 							true,
 							ResponseHeader.GAME_OVER,
-							ship.type.toString()
+							ship.type.toString(),
 						);
 					}
 				} else {
@@ -86,7 +86,10 @@ export class Board {
 
 	makeMove(move: Move): Response {
 		const square = this.grid[move.c][move.r];
-		if (square.state == BOARD_STATE.HIT || square.state == BOARD_STATE.MISS) {
+		if (
+			square.state == BOARD_STATE.HIT ||
+			square.state == BOARD_STATE.MISS
+		) {
 			return new Response(false, ResponseHeader.MOVE_REPEATED);
 		}
 		return this.attack(move);
@@ -160,12 +163,18 @@ export class Board {
 						found = true;
 						break;
 					} else {
-						return new Response(false, ResponseHeader.INVALID_SHIP_MARKERS);
+						return new Response(
+							false,
+							ResponseHeader.INVALID_SHIP_MARKERS,
+						);
 					}
 				}
 			}
 			if (!found) {
-				return new Response(false, ResponseHeader.SHIP_POSITIONER_MISMATCH);
+				return new Response(
+					false,
+					ResponseHeader.SHIP_POSITIONER_MISMATCH,
+				);
 			}
 		}
 		this.ships = builder.fleet;

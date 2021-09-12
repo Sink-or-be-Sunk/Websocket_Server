@@ -1,4 +1,9 @@
-import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
+import {
+	Game,
+	GAME_TYPE,
+	Response,
+	ResponseHeader,
+} from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";

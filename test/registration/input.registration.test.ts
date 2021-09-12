@@ -1,4 +1,7 @@
-import { RegisterRequest, REGISTER_TYPE } from "../../src/models/registration/RegisterRequest";
+import {
+	RegisterRequest,
+	REGISTER_TYPE,
+} from "../../src/models/registration/RegisterRequest";
 
 describe("Handle Registration Requests", () => {
 	it("Accepts Init Message", () => {
@@ -23,7 +26,7 @@ describe("Handle Registration Requests", () => {
 	});
 
 	it("Rejects Message with bad json formatting", () => {
-		const str = "{\"type\": \"CONFIRM\": \"ssid\": \"wifi\" }";
+		const str = '{"type": "CONFIRM": "ssid": "wifi" }';
 		const msg = new RegisterRequest(str);
 		expect(msg).toEqual({
 			type: REGISTER_TYPE.BAD_FORMAT,

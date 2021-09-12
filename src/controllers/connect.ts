@@ -6,6 +6,6 @@ import { Request, Response } from "express";
  */
 export const getConnect = (req: Request, res: Response) => {
 	res.render("connect", {
-		title: "Connect"
+		title: "Connect",
 	});
 };

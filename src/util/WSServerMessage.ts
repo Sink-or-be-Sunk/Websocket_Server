@@ -2,15 +2,15 @@ import { Move } from "../models/gameplay/Move";
 import { Response } from "../models/gameplay/Game";
 
 type WSServerMessageOptions = {
-	header: SERVER_HEADERS,
-	at: string,
-	meta?: string,
-	payload?: Move,
-}
+	header: SERVER_HEADERS;
+	at: string;
+	meta?: string;
+	payload?: Move;
+};
 export class WSServerMessage {
 	header: SERVER_HEADERS;
 	meta: string;
-	payload: Move
+	payload: Move;
 	at: string;
 	constructor(options: WSServerMessageOptions) {
 		this.header = options.header;
@@ -46,5 +46,5 @@ export enum SERVER_HEADERS {
 	POSITIONED_SHIPS = "POSITIONED SHIPS",
 	INVALID_LAYOUT = "INVALID LAYOUT",
 	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
-	INVALID_GAME_TYPE = "INVALID GAME TYPE"
+	INVALID_GAME_TYPE = "INVALID GAME TYPE",
 }

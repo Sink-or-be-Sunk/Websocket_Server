@@ -31,10 +31,7 @@ describe("Validate GameRunner Match with Player1 Winning", () => {
 	];
 	const boards = [b1, b2];
 
-	const runner = new GameRunner(
-		GAME_TYPE.CLASSIC,
-		boards,
-	);
+	const runner = new GameRunner(GAME_TYPE.CLASSIC, boards);
 
 	runner.addPlayers();
 
@@ -73,10 +70,7 @@ describe("Validate GameRunner Match with Player2 Winning", () => {
 	];
 	const boards = [b1, b2];
 
-	const runner = new GameRunner(
-		GAME_TYPE.CLASSIC,
-		boards,
-	);
+	const runner = new GameRunner(GAME_TYPE.CLASSIC, boards);
 
 	runner.addPlayers();
 

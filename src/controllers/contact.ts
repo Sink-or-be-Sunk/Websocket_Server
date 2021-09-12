@@ -3,14 +3,13 @@ import { check, validationResult } from "express-validator";
 import sgMail from "@sendgrid/mail";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-
 /**
  * Contact form page.
  * @route GET /contact
  */
 export const getContact = (req: Request, res: Response) => {
 	res.render("contact", {
-		title: "Contact"
+		title: "Contact",
 	});
 };
 
@@ -34,9 +33,9 @@ export const postContact = async (req: Request, res: Response) => {
 
 	const mailOptions = {
 		to: "SinkOrBeSunk@gmail.com",
-		from: "SinkOrBeSunkRobot@gmail.com",//this would be the robot account (sender only) 
+		from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
 		subject: "Contact Form",
-		text: body
+		text: body,
 	};
 
 	sgMail.send(mailOptions, undefined, (err) => {

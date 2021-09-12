@@ -1,5 +1,9 @@
 import { GAME_TYPE, Rules } from "../../src/models/gameplay/Game";
-import { Layout, LAYOUT_TYPE, Position } from "../../src/models/gameplay/Layout";
+import {
+	Layout,
+	LAYOUT_TYPE,
+	Position,
+} from "../../src/models/gameplay/Layout";
 
 describe("Validate Layout Change from Client Message", () => {
 	const basic = new Rules(GAME_TYPE.BASIC);

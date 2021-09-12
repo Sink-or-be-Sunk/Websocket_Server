@@ -11,7 +11,7 @@ export class Move {
 
 	result_ship: ShipType;
 
-	constructor(raw: Object) {
+	constructor(raw: any) {
 		this.c = -1;
 		this.r = -1;
 		this.to = "";
@@ -54,7 +54,7 @@ export enum MOVE_RESULT {
 	INIT = "INIT",
 	HIT = "HIT",
 	MISS = "MISS",
-	SUNK = "SUNK"
+	SUNK = "SUNK",
 }
 export enum MOVE_TYPE {
 	SOLO = "SOLO",

@@ -1,5 +1,5 @@
 import express from "express";
-import compression from "compression";  // compresses requests
+import compression from "compression"; // compresses requests
 import session from "express-session";
 import lusca from "lusca";
 import MongoStore from "connect-mongo";
@@ -27,12 +27,21 @@ const app = express();
 const mongoUrl = MONGODB_URI;
 mongoose.Promise = bluebird;
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(
-	() => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ },
-).catch(err => {
-	console.log(`MongoDB connection error. Please make sure MongoDB is running. ${err}`);
-	// process.exit();
-});
+mongoose
+	.connect(mongoUrl, {
+		useNewUrlParser: true,
+		useCreateIndex: true,
+		useUnifiedTopology: true,
+	})
+	.then(() => {
+		/** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+	})
+	.catch((err) => {
+		console.log(
+			`MongoDB connection error. Please make sure MongoDB is running. ${err}`,
+		);
+		// process.exit();
+	});
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
@@ -41,17 +50,19 @@ app.set("view engine", "pug");
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-	resave: true,
-	saveUninitialized: true,
-	secret: SESSION_SECRET,
-	store: new MongoStore({
-		mongoUrl,
-		// mongoOptions: {
-		//     autoReconnect: true,
-		// }
-	})
-}));
+app.use(
+	session({
+		resave: true,
+		saveUninitialized: true,
+		secret: SESSION_SECRET,
+		store: new MongoStore({
+			mongoUrl,
+			// mongoOptions: {
+			//     autoReconnect: true,
+			// }
+		}),
+	}),
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -63,21 +74,22 @@ app.use((req, res, next) => {
 });
 app.use((req, res, next) => {
 	// After successful login, redirect back to the intended page
-	if (!req.user &&
+	if (
+		!req.user &&
 		req.path !== "/login" &&
 		req.path !== "/signup" &&
 		!req.path.match(/^\/auth/) &&
-		!req.path.match(/\./)) {
+		!req.path.match(/\./)
+	) {
 		req.session.returnTo = req.path;
-	} else if (req.user &&
-		req.path == "/account") {
+	} else if (req.user && req.path == "/account") {
 		req.session.returnTo = req.path;
 	}
 	next();
 });
 
 app.use(
-	express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
+	express.static(path.join(__dirname, "public"), { maxAge: 31557600000 }),
 );
 
 /**
@@ -96,10 +108,30 @@ app.post("/signup", userController.postSignup);
 app.get("/contact", contactController.getContact);
 app.post("/contact", contactController.postContact);
 app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
-app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
-app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
-app.post("/account/friend", passportConfig.isAuthenticated, userController.postUpdateFriends);
+app.post(
+	"/account/profile",
+	passportConfig.isAuthenticated,
+	userController.postUpdateProfile,
+);
+app.post(
+	"/account/password",
+	passportConfig.isAuthenticated,
+	userController.postUpdatePassword,
+);
+app.post(
+	"/account/delete",
+	passportConfig.isAuthenticated,
+	userController.postDeleteAccount,
+);
+app.post(
+	"/account/friend",
+	passportConfig.isAuthenticated,
+	userController.postUpdateFriends,
+);
 app.get("/game", passportConfig.isAuthenticated, gameController.getGame);
-app.get("/connect", passportConfig.isAuthenticated, connectController.getConnect);
+app.get(
+	"/connect",
+	passportConfig.isAuthenticated,
+	connectController.getConnect,
+);
 export default app;

@@ -3,7 +3,7 @@ import { Rules } from "./Game";
 export class Layout {
 	type: LAYOUT_TYPE;
 	list: Position[];
-	constructor(raw: Object, rules: Rules) {
+	constructor(raw: any, rules: Rules) {
 		this.list = [];
 		const available = [...rules.ships, ...rules.ships]; //two positions per ship
 		if (Array.isArray(raw)) {
@@ -50,7 +50,7 @@ export enum LAYOUT_TYPE {
 	BAD_ARRAY = "BAD ARRAY",
 	BAD_POSITION_OBJ = "BAD POSITION OBJ",
 	VALID = "VALID",
-	BREAKS_RULES = "BREAKS RULES"
+	BREAKS_RULES = "BREAKS RULES",
 }
 
 export enum LAYOUT_TYPE {

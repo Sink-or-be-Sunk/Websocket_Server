@@ -14,10 +14,7 @@ export class GameRunner {
 	players: Player[];
 	boards: RUNNER_POSITION[][][];
 
-	constructor(
-		type: GAME_TYPE,
-		boards: RUNNER_POSITION[][][]
-	) {
+	constructor(type: GAME_TYPE, boards: RUNNER_POSITION[][][]) {
 		this.boards = boards;
 		this.players = [];
 		for (let i = 1; i <= boards.length; i++) {
@@ -45,7 +42,9 @@ export class GameRunner {
 		} else if (p == RUNNER_POSITION.S) {
 			return LAYOUT_TYPE.SUBMARINE;
 		} else {
-			throw new Error("Invalid GameRunner Position: this should never occur");
+			throw new Error(
+				"Invalid GameRunner Position: this should never occur",
+			);
 		}
 	}
 
@@ -79,7 +78,10 @@ export class GameRunner {
 			const player = this.players[i];
 			const board = this.boards[i];
 
-			const resp = this.game.positionShips(player.id, this.getPositions(board));
+			const resp = this.game.positionShips(
+				player.id,
+				this.getPositions(board),
+			);
 			const exp = new Response(true, ResponseHeader.SHIP_POSITIONED);
 			if (i == this.players.length - 1) {
 				exp.addDetail(ResponseHeader.GAME_STARTED);
@@ -101,7 +103,9 @@ export class GameRunner {
 				}
 			}
 		}
-		throw Error("Can't Find Player in Players List: this should never happen");
+		throw Error(
+			"Can't Find Player in Players List: this should never happen",
+		);
 	}
 
 	private pickMove(player: Player, isWinner: boolean): MoveResp {
@@ -127,13 +131,13 @@ export class GameRunner {
 								exp = new Response(
 									true,
 									ResponseHeader.SUNK,
-									ship.type.toString()
+									ship.type.toString(),
 								);
 								if (i == board.ships.length - 1) {
 									exp = new Response(
 										true,
 										ResponseHeader.GAME_OVER,
-										ship.type.toString()
+										ship.type.toString(),
 									);
 								}
 							}
@@ -163,11 +167,13 @@ export class GameRunner {
 					}
 				}
 				throw Error(
-					"Made it through all miss location on board: this should never occur"
+					"Made it through all miss location on board: this should never occur",
 				);
 			}
 		} else {
-			throw Error("Couldn't get board from player: this should never happen");
+			throw Error(
+				"Couldn't get board from player: this should never happen",
+			);
 		}
 	}
 

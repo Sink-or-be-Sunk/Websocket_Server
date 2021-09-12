@@ -1,4 +1,9 @@
-import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
+import {
+	Game,
+	GAME_TYPE,
+	Response,
+	ResponseHeader,
+} from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
@@ -50,9 +55,7 @@ describe("Validate basic back and forth game", () => {
 
 	it("Reject Player 1 from changing game type after ready up", () => {
 		const resp = game.changeGameType(p1.id, GAME_TYPE.BASIC);
-		expect(resp).toEqual(
-			new Response(false, ResponseHeader.PLAYER_READY),
-		);
+		expect(resp).toEqual(new Response(false, ResponseHeader.PLAYER_READY));
 	});
 
 	it("Allow Player 2 to position ships horizontal basic", () => {

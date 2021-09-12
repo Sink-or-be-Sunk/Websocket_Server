@@ -1,4 +1,9 @@
-import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
+import {
+	Game,
+	GAME_TYPE,
+	Response,
+	ResponseHeader,
+} from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
@@ -135,11 +140,8 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(
-			new Response(false, ResponseHeader.MOVE_REPEATED),
-		);
+		expect(resp).toEqual(new Response(false, ResponseHeader.MOVE_REPEATED));
 	});
-
 
 	/**     Player1				   Player 2
 	 * 0|H|D| | | | | | |	 * 0|H|D| | | | | | |
@@ -162,11 +164,7 @@ describe("Validate basic back and forth game", () => {
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
 		expect(resp).toEqual(
-			new Response(
-				true,
-				ResponseHeader.SUNK,
-				SHIP_DESCRIPTOR.PATROL,
-			),
+			new Response(true, ResponseHeader.SUNK, SHIP_DESCRIPTOR.PATROL),
 		);
 	});
 

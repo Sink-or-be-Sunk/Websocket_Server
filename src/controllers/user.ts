@@ -33,7 +33,7 @@ export const getLogin = (req: Request, res: Response): void => {
 export const postLogin = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	await check("email", "Email is not valid").isEmail().run(req);
 	await check("password", "Password cannot be blank")
@@ -65,7 +65,7 @@ export const postLogin = async (
 				req.flash("success", { msg: "Success! You are logged in." });
 				res.redirect(req.session.returnTo || "/");
 			});
-		}
+		},
 	)(req, res, next);
 };
 
@@ -98,7 +98,7 @@ export const getSignup = (req: Request, res: Response): void => {
 export const postSignup = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	await check("email", "Email is not valid").isEmail().run(req);
 	await check("password", "Password must be at least 4 characters long")
@@ -125,7 +125,7 @@ export const postSignup = async (
 
 	let validUsername = false;
 	for (let timeout = 0; timeout < 100; timeout++) {
-		validUsername = ! await User.exists({ username: user.username });
+		validUsername = !(await User.exists({ username: user.username }));
 		logger.debug(`timeout: ${timeout}, valid: ${validUsername}\n`);
 		if (validUsername) {
 			break; //found unique username
@@ -164,7 +164,7 @@ export const postSignup = async (
 					res.redirect("/");
 				});
 			});
-		}
+		},
 	);
 };
 
@@ -185,7 +185,7 @@ export const getAccount = (req: Request, res: Response): void => {
 export const postUpdateProfile = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	await check("email", "Please enter a valid email address.")
 		.isEmail()
@@ -193,7 +193,9 @@ export const postUpdateProfile = async (
 	await check("username", "Please enter a valid username")
 		.matches(USERNAME_REGEX)
 		.run(req);
-	await check("username", "Username has a max of 32 characters").isLength({ max: 32 }).run(req);
+	await check("username", "Username has a max of 32 characters")
+		.isLength({ max: 32 })
+		.run(req);
 	await body("email").normalizeEmail({ gmail_remove_dots: false }).run(req);
 
 	const errors = validationResult(req);
@@ -222,7 +224,9 @@ export const postUpdateProfile = async (
 				}
 				return next(err);
 			}
-			req.flash("success", { msg: "Profile information has been updated." });
+			req.flash("success", {
+				msg: "Profile information has been updated.",
+			});
 			res.redirect("/account");
 		});
 	});
@@ -235,7 +239,7 @@ export const postUpdateProfile = async (
 export const postUpdatePassword = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	await check("password", "Password must be at least 4 characters long")
 		.isLength({ min: 4 })
@@ -274,7 +278,7 @@ export const postUpdatePassword = async (
 export const postDeleteAccount = (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): void => {
 	const user = req.user as UserDocument;
 	User.deleteOne({ _id: user.id }, undefined, (err) => {
@@ -294,7 +298,7 @@ export const postDeleteAccount = (
 export const getOauthUnlink = (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): void => {
 	const provider = req.params.provider;
 	const user = req.user as UserDocument;
@@ -304,13 +308,15 @@ export const getOauthUnlink = (
 		}
 		user[provider] = undefined;
 		user.tokens = user.tokens.filter(
-			(token: AuthToken) => token.kind !== provider
+			(token: AuthToken) => token.kind !== provider,
 		);
 		user.save((err: WriteError) => {
 			if (err) {
 				return next(err);
 			}
-			req.flash("info", { msg: `${provider} account has been unlinked.` });
+			req.flash("info", {
+				msg: `${provider} account has been unlinked.`,
+			});
 			res.redirect("/account");
 		});
 	});
@@ -323,7 +329,7 @@ export const getOauthUnlink = (
 export const getReset = (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): void => {
 	if (req.isAuthenticated()) {
 		return res.redirect("/");
@@ -354,7 +360,7 @@ export const getReset = (
 export const postReset = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	await check("password", "Password must be at least 4 characters long.")
 		.isLength({ min: 4 })
@@ -372,7 +378,9 @@ export const postReset = async (
 
 	async.waterfall(
 		[
-			function resetPassword(done: (err: any, user: UserDocument) => void) {
+			function resetPassword(
+				done: (err: any, user: UserDocument) => void,
+			) {
 				User.findOne({ passwordResetToken: req.params.token })
 					.where("passwordResetExpires")
 					.gt(Date.now())
@@ -401,7 +409,7 @@ export const postReset = async (
 			},
 			function sendResetPasswordEmail(
 				user: UserDocument,
-				done: (err: Error) => void
+				done: (err: Error) => void,
 			) {
 				const mailOptions = {
 					to: user.email,
@@ -422,7 +430,7 @@ export const postReset = async (
 				return next(err);
 			}
 			res.redirect("/");
-		}
+		},
 	);
 };
 
@@ -446,7 +454,7 @@ export const getForgot = (req: Request, res: Response): void => {
 export const postForgot = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
 	await check("email", "Please enter a valid email address.")
 		.isEmail()
@@ -462,7 +470,9 @@ export const postForgot = async (
 
 	async.waterfall(
 		[
-			function createRandomToken(done: (err: Error, token: string) => void) {
+			function createRandomToken(
+				done: (err: Error, token: string) => void,
+			) {
 				crypto.randomBytes(16, (err, buf) => {
 					const token = buf.toString("hex");
 					done(err, token);
@@ -473,8 +483,8 @@ export const postForgot = async (
 				done: (
 					err: NativeError | WriteError,
 					token?: AuthToken,
-					user?: UserDocument
-				) => void
+					user?: UserDocument,
+				) => void,
 			) {
 				User.findOne(
 					{ email: req.body.email },
@@ -493,13 +503,13 @@ export const postForgot = async (
 						user.save((err: WriteError) => {
 							done(err, token, user);
 						});
-					}
+					},
 				);
 			},
 			function sendForgotPasswordEmail(
 				token: AuthToken,
 				user: UserDocument,
-				done: (err: Error) => void
+				done: (err: Error) => void,
 			) {
 				const mailOptions = {
 					to: user.email,
@@ -523,7 +533,7 @@ export const postForgot = async (
 				return next(err);
 			}
 			res.redirect("/forgot");
-		}
+		},
 	);
 };
 
@@ -534,10 +544,14 @@ export const postForgot = async (
 export const postUpdateFriends = async (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ): Promise<void> => {
-	await check("friend", "Must Enter Valid Username").matches(USERNAME_REGEX).run(req);
-	await check("friend", "Username has a max of 32 characters").isLength({ max: 32 }).run(req);
+	await check("friend", "Must Enter Valid Username")
+		.matches(USERNAME_REGEX)
+		.run(req);
+	await check("friend", "Username has a max of 32 characters")
+		.isLength({ max: 32 })
+		.run(req);
 
 	const errors = validationResult(req);
 
@@ -548,7 +562,7 @@ export const postUpdateFriends = async (
 
 	// //A is requesting B
 	const userA = req.user as UserDocument;
-	const userB = await User.findOne({ "username": req.body.friend });
+	const userB = await User.findOne({ username: req.body.friend });
 
 	logger.debug(userA);
 	logger.debug(userB);
@@ -566,20 +580,20 @@ export const postUpdateFriends = async (
 	const docA = await Friend.findOneAndUpdate(
 		{ requester: userA.id, recipient: userB.id },
 		{ $set: { status: 1 } },
-		{ upsert: true, new: true }
+		{ upsert: true, new: true },
 	);
 	const docB = await Friend.findOneAndUpdate(
 		{ recipient: userA.id, requester: userB.id },
 		{ $set: { status: 2 } },
-		{ upsert: true, new: true }
+		{ upsert: true, new: true },
 	);
 	const updateUserA = await User.findOneAndUpdate(
 		{ _id: userA.id },
-		{ $push: { friends: docA._id } }
+		{ $push: { friends: docA._id } },
 	);
 	const updateUserB = await User.findOneAndUpdate(
 		{ _id: userB.id },
-		{ $push: { friends: docB._id } }
+		{ $push: { friends: docB._id } },
 	);
 	logger.debug("userA: ", updateUserA);
 	logger.debug("userB: ", updateUserB);

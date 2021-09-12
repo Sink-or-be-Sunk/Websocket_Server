@@ -13,10 +13,10 @@ if (!fs.existsSync(dir)) {
 
 fs.writeFileSync(output, "#pragma once\n"); //header
 fs.appendFileSync(output, "\n");
-fs.appendFileSync(output, "#include \"cJSON.h\"\n");
-fs.appendFileSync(output, "#include \"<string.h>\"\n");
-fs.appendFileSync(output, "#include \"<stdio.h>\"\n");
-fs.appendFileSync(output, "#include \"<esp_wifi.h>\"\n");
+fs.appendFileSync(output, '#include "cJSON.h"\n');
+fs.appendFileSync(output, '#include "<string.h>"\n');
+fs.appendFileSync(output, '#include "<stdio.h>"\n');
+fs.appendFileSync(output, '#include "<esp_wifi.h>"\n');
 fs.appendFileSync(output, "\n");
 
 fs.appendFileSync(output, "namespace req_type\n");
@@ -27,7 +27,10 @@ for (const req in WSClientMessage.REQ_TYPE) {
 	// 	req: req,
 	// 	data: "Optional_Data",
 	// });
-	fs.appendFileSync(output, `\tconstexpr char ${req}[] = "${WSClientMessage.REQ_TYPE[req]}";\n`);
+	fs.appendFileSync(
+		output,
+		`\tconstexpr char ${req}[] = "${WSClientMessage.REQ_TYPE[req]}";\n`,
+	);
 }
 fs.appendFileSync(output, "}\n");
 

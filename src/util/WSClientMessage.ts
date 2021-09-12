@@ -48,9 +48,7 @@ export class WSClientMessage {
 	}
 
 	isValid(): boolean {
-		if (
-			this.req == REQ_TYPE.INVALID ||
-			this.req == REQ_TYPE.BAD_FORMAT) {
+		if (this.req == REQ_TYPE.INVALID || this.req == REQ_TYPE.BAD_FORMAT) {
 			return false;
 		} else {
 			return true;
@@ -62,7 +60,6 @@ export class WSClientMessage {
 	}
 }
 
-
 export enum REQ_TYPE {
 	INVALID = "INVALID",
 	BAD_FORMAT = "BAD FORMAT",
@@ -73,4 +70,5 @@ export enum REQ_TYPE {
 	GAME_TYPE = "GAME TYPE",
 	REGISTER = "REGISTER",
 	CONFIRM_REGISTER = "CONFIRM REGISTER",
+	GET_FRIENDS = "GET FRIENDS",
 }

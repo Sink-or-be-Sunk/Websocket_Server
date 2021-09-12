@@ -2,7 +2,7 @@ export class RegisterRequest {
 	type: REGISTER_TYPE;
 	ssid: string;
 
-	constructor(raw: Object) {
+	constructor(raw: any) {
 		this.type = REGISTER_TYPE.INVALID;
 		this.ssid = "";
 
@@ -50,5 +50,5 @@ export enum REGISTER_TYPE {
 	INIT = "INIT",
 	CONFIRM = "CONFIRM",
 	INVALID = "INVALID",
-	BAD_FORMAT = "BAD FORMAT"
+	BAD_FORMAT = "BAD FORMAT",
 }

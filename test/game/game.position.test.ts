@@ -1,4 +1,9 @@
-import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
+import {
+	Game,
+	GAME_TYPE,
+	Response,
+	ResponseHeader,
+} from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
@@ -96,7 +101,11 @@ describe("Validate basic back and forth game", () => {
 		const list = [pos2, pos1, pos0, pos3, pos4, pos5];
 		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
-			new Response(false, ResponseHeader.BAD_LAYOUT, LAYOUT_TYPE.BREAKS_RULES),
+			new Response(
+				false,
+				ResponseHeader.BAD_LAYOUT,
+				LAYOUT_TYPE.BREAKS_RULES,
+			),
 		);
 	});
 

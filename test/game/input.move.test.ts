@@ -11,7 +11,7 @@ describe("Validate Player Move Requests", () => {
 			to: obj.to,
 			from: "",
 			result: MOVE_RESULT.INIT,
-			result_ship: null
+			result_ship: null,
 		});
 	});
 
@@ -25,7 +25,7 @@ describe("Validate Player Move Requests", () => {
 			to: obj.to,
 			from: "",
 			result: MOVE_RESULT.INIT,
-			result_ship: null
+			result_ship: null,
 		});
 	});
 
@@ -39,7 +39,7 @@ describe("Validate Player Move Requests", () => {
 			to: "",
 			from: "",
 			result: MOVE_RESULT.INIT,
-			result_ship: null
+			result_ship: null,
 		});
 	});
 
@@ -49,12 +49,11 @@ describe("Validate Player Move Requests", () => {
 		expect(move).toEqual({
 			c: -1,
 			r: -1,
-			type:
-				MOVE_TYPE.INVALID,
+			type: MOVE_TYPE.INVALID,
 			to: "",
 			from: "",
 			result: MOVE_RESULT.INIT,
-			result_ship: null
+			result_ship: null,
 		});
 	});
 });
