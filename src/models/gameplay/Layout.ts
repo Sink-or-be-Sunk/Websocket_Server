@@ -1,24 +1,48 @@
+import { Rules } from "./Game";
+
 export class Layout {
 	type: LAYOUT_TYPE;
 	list: Position[];
-	constructor(raw: Object) {
+	constructor(raw: Object, rules: Rules) {
 		this.list = [];
+		const available = [...rules.ships, ...rules.ships]; //two positions per ship
 		if (Array.isArray(raw)) {
 			for (let i = 0; i < raw.length; i++) {
 				const el = raw[i];
 				if (Position.isInstance(el)) {
-					this.list.push(new Position(el.c, el.r, el.t));
+					const idx = available.indexOf(el.t);
+					if (idx == -1) {
+						this.list = [];
+						this.type = LAYOUT_TYPE.BREAKS_RULES;
+						return;
+					} else {
+						available.splice(idx, 1); //consume ship
+						this.list.push(new Position(el.c, el.r, el.t));
+					}
 				} else {
 					this.list = [];
 					this.type = LAYOUT_TYPE.BAD_POSITION_OBJ;
 					return;
 				}
 			}
-			this.type = LAYOUT_TYPE.VALID;
+			if (available.length > 0) {
+				this.list = [];
+				this.type = LAYOUT_TYPE.BREAKS_RULES;
+				return;
+			} else {
+				this.type = LAYOUT_TYPE.VALID;
+			}
 		} else {
 			this.type = LAYOUT_TYPE.BAD_ARRAY;
 		}
+	}
 
+	isValid(): boolean {
+		if (this.type == LAYOUT_TYPE.VALID) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
@@ -26,6 +50,7 @@ export enum LAYOUT_TYPE {
 	BAD_ARRAY = "BAD ARRAY",
 	BAD_POSITION_OBJ = "BAD POSITION OBJ",
 	VALID = "VALID",
+	BREAKS_RULES = "BREAKS RULES"
 }
 
 export enum LAYOUT_TYPE {

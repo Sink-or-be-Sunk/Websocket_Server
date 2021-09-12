@@ -96,7 +96,7 @@ describe("Validate basic back and forth game", () => {
 		const list = [pos2, pos1, pos0, pos3, pos4, pos5];
 		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
-			new Response(false, ResponseHeader.SHIP_BROKE_RULES),
+			new Response(false, ResponseHeader.BAD_LAYOUT, LAYOUT_TYPE.BREAKS_RULES),
 		);
 	});
 

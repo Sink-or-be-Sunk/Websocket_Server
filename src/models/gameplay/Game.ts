@@ -183,8 +183,8 @@ export class Game {
 			return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
 		} else {
 			//NOTE: We don't check this.turn because player is allowed to continually change ship positions util game start
-			const layout = new Layout(positionsRaw);
-			if (layout.type == LAYOUT_TYPE.VALID) {
+			const layout = new Layout(positionsRaw, this.rules);
+			if (layout.isValid()) {
 				const board = this.getBoardByID(id);
 				if (board) {
 					const res = board.updateShipLayout(layout, this.rules, id);
@@ -200,7 +200,7 @@ export class Game {
 					return new Response(false, ResponseHeader.BOARD_NOT_FOUND);
 				}
 			} else {
-				return new Response(false, ResponseHeader.BAD_LAYOUT);
+				return new Response(false, ResponseHeader.BAD_LAYOUT, layout.type);
 			}
 		}
 	}
@@ -299,7 +299,7 @@ export class Rules {
 	/**
 	 * Number of ships per player
 	 */
-	ships: number;
+	ships: LAYOUT_TYPE[];
 	/**
 	 * m x m size of game board
 	 */
@@ -311,11 +311,20 @@ export class Rules {
 		this.boardSize = this.initBoard(type);
 	}
 
-	private initShips(type: GAME_TYPE): number {
+	private initShips(type: GAME_TYPE): LAYOUT_TYPE[] {
 		if (type == GAME_TYPE.CLASSIC) {
-			return 5;
+			return [
+				LAYOUT_TYPE.PATROL,
+				LAYOUT_TYPE.SUBMARINE,
+				LAYOUT_TYPE.DESTROYER,
+				LAYOUT_TYPE.BATTLESHIP,
+				LAYOUT_TYPE.CARRIER
+			];
 		} else if (type == GAME_TYPE.BASIC) {
-			return 2;
+			return [
+				LAYOUT_TYPE.PATROL,
+				LAYOUT_TYPE.DESTROYER,
+			];
 		} else {
 			throw new Error("Invalid Rule Type: This should never happen");
 		}
@@ -340,7 +349,7 @@ export class Rules {
 	 */
 	validShip(ship: Ship, curFleet: Ship[], grid: Square[][]): boolean {
 		//TODO: check if ships overlap
-
+		//TODO: combine this logic with logic in Layout to check ship position validity
 		const size = ship.type.size;
 		if (this.type == GAME_TYPE.BASIC) {
 			if (curFleet.length < 2) {

@@ -53,7 +53,7 @@ describe("Validate GameRunner Match with Player2 Winning", () => {
 
 	const b1 = [
 		[e, e, e, e, e, e, e, e],
-		[e, e, e, e, e, e, e, e],
+		[e, D, e, D, e, e, e, e],
 		[e, e, e, e, e, e, B, e],
 		[e, e, P, e, S, e, e, e],
 		[e, e, P, e, e, e, e, e],
