@@ -184,7 +184,7 @@ export class Game {
 		}
 	}
 
-	positionShips(id: string, positionsRaw: any): Response {
+	positionShips(id: string, positionsRaw: unknown): Response {
 		if (this.isStarted()) {
 			return new Response(false, ResponseHeader.GAME_IN_PROGRESS);
 		} else {

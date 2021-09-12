@@ -2,7 +2,7 @@ export class DBRequest {
 	type: DB_REQ_TYPE;
 	id: string;
 
-	constructor(raw: any) {
+	constructor(raw: unknown) {
 		this.type = DB_REQ_TYPE.INVALID;
 		this.id = "";
 
@@ -30,14 +30,17 @@ export class DBRequest {
 		}
 	}
 
-	toString() {
+	toString(): string {
 		return JSON.stringify(this);
 	}
 }
-export function isInstance(object: any) {
-	if ("id" in object && "type" in object) {
-		if (object.type === DB_REQ_TYPE.GET_FRIENDS) {
-			return true;
+export function isInstance(object: unknown): boolean {
+	if (typeof object === "object" && object !== null) {
+		if ("id" in object && "type" in object) {
+			const instance = object as DBRequest;
+			if (instance.type === DB_REQ_TYPE.GET_FRIENDS) {
+				return true;
+			}
 		}
 	}
 	return false;

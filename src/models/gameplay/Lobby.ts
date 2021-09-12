@@ -144,7 +144,7 @@ export default class Lobby {
 	 * @param move - move to be made
 	 * @returns - true if move is valid, false otherwise
 	 */
-	private makeMove(playerID: string, moveRaw: any): [Response, Move] {
+	private makeMove(playerID: string, moveRaw: unknown): [Response, Move] {
 		const move = new Move(moveRaw);
 		move.from = playerID;
 		if (move.isValid()) {

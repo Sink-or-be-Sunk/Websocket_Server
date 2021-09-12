@@ -6,13 +6,13 @@
   "eslint.validate": ["javascript", "typescript", "pug"],
   "editor.formatOnSave": true,
   "[javascript]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "[typescript]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "[markdown]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "search.exclude": {
     "**/node_modules": true,
