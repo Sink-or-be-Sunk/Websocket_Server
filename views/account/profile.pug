@@ -22,7 +22,7 @@ block content
 		.form-group.row.justify-content-md-center
 			label.col-sm-3.col-form-label.text-right.font-weight-bold(for='device') Device
 			.col-sm-7
-				input.form-control(type='text', name='device', id='device', value=user.profile.device, readonly)
+				label.form-control #{user.profile.device ? user.profile.device : "No Device Registered"}
 		.form-group.row.justify-content-md-center
 			label.col-sm-3.col-form-label.text-right.font-weight-bold 
 				a(href="https://en.gravatar.com/", target="_blank") Gravatar
@@ -45,8 +45,9 @@ block content
 						i.fa.fa-trash
 						| Remove
 				.col-sm-7
-					- var friend_username = friend.requester.username == user.username ? friend.recipient.username : friend.requester.username
-					a.form-control(href="#") #{friend_username}
+					#{friend}
+					//- - var friend_username = friend.requester.username == user.username ? friend.recipient.username : friend.requester.username
+					//- a.form-control(href="#") #{friend_username}
 
 	form.form-horizontal(action='/account/friend', method='POST')
 		input(type='hidden', name='_csrf', value=_csrf)

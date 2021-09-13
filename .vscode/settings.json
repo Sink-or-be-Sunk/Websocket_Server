@@ -26,5 +26,6 @@
   "editor.renderWhitespace": "boundary",
   "appService.zipIgnorePattern": [".vscode{,/**}"],
   "appService.deploySubpath": "",
+  "workbench.editor.showTabs": true,
   "cSpell.words": ["gameplay"]
 }

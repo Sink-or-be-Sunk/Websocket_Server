@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt-nodejs";
 import crypto from "crypto";
 import mongoose from "mongoose";
+import { Friend, FriendDocument } from "./Friend";
 
 export const USERNAME_REGEX = /^[a-z](?:_?[a-z0-9])*$/;
 

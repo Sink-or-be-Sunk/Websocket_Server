@@ -31,8 +31,9 @@ mongoose.Promise = bluebird;
 mongoose
 	.connect(mongoUrl, {
 		useNewUrlParser: true,
-		useCreateIndex: true,
 		useUnifiedTopology: true,
+		useFindAndModify: false,
+		useCreateIndex: true,
 	})
 	.then(() => {
 		/** ready to use. The `mongoose.connect()` promise resolves to undefined. */

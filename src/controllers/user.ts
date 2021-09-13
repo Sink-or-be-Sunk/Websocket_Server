@@ -570,32 +570,29 @@ export const postUpdateFriends = async (
 	const userA = req.user as UserDocument;
 	const userB = await User.findOne({ username: req.body.friend });
 
-	// logger.debug("userA before: ");
-	// logger.debug(userA);
-	// logger.debug("userB before: ");
-	// logger.debug(userB);
 	if (!userB) {
 		req.flash("errors", { msg: `Cannot find user ${req.body.friend}` });
 		return res.redirect("/account");
 	}
 
-	const docA = await Friend.findOneAndUpdate(
+	const friendDoc = await Friend.findOneAndUpdate(
 		{ requester: userA.id, recipient: userB.id },
-		{ $set: { status: FriendStatus.REQUESTED } },
+		{
+			$set: {
+				requesterStatus: FriendStatus.REQUESTED,
+				recipientStatus: FriendStatus.PENDING,
+			},
+		},
 		{ upsert: true, new: true },
 	);
-	const docB = await Friend.findOneAndUpdate(
-		{ recipient: userA.id, requester: userB.id },
-		{ $set: { status: FriendStatus.PENDING } },
-		{ upsert: true, new: true },
-	);
+
 	const updateUserA = await User.findOneAndUpdate(
-		{ _id: userA.id, friends: { $ne: docA._id } },
-		{ $push: { friends: docA._id } },
+		{ _id: userA.id, friends: { $ne: friendDoc._id } },
+		{ $push: { friends: friendDoc._id } },
 	);
 	const updateUserB = await User.findOneAndUpdate(
-		{ _id: userB.id, friends: { $ne: docB._id } },
-		{ $push: { friends: docB._id } },
+		{ _id: userB.id, friends: { $ne: friendDoc._id } },
+		{ $push: { friends: friendDoc._id } },
 	);
 
 	if (!updateUserA) {
@@ -605,13 +602,10 @@ export const postUpdateFriends = async (
 		return res.redirect("/account");
 	}
 
-	logger.debug("userA after: ");
-	logger.debug(updateUserA);
-	logger.debug("userB after: ");
-	logger.debug(updateUserB);
-
 	req.flash("success", {
-		msg: `Success! You have friend requested ${userB.profile.name} (${userB.username})`,
+		msg: `Success! You have friend requested ${
+			userB.profile.name ?? " "
+		} (${userB.username})`,
 	});
 	return res.redirect("/account");
 };
@@ -625,17 +619,14 @@ export const postFriendDeleteAction = (
 	res: Response,
 	next: NextFunction,
 ): void => {
-	const user = req.user as UserDocument;
-	// User.deleteOne({ _id: user.id }, undefined, (err) => {
-	// 	if (err) {
-	// 		return next(err);
-	// 	}
-	// 	req.logout();
-	// 	req.flash("info", { msg: "Your account has been deleted." });
-	// 	res.redirect("/");
-	// });
-	const id = req.params.id;
-	logger.debug(id);
-	req.flash("info", { msg: `Friend Removed` });
-	return res.redirect("/account");
+	const toDelete = req.params.id;
+	logger.debug(toDelete);
+	Friend.findByIdAndDelete({ _id: toDelete }, null, (err, doc) => {
+		if (err) {
+			return next(err);
+		}
+		console.log(doc);
+		req.flash("info", { msg: `Friend Removed` });
+		res.redirect("/account");
+	});
 };
