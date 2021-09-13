@@ -34,15 +34,11 @@ friendSchema.pre(/[d,D]elete/, function remove(next) {
 	const query = this as unknown as mongoose.Query<any, FriendDocument>;
 	const str = query.getFilter()["_id"] as any;
 	const id = str._id;
-	console.log(id);
 	User.updateMany(
 		{ friends: id },
 		{ $pull: { friends: id } },
 		undefined,
 		(err, res) => {
-			console.log("pre delete");
-			console.log(err);
-			console.log(res);
 			next(err);
 		},
 	);

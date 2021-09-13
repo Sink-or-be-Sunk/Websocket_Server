@@ -177,10 +177,61 @@ export const getAccount = async (
 	req: Request,
 	res: Response,
 ): Promise<void> => {
-	//get info on friends
-
+	//parse friends for view
+	const user = req.user as UserDocument;
+	const getInfo = function (val: FriendStatus) {
+		if (val == FriendStatus.REQUESTED) {
+			return {
+				label: "Requested",
+				icon: "fa-paper-plane",
+				allowAccept: false,
+			};
+		} else if (val == FriendStatus.PENDING) {
+			return {
+				label: "Pending",
+				icon: "fa-hourglass",
+				allowAccept: true,
+			};
+		} else if (val == FriendStatus.FRIENDS) {
+			return {
+				label: "Friends",
+				icon: "fa-users",
+				allowAccept: false,
+			};
+		} else {
+			return {
+				label: "Error",
+				icon: "fa-warning",
+				allowAccept: false,
+			};
+		}
+	};
+	const friends = [];
+	for (let i = 0; i < user.friends.length; i++) {
+		const friend = user.friends[i] as any; //TODO: UPDATE THIS WITH TYPES
+		if (friend.requester._id.equals(user._id)) {
+			const info = getInfo(friend.requesterStatus);
+			friends.push({
+				name: friend.recipient.username,
+				label: info.label,
+				icon: info.icon,
+				allowAccept: info.allowAccept,
+				id: friend._id,
+			});
+		} else {
+			const info = getInfo(friend.recipientStatus);
+			friends.push({
+				name: friend.requester.username,
+				label: info.label,
+				icon: info.icon,
+				allowAccept: info.allowAccept,
+				id: friend._id,
+			});
+		}
+	}
 	res.render("account/profile", {
 		title: "Account Management",
+		friends: friends,
 	});
 };
 
@@ -629,4 +680,37 @@ export const postFriendDeleteAction = (
 		req.flash("info", { msg: `Friend Removed` });
 		res.redirect("/account");
 	});
+};
+
+/**
+ * Accept user friend.
+ * @route POST /account/friend/accept
+ */
+export const postFriendAcceptAction = (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): void => {
+	const target = req.params.id;
+	// const user = req.user as UserDocument;
+	// const friends = user.friends as unknown as FriendDocument[];
+	// const doc = friends.find((f) => f._id.equals(target));
+	Friend.findOneAndUpdate(
+		{ _id: target },
+		{
+			$set: {
+				requesterStatus: FriendStatus.FRIENDS,
+				recipientStatus: FriendStatus.FRIENDS,
+			},
+		},
+		null,
+		(err, doc) => {
+			if (err) {
+				return next(err);
+			}
+			console.log(doc);
+			req.flash("info", { msg: `Friend Added` });
+			res.redirect("/account");
+		},
+	);
 };

@@ -22,7 +22,7 @@ block content
 		.form-group.row.justify-content-md-center
 			label.col-sm-3.col-form-label.text-right.font-weight-bold(for='device') Device
 			.col-sm-7
-				label.form-control #{user.profile.device ? user.profile.device : "No Device Registered"}
+				input.form-control(type='text', name='device', id='device', value=user.profile.device, readonly)
 		.form-group.row.justify-content-md-center
 			label.col-sm-3.col-form-label.text-right.font-weight-bold 
 				a(href="https://en.gravatar.com/", target="_blank") Gravatar
@@ -38,16 +38,32 @@ block content
 		h3 Manage Friends
 		hr
 	.form-horizontal
-		each friend in user.friends
-			form.form-group.row.justify-content-md-center(action=`/account/friend/delete/${friend._id}`, method="POST")
+		script.
+			function addFriend(id) {
+				const form = document.createElement("form");
+				form.method = "POST";
+				form.action = `/account/friend/accept/${id}`;
+				document.body.appendChild(form);
+				form.submit();
+			}
+
+		each friend in friends
+			form.form-group.row.justify-content-md-center(action=`/account/friend/delete/${friend.id}`, method="POST")
+				input(type='hidden', name='_csrf', value=_csrf)
 				.col-sm-3.text-right
 					button.col-form-label.font-weight-bold.btn.btn-danger(type="submit")
 						i.fa.fa-trash
 						| Remove
-				.col-sm-7
-					#{friend}
-					//- - var friend_username = friend.requester.username == user.username ? friend.recipient.username : friend.requester.username
-					//- a.form-control(href="#") #{friend_username}
+				.col-sm-5
+					a.form-control(href="#") #{friend.name}
+				if friend.allowAccept
+					.col-sm-2.text-right
+						button.col-form-label.font-weight-bold.btn.btn-success(type="button", onclick='addFriend("'+ friend.id +'")')
+							i.fa(class=friend.icon) 
+							| #{friend.label}
+				else
+					span.col-sm-2.text-right
+						icon.fa(class=friend.icon)  #{friend.label}
 
 	form.form-horizontal(action='/account/friend', method='POST')
 		input(type='hidden', name='_csrf', value=_csrf)
