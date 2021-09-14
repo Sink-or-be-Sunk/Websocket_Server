@@ -9,37 +9,61 @@ import {
 describe("Validate Registration Client Messages", () => {
 	const manager = new RegistrationManager();
 
-	it("Accepts First Client Init Message", () => {
-		const register = { type: REGISTER_TYPE.INIT, ssid: "wifi" };
-		const obj = { req: REQ_TYPE.REGISTER, id: "one", data: register };
+	it("Accepts First MCU Init Message", () => {
+		const register = { type: REGISTER_TYPE.ENQUEUE, ssid: "wifi" };
+		const obj = { req: REQ_TYPE.REGISTRATION, id: "MCU", data: register };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const resp = manager.handleReq(msg);
 		expect(resp).toEqual(
 			new WSServerMessage({
 				header: SERVER_HEADERS.REGISTER_PENDING,
 				at: obj.id,
+				meta: RegistrationManager.WAITING_FOR_WEB,
 			}),
 		);
 	});
 
-	it("Accepts Repeat Client Init Message", () => {
-		const register = { type: REGISTER_TYPE.INIT, ssid: "wifi" };
-		const obj = { req: REQ_TYPE.REGISTER, id: "one", data: register };
+	it("Accepts Repeat MCU Init Message", () => {
+		const register = { type: REGISTER_TYPE.ENQUEUE, ssid: "wifi" };
+		const obj = { req: REQ_TYPE.REGISTRATION, id: "MCU", data: register };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const resp = manager.handleReq(msg);
 		expect(resp).toEqual(
 			new WSServerMessage({
 				header: SERVER_HEADERS.REGISTER_PENDING,
 				at: obj.id,
+				meta: RegistrationManager.WAITING_FOR_WEB,
 			}),
 		);
 	});
 
-	it("Accepts Client Confirm Message", () => {
+	it("Accepts WEB initiate Message", () => {
+		const register = {
+			type: REGISTER_TYPE.INITIATE,
+			ssid: "wifi",
+			data: "MCU",
+		};
+		const obj = {
+			req: REQ_TYPE.REGISTRATION,
+			id: "WEB",
+			data: register,
+		};
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const resp = manager.handleReq(msg);
+		expect(resp).toEqual(
+			new WSServerMessage({
+				header: SERVER_HEADERS.REGISTER_PENDING,
+				meta: RegistrationManager.WAITING_FOR_MCU,
+				at: obj.id,
+			}),
+		);
+	});
+
+	it("Accepts MCU Confirm Message", () => {
 		const register = { type: REGISTER_TYPE.CONFIRM, ssid: "wifi" };
 		const obj = {
-			req: REQ_TYPE.CONFIRM_REGISTER,
-			id: "one",
+			req: REQ_TYPE.REGISTRATION,
+			id: "MCU",
 			data: register,
 		};
 		const msg = new WSClientMessage(JSON.stringify(obj));
@@ -52,38 +76,38 @@ describe("Validate Registration Client Messages", () => {
 		);
 	});
 
-	it("Reject Client Confirm Message before init message", () => {
-		const register = { type: REGISTER_TYPE.CONFIRM, ssid: "wifi" };
-		const obj = {
-			req: REQ_TYPE.CONFIRM_REGISTER,
-			id: "two",
-			data: register,
-		};
-		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = manager.handleReq(msg);
-		expect(resp).toEqual(
-			new WSServerMessage({
-				header: SERVER_HEADERS.REGISTER_ORDER_ERROR,
-				at: obj.id,
-			}),
-		);
-	});
+	// it("Reject Client Confirm Message before init message", () => {
+	// 	const register = { type: REGISTER_TYPE.CONFIRM, ssid: "wifi" };
+	// 	const obj = {
+	// 		req: REQ_TYPE.REGISTRATION,
+	// 		id: "",
+	// 		data: register,
+	// 	};
+	// 	const msg = new WSClientMessage(JSON.stringify(obj));
+	// 	const resp = manager.handleReq(msg);
+	// 	expect(resp).toEqual(
+	// 		new WSServerMessage({
+	// 			header: SERVER_HEADERS.REGISTER_ERROR,
+	// 			at: obj.id,
+	// 		}),
+	// 	);
+	// });
 
-	it("Reject client invalid msg type", () => {
-		const register = { type: "not a valid type", ssid: "wifi" };
-		const obj = {
-			req: REQ_TYPE.CONFIRM_REGISTER,
-			id: "one",
-			data: register,
-		};
-		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = manager.handleReq(msg);
-		expect(resp).toEqual(
-			new WSServerMessage({
-				header: SERVER_HEADERS.BAD_CLIENT_MSG,
-				at: obj.id,
-				meta: RegistrationManager.TAG,
-			}),
-		);
-	});
+	// it("Reject client invalid msg type", () => {
+	// 	const register = { type: "not a valid type", ssid: "wifi" };
+	// 	const obj = {
+	// 		req: REQ_TYPE.REGISTRATION,
+	// 		id: "one",
+	// 		data: register,
+	// 	};
+	// 	const msg = new WSClientMessage(JSON.stringify(obj));
+	// 	const resp = manager.handleReq(msg);
+	// 	expect(resp).toEqual(
+	// 		new WSServerMessage({
+	// 			header: SERVER_HEADERS.BAD_CLIENT_MSG,
+	// 			at: obj.id,
+	// 			meta: RegistrationManager.TAG,
+	// 		}),
+	// 	);
+	// });
 });

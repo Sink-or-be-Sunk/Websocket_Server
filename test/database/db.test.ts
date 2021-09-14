@@ -26,9 +26,9 @@ afterAll(async () => {
 
 describe("Validate Mongoose DB calls", () => {
 	const manager = new DBManager();
-
 	it("Get Friends List", async () => {
 		await manager.getFriends("mitchaarndt");
+		//FIXME: THIS NEEDS AN ACTUAL IMPLEMENTATION
 		expect(true).toBe(true);
 	});
 });

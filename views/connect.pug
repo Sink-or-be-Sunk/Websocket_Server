@@ -5,15 +5,23 @@ block content
 	.page-header
 		h3 Connect Device
 		hr
-	form.form-horizontal(method='POST')
+	.form-horizontal
 		input(type='hidden', name='_csrf', value=_csrf)
 		.form-group.row.justify-content-md-center
-			label.col-sm-2.col-form-label.text-right.font-weight-bold(for='name') Search
+			.col-sm-2.col-form-label.text-right.font-weight-bold
+				label(for='name') Search
 			.col-sm-8
-				input.form-control(type='text', name='search', id='search', autofocus=true)
-	div(id="devices")
-		.card(id="temp") temp
-		.card(id="tom") tom
+				input.form-control(type='text', name='search', id='search', placeholder="NOT IMPLEMENTED!!!", autofocus=true)
+	.form-horizontal(id="devices")
+		for device in list
+			form.form-group.row.justify-content-md-center(action='/connect', method='POST')
+				input(type="hidden", name="id", value=device.id)
+				.col-sm-8.form-control #{device.ssid}
+				.col-sm-2.text-right
+					button.btn.btn.btn-primary(type='submit')
+						i.fa.fa-link
+						| Connect Device
+
 
 	script(src="/js/connect.js")
 	script(src="/js/socket.js")

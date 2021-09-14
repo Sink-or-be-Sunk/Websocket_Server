@@ -1,16 +1,20 @@
 import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
 import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
-import { RegisterRequest } from "./RegisterRequest";
+import { RegisterRequest, REGISTER_TYPE } from "./RegisterRequest";
+import { RegisterInfo, REGISTER_STATE } from "./RegisterInfo";
+
 export class RegistrationManager {
 	static readonly TAG = "REGISTRATION";
-	static readonly ORDER_ERROR = "CONFIRM BEFORE REGISTER";
-	private pending: Map<string, RegisterRequest>;
+	static readonly DEVICE_NOT_FOUND = "DEVICE NOT FOUND";
+	static readonly WAITING_FOR_MCU = "WAITING FOR MCU";
+	static readonly WAITING_FOR_WEB = "WAITING FOR WEB";
+	private pending: Map<string, RegisterInfo>;
 	constructor() {
-		this.pending = new Map<string, RegisterRequest>();
+		this.pending = new Map<string, RegisterInfo>();
 	}
 
 	public handles(req: string): boolean {
-		if (req == REQ_TYPE.REGISTER || req == REQ_TYPE.CONFIRM_REGISTER) {
+		if (req == REQ_TYPE.REGISTRATION) {
 			return true;
 		} else {
 			return false;
@@ -21,34 +25,66 @@ export class RegistrationManager {
 		const req = new RegisterRequest(message.data);
 
 		if (req.isValid()) {
-			if (message.req == REQ_TYPE.REGISTER) {
-				if (!this.pending.has(message.id)) {
-					this.pending.set(message.id, req);
+			const tempID = req.data ? req.data : message.id;
+			const device = this.pending.get(tempID);
+			if (device) {
+				if (req.type == REGISTER_TYPE.INITIATE) {
+					if (device.state == REGISTER_STATE.WAITING_WEB_USER) {
+						device.state = REGISTER_STATE.WAITING_ESP_CONFIRM;
+						return new WSServerMessage({
+							header: SERVER_HEADERS.REGISTER_PENDING,
+							at: message.id,
+							meta: RegistrationManager.WAITING_FOR_MCU,
+						});
+					} else {
+						return new WSServerMessage({
+							header: SERVER_HEADERS.REGISTER_ERROR,
+							at: message.id,
+							meta: device.state.toString(),
+						});
+					}
+				} else if (req.type == REGISTER_TYPE.CONFIRM) {
+					if (device.state == REGISTER_STATE.WAITING_ESP_CONFIRM) {
+						this.pending.delete(tempID);
+						return new WSServerMessage({
+							header: SERVER_HEADERS.REGISTER_SUCCESS,
+							at: message.id,
+						});
+					} else {
+						return new WSServerMessage({
+							header: SERVER_HEADERS.REGISTER_ERROR,
+							at: message.id,
+							meta: device.state.toString(),
+						});
+					}
+				} else if (req.type == REGISTER_TYPE.ENQUEUE) {
+					//request already in pending
+					return new WSServerMessage({
+						header: SERVER_HEADERS.REGISTER_PENDING,
+						at: message.id,
+						meta: RegistrationManager.WAITING_FOR_WEB,
+					});
 				}
-
+			} else if (req.type == REGISTER_TYPE.ENQUEUE) {
+				this.pending.set(message.id, new RegisterInfo(req, message.id));
 				return new WSServerMessage({
 					header: SERVER_HEADERS.REGISTER_PENDING,
 					at: message.id,
+					meta: RegistrationManager.WAITING_FOR_WEB,
 				});
-			} else if (message.req == REQ_TYPE.CONFIRM_REGISTER) {
-				if (this.pending.has(message.id)) {
-					return new WSServerMessage({
-						header: SERVER_HEADERS.REGISTER_SUCCESS,
-						at: message.id,
-					});
-				} else {
-					return new WSServerMessage({
-						header: SERVER_HEADERS.REGISTER_ORDER_ERROR,
-						at: message.id,
-					});
-				}
+			} else {
+				return new WSServerMessage({
+					header: SERVER_HEADERS.REGISTER_ERROR,
+					at: message.id,
+					meta: RegistrationManager.DEVICE_NOT_FOUND,
+				});
 			}
-		} else {
-			return new WSServerMessage({
-				header: SERVER_HEADERS.BAD_CLIENT_MSG,
-				at: message.id,
-				meta: RegistrationManager.TAG,
-			});
 		}
+		//fall through case
+		return new WSServerMessage({
+			header: SERVER_HEADERS.BAD_CLIENT_MSG,
+			at: message.id,
+			meta: RegistrationManager.TAG,
+		});
 	}
 }

@@ -1,16 +1,21 @@
 export class RegisterRequest {
 	type: REGISTER_TYPE;
 	ssid: string;
+	data: string;
 
 	constructor(raw: any) {
 		this.type = REGISTER_TYPE.INVALID;
 		this.ssid = "";
+		this.data = "";
 
 		try {
 			if (isInstance(raw)) {
 				const req = raw as RegisterRequest;
 				this.ssid = req.ssid;
 				this.type = req.type;
+				if (req.data) {
+					this.data = req.data;
+				}
 			} else {
 				this.type = REGISTER_TYPE.INVALID;
 			}
@@ -37,8 +42,9 @@ export class RegisterRequest {
 export function isInstance(object: any): boolean {
 	if ("ssid" in object && "type" in object) {
 		if (
-			object.type === REGISTER_TYPE.INIT ||
-			object.type === REGISTER_TYPE.CONFIRM
+			object.type === REGISTER_TYPE.ENQUEUE ||
+			object.type === REGISTER_TYPE.CONFIRM ||
+			object.type === REGISTER_TYPE.INITIATE
 		) {
 			return true;
 		}
@@ -47,7 +53,11 @@ export function isInstance(object: any): boolean {
 }
 
 export enum REGISTER_TYPE {
-	INIT = "INIT",
+	/** client wants on registration pending list */
+	ENQUEUE = "ENQUEUE",
+	/** web client initiate pairing */
+	INITIATE = "INITIATE",
+	/** client confirms registration match */
 	CONFIRM = "CONFIRM",
 	INVALID = "INVALID",
 	BAD_FORMAT = "BAD FORMAT",

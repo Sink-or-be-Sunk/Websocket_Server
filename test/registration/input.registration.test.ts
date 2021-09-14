@@ -5,7 +5,7 @@ import {
 
 describe("Handle Registration Requests", () => {
 	it("Accepts Init Message", () => {
-		const obj = { type: REGISTER_TYPE.INIT, ssid: "wifi" };
+		const obj = { type: REGISTER_TYPE.ENQUEUE, ssid: "wifi" };
 		const msg = new RegisterRequest(obj);
 		expect(msg).toEqual({ type: obj.type, ssid: obj.ssid });
 		expect(msg.isValid()).toBe(true);
