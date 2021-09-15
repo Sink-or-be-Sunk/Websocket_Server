@@ -1,16 +1,22 @@
 import { Move } from "../models/gameplay/Move";
-import { Response } from "../models/gameplay/Game";
+
+type payloadType =
+	| Move
+	| {
+			ssid: string;
+			mcuID: string;
+	  }[];
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;
 	at: string;
 	meta?: string;
-	payload?: Move;
+	payload?: payloadType;
 };
 export class WSServerMessage {
 	header: SERVER_HEADERS;
 	meta: string;
-	payload: Move;
+	payload: payloadType;
 	at: string;
 	constructor(options: WSServerMessageOptions) {
 		this.header = options.header;
@@ -32,6 +38,7 @@ export class WSServerMessage {
 }
 
 export enum SERVER_HEADERS {
+	WEB_REQ_SUCCESS = "WEB REQ SUCCESS",
 	REGISTER_PENDING = "REGISTER PENDING",
 	REGISTER_SUCCESS = "REGISTER SUCCESS",
 	REGISTER_ERROR = "REGISTER ERROR",

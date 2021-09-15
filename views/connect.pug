@@ -13,15 +13,17 @@ block content
 			.col-sm-8
 				input.form-control(type='text', name='search', id='search', placeholder="NOT IMPLEMENTED!!!", autofocus=true)
 	.form-horizontal(id="devices")
-		for device in list
-			form.form-group.row.justify-content-md-center(action='/connect', method='POST')
-				input(type="hidden", name="id", value=device.id)
-				.col-sm-8.form-control #{device.ssid}
-				.col-sm-2.text-right
-					button.btn.btn.btn-primary(type='submit')
-						i.fa.fa-link
-						| Connect Device
+		//- for device in list
+		//- .form-group.row.justify-content-md-center
+		//- 	.col-sm-8.form-control temp
+		//- 	.col-sm-2.text-right
+		//- 		button.btn.btn.btn-primary(type='submit')
+		//- 			i.fa.fa-link
+		//- 			| Connect Device
 
+
+	script.
+		const username = "#{user.username}";
 
 	script(src="/js/connect.js")
 	script(src="/js/socket.js")

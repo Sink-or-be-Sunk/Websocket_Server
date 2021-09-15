@@ -9,6 +9,20 @@ import {
 describe("Validate Registration Client Messages", () => {
 	const manager = new RegistrationManager();
 
+	it("Accepts Web Get Empty List", () => {
+		const register = { type: REGISTER_TYPE.GET_LIST, ssid: "unknown" };
+		const obj = { req: REQ_TYPE.REGISTRATION, id: "WEB", data: register };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const resp = manager.handleReq(msg);
+		expect(resp).toEqual(
+			new WSServerMessage({
+				header: SERVER_HEADERS.WEB_REQ_SUCCESS,
+				at: obj.id,
+				payload: [],
+			}),
+		);
+	});
+
 	it("Accepts First MCU Init Message", () => {
 		const register = { type: REGISTER_TYPE.ENQUEUE, ssid: "wifi" };
 		const obj = { req: REQ_TYPE.REGISTRATION, id: "MCU", data: register };
@@ -33,6 +47,20 @@ describe("Validate Registration Client Messages", () => {
 				header: SERVER_HEADERS.REGISTER_PENDING,
 				at: obj.id,
 				meta: RegistrationManager.WAITING_FOR_WEB,
+			}),
+		);
+	});
+
+	it("Accepts Web Get One Entry List", () => {
+		const register = { type: REGISTER_TYPE.GET_LIST, ssid: "unknown" };
+		const obj = { req: REQ_TYPE.REGISTRATION, id: "WEB", data: register };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const resp = manager.handleReq(msg);
+		expect(resp).toEqual(
+			new WSServerMessage({
+				header: SERVER_HEADERS.WEB_REQ_SUCCESS,
+				at: obj.id,
+				payload: [{ ssid: "wifi", mcuID: "MCU" }],
 			}),
 		);
 	});

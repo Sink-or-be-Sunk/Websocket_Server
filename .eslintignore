@@ -5,7 +5,7 @@ coverage/*
 # data definition files
 **/*.d.ts
 # 3rd party libs
-/src/public/
+/src/public/bundle/
 # custom definition files
 /src/types/
 # webpack config files

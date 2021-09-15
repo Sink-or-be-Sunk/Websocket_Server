@@ -72,6 +72,17 @@ export class RegistrationManager {
 					at: message.id,
 					meta: RegistrationManager.WAITING_FOR_WEB,
 				});
+			} else if (req.type == REGISTER_TYPE.GET_LIST) {
+				const list = Array.from(this.pending, ([, value]) => ({
+					ssid: value.ssid,
+					mcuID: value.mcuID,
+				}));
+
+				return new WSServerMessage({
+					header: SERVER_HEADERS.WEB_REQ_SUCCESS,
+					at: message.id,
+					payload: list,
+				});
 			} else {
 				return new WSServerMessage({
 					header: SERVER_HEADERS.REGISTER_ERROR,
