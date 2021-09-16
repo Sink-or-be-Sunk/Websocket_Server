@@ -2,17 +2,15 @@
 const REGISTRATION_HEADER = "REGISTRATION";
 const INITIATE_HEADER = "INITIATE";
 const SERVER_SUCCESS_RESPONSE = "WEB REQ SUCCESS";
+const REGISTER_SUCCESS = "REGISTER SUCCESS";
 
 const protocol = location.protocol == "https" ? "wss" : "ws";
 // const uri = protocol + "//" + location.hostname + ":3000/"
 const uri = protocol + "://" + location.hostname + ":" + location.port;
 
-console.log(uri);
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const client = { id: username }; //ts throws error because username is located in connect page script tag
-console.log(client.id);
 
 const socket = new WebSocket(uri);
 socket.onopen = function (event) {
@@ -24,6 +22,9 @@ socket.onmessage = function (event: any) {
 
 	if (data.header == SERVER_SUCCESS_RESPONSE) {
 		updatePairingList(data.payload);
+	} else if (data.header == REGISTER_SUCCESS) {
+		//TODO: REMOVE DEVICE FROM DOM LIST
+		$("#popup").hide();
 	}
 };
 socket.onopen = function (event) {
@@ -46,32 +47,48 @@ function updatePairingList(
 	}[],
 ) {
 	const container = document.querySelector("#devices");
-	console.log(list);
 
-	const ssid = "temp ssid";
+	for (let i = 0; i < list.length; i++) {
+		const obj = list[i];
 
-	const field = document.createElement("div");
-	field.classList.add("col-sm-8", "form-control");
-	field.innerHTML = ssid;
+		const field = document.createElement("div");
+		field.classList.add("col-sm-8", "form-control");
+		field.innerHTML = obj.ssid;
 
-	const icon = document.createElement("i");
-	icon.classList.add("fa", "fa-link");
+		const icon = document.createElement("i");
+		icon.classList.add("fa", "fa-link");
 
-	const button = document.createElement("button");
-	button.classList.add("btn", "btn-primary");
-	button.appendChild(icon);
-	button.innerHTML += "Connect Device";
+		const button = document.createElement("button");
+		button.classList.add("btn", "btn-primary");
+		button.appendChild(icon);
+		button.innerHTML += "Connect Device";
+		button.dataset.toggle = "modal";
+		button.dataset.target = "#popup";
+		button.addEventListener("click", () => {
+			const register = {
+				type: "INITIATE",
+				ssid: obj.ssid,
+				data: obj.mcuID,
+			};
+			const msg = {
+				req: "REGISTRATION",
+				id: client.id,
+				data: register,
+			};
+			socket.send(JSON.stringify(msg));
+		});
 
-	const buttonDiv = document.createElement("div");
-	buttonDiv.classList.add("col-sm-2", "text-right");
-	buttonDiv.appendChild(button);
+		const buttonDiv = document.createElement("div");
+		buttonDiv.classList.add("col-sm-2", "text-right");
+		buttonDiv.appendChild(button);
 
-	const outer = document.createElement("div");
-	outer.classList.add("form-group", "row", "justify-content-md-center");
-	outer.appendChild(field);
-	outer.appendChild(buttonDiv);
+		const outer = document.createElement("div");
+		outer.classList.add("form-group", "row", "justify-content-md-center");
+		outer.appendChild(field);
+		outer.appendChild(buttonDiv);
 
-	container.appendChild(outer);
+		container.appendChild(outer);
+	}
 }
 
 /** ----------- Web Client Message Functions --------------------*/
@@ -83,4 +100,36 @@ function initiateDevicePairing(targetID: string, ssid: string) {
 		id: "WEB",
 		data: { type: INITIATE_HEADER, ssid: ssid, data: targetID },
 	};
+}
+
+/** ----------------- popup code ------------------- */
+$("#popup").on("shown.bs.modal", function () {
+	setTimeout(function () {
+		($("#popup") as any).modal("hide"); //FIXME: REMOVE THIS AFTER TESTING
+	}, 1000);
+});
+
+$("#popup").on("hidden.bs.modal", function () {
+	console.log("closed modal"); //TODO: ADD CODE TO CANCEL PAIRING HERE
+});
+
+//FIXME: REMOVE THIS CODE. FOR TESTING ONLY
+testingFunction();
+function testingFunction() {
+	const send = function () {
+		const register = { type: "CONFIRM", ssid: "test wifi" };
+		const obj = {
+			req: "REGISTRATION",
+			id: "testID",
+			data: register,
+		};
+		const msg = JSON.stringify(obj);
+		socket.send(msg);
+	};
+
+	const button = document.createElement("button");
+	button.onclick = send;
+	button.innerHTML = "TEST MCU CONFIRM";
+
+	document.body.appendChild(button);
 }

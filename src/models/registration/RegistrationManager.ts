@@ -11,6 +11,19 @@ export class RegistrationManager {
 	private pending: Map<string, RegisterInfo>;
 	constructor() {
 		this.pending = new Map<string, RegisterInfo>();
+
+		//FIXME: REMOVE THIS, FOR TESTING ONLY
+		const id = "testID";
+		this.pending.set(
+			id,
+			new RegisterInfo(
+				new RegisterRequest({
+					type: REGISTER_TYPE.ENQUEUE,
+					ssid: "test wifi",
+				}),
+				id,
+			),
+		);
 	}
 
 	public handles(req: string): boolean {
