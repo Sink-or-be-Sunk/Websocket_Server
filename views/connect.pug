@@ -21,9 +21,9 @@ block content
 		//- 			i.fa.fa-link
 		//- 			| Connect Device
 
-	.modal.fade(id="popup", tabindex="-1",role="dialog")
+	.modal.fade(id="mcuWait", tabindex="-1",role="dialog")
 		.modal-dialog.bg-light.card(role="document")
-			.modal-header
+			.modal-header.text-primary
 				h5.modal-title Please Wait
 				button.close(type="button", data-dismiss="modal", aria-label="Close")
 					span(aria-hidden="true") &times;
@@ -33,6 +33,14 @@ block content
 					i.fa.fa-spinner.fa-spin
 			.modal-footer
 				button.btn.btn-danger(type="button", data-dismiss="modal") Cancel
+	.modal.fade(id="mcuConnected", tabindex="-1",role="dialog")
+		.modal-dialog.bg-light.card(role="document")
+			.modal-header.text-success
+				h5.modal-title Connected
+				button.close(type="button", data-dismiss="modal", aria-label="Close")
+					span(aria-hidden="true") &times;
+			.modal-body.d-flex.flex-row.justify-content-between.align-items-xl-center
+				div Connected to Device
 
 
 

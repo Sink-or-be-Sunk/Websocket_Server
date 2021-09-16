@@ -7,7 +7,7 @@ import { SERVER_HEADERS, WSServerMessage } from "./util/WSServerMessage";
 import Lobby from "./models/gameplay/Lobby";
 import { RegistrationManager } from "./models/registration/RegistrationManager";
 import { assert } from "console";
-import { DBManager } from "./models/database/dbManager";
+import { DBManager } from "./models/database/DBManager";
 
 const lobby = new Lobby();
 const registrar = new RegistrationManager();

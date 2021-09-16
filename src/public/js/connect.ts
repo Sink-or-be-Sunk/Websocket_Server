@@ -24,7 +24,9 @@ socket.onmessage = function (event: any) {
 		updatePairingList(data.payload);
 	} else if (data.header == REGISTER_SUCCESS) {
 		//TODO: REMOVE DEVICE FROM DOM LIST
-		$("#popup").hide();
+		($("#mcuWait") as any).modal("hide");
+		($("#mcuConnected") as any).modal("show");
+
 	}
 };
 socket.onopen = function (event) {
@@ -63,7 +65,7 @@ function updatePairingList(
 		button.appendChild(icon);
 		button.innerHTML += "Connect Device";
 		button.dataset.toggle = "modal";
-		button.dataset.target = "#popup";
+		button.dataset.target = "#mcuWait";
 		button.addEventListener("click", () => {
 			const register = {
 				type: "INITIATE",
@@ -103,33 +105,13 @@ function initiateDevicePairing(targetID: string, ssid: string) {
 }
 
 /** ----------------- popup code ------------------- */
-$("#popup").on("shown.bs.modal", function () {
+$("#mcuWait").on("shown.bs.modal", function () { //FIXME: REMOVE THIS AFTER TESTING
 	setTimeout(function () {
-		($("#popup") as any).modal("hide"); //FIXME: REMOVE THIS AFTER TESTING
+		($("#mcuWait") as any).modal("hide");
+		($("#mcuConnected") as any).modal("show");
 	}, 1000);
 });
 
-$("#popup").on("hidden.bs.modal", function () {
+$("#mcuWait").on("hidden.bs.modal", function () {
 	console.log("closed modal"); //TODO: ADD CODE TO CANCEL PAIRING HERE
 });
-
-//FIXME: REMOVE THIS CODE. FOR TESTING ONLY
-testingFunction();
-function testingFunction() {
-	const send = function () {
-		const register = { type: "CONFIRM", ssid: "test wifi" };
-		const obj = {
-			req: "REGISTRATION",
-			id: "testID",
-			data: register,
-		};
-		const msg = JSON.stringify(obj);
-		socket.send(msg);
-	};
-
-	const button = document.createElement("button");
-	button.onclick = send;
-	button.innerHTML = "TEST MCU CONFIRM";
-
-	document.body.appendChild(button);
-}
