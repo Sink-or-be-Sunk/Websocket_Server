@@ -6,6 +6,8 @@ coverage/*
 **/*.d.ts
 # 3rd party libs
 /src/public/bundle/
+/src/public/lib/
+
 # custom definition files
 /src/types/
 # webpack config files

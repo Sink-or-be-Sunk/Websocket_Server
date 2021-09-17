@@ -21,7 +21,11 @@ describe("Handle Registration Requests", () => {
 	it("Rejects Message with bad register type", () => {
 		const obj = { type: "some random type", ssid: "wifi" };
 		const msg = new RegisterRequest(obj);
-		expect(msg).toEqual({ type: REGISTER_TYPE.INVALID, ssid: "", data:"" });
+		expect(msg).toEqual({
+			type: REGISTER_TYPE.INVALID,
+			ssid: "",
+			data: "",
+		});
 		expect(msg.isValid()).toBe(false);
 	});
 
@@ -31,7 +35,7 @@ describe("Handle Registration Requests", () => {
 		expect(msg).toEqual({
 			type: REGISTER_TYPE.BAD_FORMAT,
 			ssid: "",
-			data: ""
+			data: "",
 		});
 		expect(msg.isValid()).toBe(false);
 	});
