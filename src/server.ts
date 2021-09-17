@@ -118,30 +118,5 @@ async function sendList(list: WSServerMessage[]) {
 		} else {
 			logger.error(`socket not found: ${msg.at}`);
 		}
-
-		//FIXME: REMOVE THIS: FOR TESTING ONLY
-		if (msg.header == SERVER_HEADERS.REGISTER_PENDING) {
-			const register = { type: REGISTER_TYPE.CONFIRM, ssid: "wifi" };
-			const obj = {
-				req: REQ_TYPE.REGISTRATION,
-				id: "testID",
-				data: register,
-			};
-			const str = new WSClientMessage(JSON.stringify(obj));
-			const responses = await registrar.handleReq(str);
-
-			for (let i = 0; i < responses.length; i++) {
-				const resp = responses[i];
-
-				const socket = connections.get(resp.at);
-				if (socket) {
-					setTimeout(() => {
-						socket.send(JSON.stringify(resp));
-					}, 1000);
-				} else {
-					logger.error(`socket not found: ${resp.at}`);
-				}
-			}
-		}
 	}
 }
