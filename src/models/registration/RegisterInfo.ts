@@ -9,6 +9,7 @@ export class RegisterInfo {
 	constructor(req: RegisterRequest, mcuID: string) {
 		this.ssid = req.ssid;
 		this.mcuID = mcuID;
+		this.username = "";
 		this.state = REGISTER_STATE.WAITING_WEB_USER;
 	}
 }

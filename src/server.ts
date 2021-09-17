@@ -8,6 +8,9 @@ import Lobby from "./models/gameplay/Lobby";
 import { RegistrationManager } from "./models/registration/RegistrationManager";
 import { assert } from "console";
 import { DBManager } from "./models/database/DBManager";
+import { REGISTER_TYPE } from "./models/registration/RegisterRequest"; //FIXME: REMOVE THIS: FOR TESTING ONLY
+
+const connections = new Map<string, WebSocket>();
 
 const lobby = new Lobby();
 const registrar = new RegistrationManager();
@@ -66,6 +69,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			// TODO: add security where socket must authenticate username with password
 			// TODO: check that the user has been registered to a device
 			socket.id = msg.id;
+			connections.set(socket.id, socket);
 		}
 
 		assert(socket.id == msg.id); //FIXME: ADD A BETTER CHECK HERE
@@ -74,11 +78,11 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			// const resp = await dbManager.handleReq(msg);
 			// socket.send(resp.toString());
 		} else if (lobby.handles(msg.req)) {
-			const resp = lobby.handleReq(msg);
-			socket.send(resp.toString());
+			const list = lobby.handleReq(msg);
+			await sendList(list); //FIXME: REMOVE AWAIT
 		} else if (registrar.handles(msg.req)) {
-			const resp = registrar.handleReq(msg);
-			socket.send(resp.toString());
+			const list = await registrar.handleReq(msg);
+			await sendList(list); //FIXME: REMOVE AWAIT
 		} else {
 			socket.send(
 				new WSServerMessage({
@@ -102,4 +106,42 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 
 function _onWSClose(ws: WebSocket) {
 	lobby.leaveGame(ws.id);
+}
+
+async function sendList(list: WSServerMessage[]) {
+	//FIXME: CHANGE BACK TO NON ASYNC FUNCTION
+	for (let i = 0; i < list.length; i++) {
+		const msg = list[i];
+		const socket = connections.get(msg.at);
+		if (socket) {
+			socket.send(JSON.stringify(msg));
+		} else {
+			logger.error(`socket not found: ${msg.at}`);
+		}
+
+		//FIXME: REMOVE THIS: FOR TESTING ONLY
+		if (msg.header == SERVER_HEADERS.REGISTER_PENDING) {
+			const register = { type: REGISTER_TYPE.CONFIRM, ssid: "wifi" };
+			const obj = {
+				req: REQ_TYPE.REGISTRATION,
+				id: "testID",
+				data: register,
+			};
+			const str = new WSClientMessage(JSON.stringify(obj));
+			const responses = await registrar.handleReq(str);
+
+			for (let i = 0; i < responses.length; i++) {
+				const resp = responses[i];
+
+				const socket = connections.get(resp.at);
+				if (socket) {
+					setTimeout(() => {
+						socket.send(JSON.stringify(resp));
+					}, 1000);
+				} else {
+					logger.error(`socket not found: ${resp.at}`);
+				}
+			}
+		}
+	}
 }

@@ -60,6 +60,7 @@ export enum REGISTER_TYPE {
 	INITIATE = "INITIATE",
 	/** client confirms registration match */
 	CONFIRM = "CONFIRM",
+
 	/** web client able to get list of pending devices */
 	GET_LIST = "GET_LIST",
 	INVALID = "INVALID",
