@@ -1,0 +1,64 @@
+extends layout
+
+
+block content
+	.page-header
+		h3 Connect Device
+		hr
+	.form-horizontal
+		input(type='hidden', name='_csrf', value=_csrf)
+		.form-group.row.justify-content-md-center
+			.col-sm-2.col-form-label.text-right.font-weight-bold
+				label(for='name') Search
+			.col-sm-8
+				input.form-control(type='text', name='search', id='search', placeholder="NOT IMPLEMENTED!!!", autofocus=true)
+	.form-horizontal(id="devices")
+		//- for device in list
+		//- .form-group.row.justify-content-md-center
+		//- 	.col-sm-8.form-control temp
+		//- 	.col-sm-2.text-right
+		//- 		button.btn.btn.btn-primary(type='submit')
+		//- 			i.fa.fa-link
+		//- 			| Connect Device
+
+	.modal.fade(id="mcuWait", tabindex="-1",role="dialog")
+		.modal-dialog.bg-light.card(role="document")
+			.modal-header.text-primary
+				h5.modal-title Please Wait
+				button.close(type="button", data-dismiss="modal", aria-label="Close")
+					span(aria-hidden="true") &times;
+			.modal-body.d-flex.flex-row.justify-content-between.align-items-xl-center
+				div Waiting for Physical Confirmation...
+				.fa-3x
+					i.fa.fa-spinner.fa-spin
+			.modal-footer
+				button.btn.btn-danger(type="button", data-dismiss="modal") Cancel
+	.modal.fade(id="mcuConnected", tabindex="-1",role="dialog")
+		.modal-dialog.bg-light.card(role="document")
+			.modal-header.text-success
+				h5.modal-title Connected
+				button.close(type="button", data-dismiss="modal", aria-label="Close")
+					span(aria-hidden="true") &times;
+			.modal-body.d-flex.flex-row.justify-content-between.align-items-xl-center
+				div Connected to Device
+	.modal.fade(id="startPairing", tabindex="-1",role="dialog")
+		.modal-dialog.bg-light.card(role="document")
+			.modal-header
+				h5.modal-title Start Pairing?
+				button.close(type="button", data-dismiss="modal", aria-label="Close")
+					span(aria-hidden="true") &times;
+			.modal-body
+				h4 Are you sure you want to pair a new device?
+				h5.text-danger This action will remove your old device!
+			.modal-footer
+				button.btn.btn-danger(type="button", data-dismiss="modal") Cancel
+				button.btn.btn-success(type="button",id="acceptPairing", data-dismiss="modal") Accept
+
+	- var id = user._id
+	- var profile = user.profile
+	script.
+		const id = "#{ id }";
+		const profile = !{ profile };
+
+	script(src="/js/connect.js")
+	script(src="/js/socket.js")

@@ -1,65 +1,78 @@
+import { ShipType } from "./Ship";
+
 export class Move {
-  type: MOVE_TYPE;
-  at: string;
-  c: number;
-  r: number;
+	type: MOVE_TYPE;
+	from: string;
+	readonly to: string;
+	readonly c: number;
+	readonly r: number;
 
-  constructor(raw: string) {
-    this.c = -1;
-    this.r = -1;
-    this.at = "";
+	result: MOVE_RESULT;
 
-    try {
-      const parse = JSON.parse(raw) as Move;
-      if (isInstance(parse)) {
-        this.type = parse.type;
-        this.c = +parse.c; //+str provides shorthand for converting "1" to 1
-        this.r = +parse.r;
-        this.at = parse.at;
-      } else {
-        this.type = MOVE_TYPE.INVALID;
-      }
-    } catch (err) {
-      this.type = MOVE_TYPE.BAD_FORMAT;
-    }
-  }
+	result_ship: ShipType;
 
-  isValid(grid: number) {
-    if (this.type == MOVE_TYPE.INVALID || this.type == MOVE_TYPE.BAD_FORMAT) {
-      return false;
-    }
-    if (this.c >= grid || this.r >= grid) {
-      return false;
-    }
-    if (this.c < 0 || this.r < 0) {
-      return false;
-    }
-    return true;
-  }
+	constructor(raw: any) {
+		this.c = -1;
+		this.r = -1;
+		this.to = "";
+		this.from = "";
+		this.result = MOVE_RESULT.INIT;
+		this.result_ship = null;
 
-  toString() {
-    return JSON.stringify(this);
-  }
+		if (isInstance(raw)) {
+			const move = raw as Move;
+			this.type = move.type;
+			this.c = +move.c; //+str provides shorthand for converting "1" to 1
+			this.r = +move.r;
+			this.to = move.to;
+		} else {
+			this.type = MOVE_TYPE.INVALID;
+		}
+	}
+
+	isValid(grid?: number): boolean {
+		if (this.type == MOVE_TYPE.INVALID) {
+			return false;
+		}
+		if (this.c < 0 || this.r < 0) {
+			return false;
+		}
+		if (grid) {
+			if (this.c >= grid || this.r >= grid) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	toString(): string {
+		return JSON.stringify(this);
+	}
 }
 
+export enum MOVE_RESULT {
+	INIT = "INIT",
+	HIT = "HIT",
+	MISS = "MISS",
+	SUNK = "SUNK",
+}
 export enum MOVE_TYPE {
-  SOLO = "solo",
-  SALVO = "salvo",
-  EXPLOSIVE = "explosive",
-  INVALID = "invalid",
-  BAD_FORMAT = "bad_format",
+	SOLO = "SOLO",
+	SALVO = "SALVO",
+	EXPLOSIVE = "EXPLOSIVE",
+	INVALID = "INVALID",
 }
 export function isInstance(object: any) {
-  if ("c" in object && "r" in object && "at" in object && "type" in object) {
-    if (!isNaN(object.c) && !isNaN(object.r)) {
-      if (
-        object.type === MOVE_TYPE.SOLO ||
-        object.type === MOVE_TYPE.SALVO ||
-        object.type === MOVE_TYPE.EXPLOSIVE
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
+	if ("c" in object && "r" in object && "to" in object && "type" in object) {
+		if (!isNaN(object.c) && !isNaN(object.r)) {
+			if (
+				object.type === MOVE_TYPE.SOLO ||
+				object.type === MOVE_TYPE.SALVO ||
+				object.type === MOVE_TYPE.EXPLOSIVE
+			) {
+				return true;
+			}
+		}
+	}
+	return false;
 }

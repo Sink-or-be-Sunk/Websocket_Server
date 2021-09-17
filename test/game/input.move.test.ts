@@ -1,52 +1,59 @@
-import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
+import { Move, MOVE_RESULT, MOVE_TYPE } from "../../src/models/gameplay/Move";
 
 describe("Validate Player Move Requests", () => {
 	it("Accepts Correct Player Move", () => {
-		const obj = { c: 1, r: 2, type: MOVE_TYPE.SOLO, at: "joe" };
-		const str = JSON.stringify(obj);
-		const move = new Move(str);
+		const obj = { c: 1, r: 2, type: MOVE_TYPE.SOLO, to: "joe" };
+		const move = new Move(obj);
 		expect(move).toEqual({
 			c: obj.c,
 			r: obj.r,
 			type: obj.type,
-			at: obj.at,
+			to: obj.to,
+			from: "",
+			result: MOVE_RESULT.INIT,
+			result_ship: null,
 		});
 	});
 
 	it("Accepts Player move with stringified numbers", () => {
-		const obj = { c: "1", r: "2", type: MOVE_TYPE.SOLO, at: "joe" };
-		const str = JSON.stringify(obj);
-		const move = new Move(str);
-		expect(move).toEqual({ c: 1, r: 2, type: MOVE_TYPE.SOLO, at: obj.at });
+		const obj = { c: "1", r: "2", type: MOVE_TYPE.SOLO, to: "joe" };
+		const move = new Move(obj);
+		expect(move).toEqual({
+			c: 1,
+			r: 2,
+			type: MOVE_TYPE.SOLO,
+			to: obj.to,
+			from: "",
+			result: MOVE_RESULT.INIT,
+			result_ship: null,
+		});
 	});
 
 	it("Rejects Invalid String Numbers", () => {
 		const obj = { c: "1a", r: "2b", type: MOVE_TYPE.SOLO, at: "joe" };
-		const str = JSON.stringify(obj);
-		const move = new Move(str);
+		const move = new Move(obj);
 		expect(move).toEqual({
 			c: -1,
 			r: -1,
 			type: MOVE_TYPE.INVALID,
-			at: "",
-		});
-	});
-
-	it("Rejects Invalid JSON string", () => {
-		const str = "{ c: 1; r: 2; type: 'solo'; at: 'joe'}";
-		const move = new Move(str);
-		expect(move).toEqual({
-			c: -1,
-			r: -1,
-			type: MOVE_TYPE.BAD_FORMAT,
-			at: "",
+			to: "",
+			from: "",
+			result: MOVE_RESULT.INIT,
+			result_ship: null,
 		});
 	});
 
 	it("Rejects Object without all Fields", () => {
-		const obj = { c: 1, type: MOVE_TYPE.SOLO, at: "joe" };
-		const str = JSON.stringify(obj);
-		const move = new Move(str);
-		expect(move).toEqual({ c: -1, r: -1, type: MOVE_TYPE.INVALID, at: "" });
+		const obj = { c: 1, type: MOVE_TYPE.SOLO, to: "joe" };
+		const move = new Move(obj);
+		expect(move).toEqual({
+			c: -1,
+			r: -1,
+			type: MOVE_TYPE.INVALID,
+			to: "",
+			from: "",
+			result: MOVE_RESULT.INIT,
+			result_ship: null,
+		});
 	});
 });

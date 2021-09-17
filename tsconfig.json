@@ -1,27 +1,23 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "target": "es6",
-        "noImplicitAny": false,
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist",
-        "baseUrl": ".",
-        "paths": {
-            "*": [
-                "node_modules/*",
-                "node_modules/@types/three/examples/jsm/loaders/*",
-                "src/types/*"
-            ]
-        }
-    },
-    "types": ["three"],
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "src/public/**/*",
-    ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es6",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "node_modules/@types/three/examples/jsm/loaders/*",
+        "src/types/*"
+      ]
+    }
+  },
+  "types": ["three"],
+  "include": ["src/**/*"],
+  "exclude": ["src/public/bundle/**/*"]
 }

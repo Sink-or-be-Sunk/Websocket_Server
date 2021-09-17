@@ -5,7 +5,7 @@ import { Request, Response } from "express";
  * @route GET /
  */
 export const getGame = (req: Request, res: Response) => {
-    res.render("game/index", {
-        title: "Game"
-    });
+	res.render("game", {
+		title: "Game",
+	});
 };

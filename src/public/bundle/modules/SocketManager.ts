@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import * as WSClientMessage from "../../../util/WSClientMessage";
 
 export default class SocketManager {
 	socket: WebSocket;
@@ -27,7 +26,7 @@ export default class SocketManager {
 
 		this.socket.onopen = (event) => {
 			const newGame = {
-				req: WSClientMessage.REQ_TYPE.NEW_GAME,
+				req: "NEW GAME",
 				id: this.id,
 			};
 			this.socket.send(JSON.stringify(newGame));

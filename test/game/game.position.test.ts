@@ -1,24 +1,18 @@
-import { Game, GAME_TYPE, Response, ResponseHeader } from "../../src/models/gameplay/Game";
+import {
+	Game,
+	GAME_TYPE,
+	Response,
+	ResponseHeader,
+} from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
-import TestUtils from "../../testUtils/TestUtils";
 import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
 
-const utils = new TestUtils();
-TestUtils.silenceLog();
-
-beforeAll(async () => {
-	await utils.setup();
-});
-
-afterAll(async () => {
-	await utils.tearDown();
-});
-
 describe("Validate basic back and forth game", () => {
-	const p1 = new Player("one", utils.getSocket("one"));
-	const p2 = new Player("two", utils.getSocket("two"));
+	const p1 = new Player("one");
+	const p2 = new Player("two");
 
-	const game = new Game(p1.id, p1.socket, GAME_TYPE.BASIC);
+	const game = new Game(p1.id, GAME_TYPE.BASIC);
+	game.add(p1);
 
 	it("Allows Player2 to join game", () => {
 		const resp = game.add(p2);
@@ -31,8 +25,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(true, ResponseHeader.SHIP_POSITIONED),
 		);
@@ -44,8 +37,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(true, ResponseHeader.SHIP_POSITIONED),
 		);
@@ -57,8 +49,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(3, 1, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(5, 1, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(true, ResponseHeader.SHIP_POSITIONED),
 		);
@@ -70,8 +61,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 3, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(1, 5, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(true, ResponseHeader.SHIP_POSITIONED),
 		);
@@ -83,8 +73,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(2, 1, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(4, 1, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(true, ResponseHeader.SHIP_POSITIONED),
 		);
@@ -96,8 +85,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(1, 3, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(false, ResponseHeader.SHIP_BROKE_RULES),
 		);
@@ -111,10 +99,13 @@ describe("Validate basic back and forth game", () => {
 		const pos4 = new Position(2, 0, LAYOUT_TYPE.PATROL);
 		const pos5 = new Position(2, 1, LAYOUT_TYPE.PATROL);
 		const list = [pos2, pos1, pos0, pos3, pos4, pos5];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
-			new Response(false, ResponseHeader.SHIP_BROKE_RULES),
+			new Response(
+				false,
+				ResponseHeader.BAD_LAYOUT,
+				LAYOUT_TYPE.BREAKS_RULES,
+			),
 		);
 	});
 
@@ -124,8 +115,7 @@ describe("Validate basic back and forth game", () => {
 		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
 		const pos3 = new Position(2, 1, LAYOUT_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
-		const str = JSON.stringify(list);
-		const resp = game.positionShips(p1.id, str);
+		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
 			new Response(false, ResponseHeader.INVALID_SHIP_MARKERS),
 		);

@@ -1,71 +1,73 @@
-import { Layout, LAYOUT_TYPE, Position } from "../../src/models/gameplay/Layout";
+import { GAME_TYPE, Rules } from "../../src/models/gameplay/Game";
+import {
+	Layout,
+	LAYOUT_TYPE,
+	Position,
+} from "../../src/models/gameplay/Layout";
 
 describe("Validate Layout Change from Client Message", () => {
-	it("Accepts valid single element list", () => {
-		const obj = { c: 0, r: 0, t: LAYOUT_TYPE.PATROL };
-		const list = [obj];
-		const str = JSON.stringify(list);
-		const msg = new Layout(str);
-		expect(msg).toEqual({
-			list: [new Position(obj.c, obj.r, obj.t)],
-			type: LAYOUT_TYPE.VALID,
-		});
-	});
+	const basic = new Rules(GAME_TYPE.BASIC);
+	const classic = new Rules(GAME_TYPE.CLASSIC);
 
-	it("Accepts valid two element list", () => {
-		const obj1 = { c: 0, r: 0, t: LAYOUT_TYPE.PATROL };
-		const obj2 = { c: 1, r: 2, t: LAYOUT_TYPE.PATROL };
-		const list = [obj1, obj2];
-		const str = JSON.stringify(list);
-		const msg = new Layout(str);
+	it("Accepts valid basic element list", () => {
+		const list = [];
+		list.push({ c: 0, r: 0, t: LAYOUT_TYPE.PATROL });
+		list.push({ c: 0, r: 1, t: LAYOUT_TYPE.PATROL });
+		list.push({ c: 1, r: 0, t: LAYOUT_TYPE.DESTROYER });
+		list.push({ c: 1, r: 2, t: LAYOUT_TYPE.DESTROYER });
+		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [
-				new Position(obj1.c, obj1.r, obj1.t),
-				new Position(obj2.c, obj2.r, obj2.t),
+				new Position(list[0].c, list[0].r, list[0].t),
+				new Position(list[1].c, list[1].r, list[1].t),
+				new Position(list[2].c, list[2].r, list[2].t),
+				new Position(list[3].c, list[3].r, list[3].t),
 			],
 			type: LAYOUT_TYPE.VALID,
 		});
 	});
 
-	it("Accepts valid single element list with string (c,r)", () => {
-		const obj = { c: "0", r: "0", t: LAYOUT_TYPE.PATROL };
-		const list = [obj];
-		const str = JSON.stringify(list);
-		const msg = new Layout(str);
+	it("Accepts valid basic element list with string (c,r)", () => {
+		const list = [];
+		list.push({ c: "0", r: "0", t: LAYOUT_TYPE.PATROL });
+		list.push({ c: "0", r: "1", t: LAYOUT_TYPE.PATROL });
+		list.push({ c: "1", r: "0", t: LAYOUT_TYPE.DESTROYER });
+		list.push({ c: "1", r: "2", t: LAYOUT_TYPE.DESTROYER });
+		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
-			list: [new Position(0, 0, obj.t)],
+			list: [
+				new Position(0, 0, list[0].t),
+				new Position(0, 1, list[1].t),
+				new Position(1, 0, list[2].t),
+				new Position(1, 2, list[3].t),
+			],
 			type: LAYOUT_TYPE.VALID,
 		});
 	});
 
 	it("Rejects single element list with invalid string numbers", () => {
-		const obj = { c: "0a", r: "0b", t: LAYOUT_TYPE.PATROL };
-		const list = [obj];
-		const str = JSON.stringify(list);
-		const msg = new Layout(str);
+		const list = [];
+		list.push({ c: "0a", r: "0", t: LAYOUT_TYPE.PATROL });
+		list.push({ c: "0", r: "1b", t: LAYOUT_TYPE.PATROL });
+		list.push({ c: "1", r: "0", t: LAYOUT_TYPE.DESTROYER });
+		list.push({ c: "1c", r: "2", t: LAYOUT_TYPE.DESTROYER });
+		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [],
 			type: LAYOUT_TYPE.BAD_POSITION_OBJ,
 		});
 	});
 
-	it("Rejects element that isn't an array", () => {
-		const obj = { c: "0", r: "0", t: LAYOUT_TYPE.PATROL };
-		const list = obj;
-		const str = JSON.stringify(list);
-		const msg = new Layout(str);
+	it("Rejects invalid array object", () => {
+		const list = {} as any;
+		list.obj1 = { c: 0, r: 0, t: LAYOUT_TYPE.PATROL };
+		list.obj2 = { c: 0, r: 1, t: LAYOUT_TYPE.PATROL };
+		list.obj3 = { c: 1, r: 0, t: LAYOUT_TYPE.DESTROYER };
+		list.obj4 = { c: 1, r: 2, t: LAYOUT_TYPE.DESTROYER };
+		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [],
 			type: LAYOUT_TYPE.BAD_ARRAY,
-		});
-	});
-
-	it("Rejects invalid JSON string", () => {
-		const str = "{ c: 0; r: 0, t: 'P' }";
-		const msg = new Layout(str);
-		expect(msg).toEqual({
-			list: [],
-			type: LAYOUT_TYPE.BAD_JSON,
 		});
 	});
 });

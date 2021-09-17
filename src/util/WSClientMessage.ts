@@ -1,7 +1,10 @@
 export class WSClientMessage {
+	/** Request enum type */
 	req: string;
+	/** Client username */
 	id: string;
-	data: string;
+	/** Optional data field holding json object */
+	data: string; //TODO: MAYBE CHANGE THIS TO NULL OBJECT?
 
 	constructor(data: string) {
 		this.req = "";
@@ -34,7 +37,8 @@ export class WSClientMessage {
 				object.req === REQ_TYPE.MAKE_MOVE ||
 				object.req === REQ_TYPE.JOIN_GAME ||
 				object.req === REQ_TYPE.GAME_TYPE ||
-				object.req === REQ_TYPE.POSITION_SHIPS
+				object.req === REQ_TYPE.POSITION_SHIPS ||
+				object.req === REQ_TYPE.REGISTRATION
 			) {
 				return true;
 			}
@@ -42,11 +46,18 @@ export class WSClientMessage {
 		return false;
 	}
 
+	isValid(): boolean {
+		if (this.req == REQ_TYPE.INVALID || this.req == REQ_TYPE.BAD_FORMAT) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	toString(): string {
 		return JSON.stringify({ req: this.req, id: this.id, data: this.data });
 	}
 }
-
 
 export enum REQ_TYPE {
 	INVALID = "INVALID",
@@ -56,4 +67,7 @@ export enum REQ_TYPE {
 	POSITION_SHIPS = "POSITION SHIPS",
 	JOIN_GAME = "JOIN GAME",
 	GAME_TYPE = "GAME TYPE",
+	REGISTRATION = "REGISTRATION",
+	GET_FRIENDS = "GET FRIENDS",
+	INVITE_TO_GAME = "INVITE TO GAME",
 }

@@ -3,16 +3,16 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "eslint.validate": ["javascript", "typescript"],
+  "eslint.validate": ["javascript", "typescript", "pug"],
   "editor.formatOnSave": true,
   "[javascript]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "[typescript]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "[markdown]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false
   },
   "search.exclude": {
     "**/node_modules": true,
@@ -20,11 +20,12 @@
     "**/dist": true,
     "**/coverage": true
   },
+  "plantuml.diagramsRoot": "docs/diagrams/src",
+  "plantuml.exportOutDir": "docs/diagrams/dest",
   "typescript.referencesCodeLens.enabled": true,
   "editor.renderWhitespace": "boundary",
   "appService.zipIgnorePattern": [".vscode{,/**}"],
   "appService.deploySubpath": "",
-  "cSpell.words": [
-    "gameplay"
-  ]
+  "workbench.editor.showTabs": true,
+  "cSpell.words": ["gameplay", "ssid"]
 }
