@@ -92,6 +92,7 @@ export class RegistrationManager {
 							new WSServerMessage({
 								header: SERVER_HEADERS.REGISTER_SUCCESS,
 								at: message.id,
+								payload: { username: device.username },
 							}),
 						];
 						list.push(

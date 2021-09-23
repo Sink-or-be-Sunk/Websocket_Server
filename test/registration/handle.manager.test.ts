@@ -111,6 +111,7 @@ describe("Validate Registration Client Messages", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.REGISTER_SUCCESS,
 				at: obj.id,
+				payload: { username: "WEB" },
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.REGISTER_SUCCESS,
