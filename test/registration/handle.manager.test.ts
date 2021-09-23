@@ -87,7 +87,8 @@ describe("Validate Registration Client Messages", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.REGISTER_PENDING,
 				at: "MCU",
-				meta: obj.id,
+				meta: RegistrationManager.WAITING_FOR_CONFIRM,
+				payload: { username: obj.id },
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
@@ -170,7 +171,8 @@ describe("Validate Registration Client Messages", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.REGISTER_PENDING,
 				at: "12345",
-				meta: obj.id,
+				meta: RegistrationManager.WAITING_FOR_CONFIRM,
+				payload: { username: obj.id },
 			}),
 		];
 		for (let i = 0; i < responses.length; i++) {
