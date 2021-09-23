@@ -5,7 +5,8 @@ type payloadType =
 	| {
 			ssid: string;
 			mcuID: string;
-	  }[];
+	  }[]
+	| { username: string };
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;

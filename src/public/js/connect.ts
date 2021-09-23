@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const client = { id: id, deviceID: profile.device }; //ts throws error because username is located in connect page script tag
+const client = { deviceID: profile.device, username: username }; //ts throws error because username is located in connect page script tag
 
 // HEADERS
 const REGISTRATION_HEADER = "REGISTRATION";
@@ -14,7 +14,7 @@ console.log(client);
 // MESSAGES
 const getDeviceList = {
 	req: REGISTRATION_HEADER,
-	id: client.id,
+	id: client.username,
 	data: {
 		type: "GET_LIST",
 		ssid: "unknown",
@@ -96,7 +96,7 @@ function updatePairingList(
 			};
 			const msg = {
 				req: "REGISTRATION",
-				id: client.id,
+				id: client.username,
 				data: register,
 			};
 			console.log("sending msg:");

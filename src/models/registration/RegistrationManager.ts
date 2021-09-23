@@ -9,6 +9,7 @@ export class RegistrationManager {
 	static readonly DEVICE_NOT_FOUND = "DEVICE NOT FOUND";
 	static readonly WAITING_FOR_MCU = "WAITING FOR MCU";
 	static readonly WAITING_FOR_WEB = "WAITING FOR WEB";
+	static readonly WAITING_FOR_CONFIRM = "WAITING FOR CONFIRM";
 	private pending: Map<string, RegisterInfo>;
 	constructor() {
 		this.pending = new Map<string, RegisterInfo>();
@@ -48,7 +49,8 @@ export class RegistrationManager {
 							new WSServerMessage({
 								header: SERVER_HEADERS.REGISTER_PENDING,
 								at: device.mcuID,
-								meta: device.username,
+								meta: RegistrationManager.WAITING_FOR_CONFIRM,
+								payload: { username: device.username },
 							}),
 						);
 						return list;
@@ -64,20 +66,24 @@ export class RegistrationManager {
 				} else if (req.type == REGISTER_TYPE.CONFIRM) {
 					if (device.state == REGISTER_STATE.WAITING_ESP_CONFIRM) {
 						if (process.env.NODE_ENV != "test") {
-							await User.findOneAndUpdate(
+							User.findOneAndUpdate(
 								{
 									username: device.username,
 								},
 								{ "profile.device": device.mcuID },
 								null,
-								(err) => {
+								(err, doc) => {
 									if (err) {
+										console.error("DB Error:");
+										console.error(err);
 										return new WSServerMessage({
 											header: SERVER_HEADERS.REGISTER_ERROR,
 											at: message.id,
 											meta: "DB ERROR",
 										});
 									}
+									console.info("Updated document:");
+									console.info(doc);
 								},
 							);
 						}

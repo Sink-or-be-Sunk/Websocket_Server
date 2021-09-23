@@ -54,10 +54,10 @@ block content
 				button.btn.btn-danger(type="button", data-dismiss="modal") Cancel
 				button.btn.btn-success(type="button",id="acceptPairing", data-dismiss="modal") Accept
 
-	- var id = user._id
+	- var username = user.username
 	- var profile = user.profile
 	script.
-		const id = "#{ id }";
+		const username = "#{ username }";
 		const profile = !{ profile };
 
 	script(src="/js/connect.js")
