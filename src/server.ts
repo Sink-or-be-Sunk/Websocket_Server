@@ -56,6 +56,16 @@ wss.on("connection", (ws) => {
 	ws.on("close", () => {
 		_onWSClose(ws);
 	});
+
+	ws.on("error", (err: Error) => {
+		console.log("Websocket Error!");
+		console.log(err);
+	});
+});
+
+wss.on("error", (err: Error) => {
+	console.log("Websocket SERVER Error!");
+	console.log(err);
 });
 
 async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {

@@ -117,7 +117,63 @@ describe("Validate Registration Client Messages", () => {
 				meta: obj.id,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts MCU Enqueue Message", async () => {
+		const obj = {
+			id: "12345",
+			req: REQ_TYPE.REGISTRATION,
+			data: {
+				type: REGISTER_TYPE.ENQUEUE,
+				ssid: "test wifi",
+			},
+		};
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await manager.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.REGISTER_PENDING,
+				at: obj.id,
+				meta: RegistrationManager.WAITING_FOR_WEB,
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts Web Initiate Message", async () => {
+		const obj = {
+			id: "WEB",
+			req: REQ_TYPE.REGISTRATION,
+			data: {
+				type: REGISTER_TYPE.INITIATE,
+				ssid: "test wifi",
+				data: "12345",
+			},
+		};
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await manager.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.REGISTER_PENDING,
+				at: obj.id,
+				meta: RegistrationManager.WAITING_FOR_MCU,
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.REGISTER_PENDING,
+				at: "12345",
+				meta: obj.id,
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);

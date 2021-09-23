@@ -8,6 +8,9 @@ const INITIATE_HEADER = "INITIATE";
 const SERVER_SUCCESS_RESPONSE = "WEB REQ SUCCESS";
 const REGISTER_SUCCESS = "REGISTER SUCCESS";
 
+console.log("client:");
+console.log(client);
+
 // MESSAGES
 const getDeviceList = {
 	req: REGISTRATION_HEADER,
@@ -96,6 +99,8 @@ function updatePairingList(
 				id: client.id,
 				data: register,
 			};
+			console.log("sending msg:");
+			console.log(msg);
 			socket.send(JSON.stringify(msg));
 		});
 
