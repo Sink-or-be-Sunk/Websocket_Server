@@ -15,8 +15,10 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
 					a.nav-link(href='/contact') Contact
 				//- Routes only shown to users that are logged in
 				if user
-					li.nav-item(class=(title === 'Game') ? 'active' : undefined)
-						a.nav-link(href='/game') Game
+					li.nav-item(class=(title === 'Game 3D') ? 'active' : undefined)
+						a.nav-link(href='/game/game3d') Game 3D
+					li.nav-item(class=(title === 'Game 2D') ? 'active' : undefined)
+						a.nav-link(href='/game/game2d') Game 2D
 					li.nav-item(class=(title === 'Connect') ? 'active' : undefined)
 						a.nav-link(href='/connect') Connect
 

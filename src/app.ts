@@ -140,7 +140,12 @@ app.post(
 	passportConfig.isAuthenticated,
 	userController.postFriendAcceptAction,
 );
-app.get("/game", passportConfig.isAuthenticated, gameController.getGame);
+app.get("/game/game3d", passportConfig.isAuthenticated, gameController.getGame);
+app.get(
+	"/game/game2d",
+	passportConfig.isAuthenticated,
+	gameController.getGameMessenger,
+);
 app.get(
 	"/connect",
 	passportConfig.isAuthenticated,
