@@ -122,3 +122,5 @@ function updatePairingList(
 $("#mcuWait").on("hidden.bs.modal", function () {
 	console.log("closed modal"); //TODO: ADD CODE TO CANCEL PAIRING HERE
 });
+
+export {};

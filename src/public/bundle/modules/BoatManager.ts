@@ -73,7 +73,7 @@ export default class BoatManager {
 
 			loader.load(
 				// `https://github.com/Sink-or-be-Sunk/Assets/blob/main/3D_Assets/${asset.path}/scene.gltf`,
-				`3D_Assets/${asset.path}/scene.gltf`,
+				`../3D_Assets/${asset.path}/scene.gltf`,
 				(gltf) => {
 					const ship = new Ship(gltf.scene.children[0], i, 0, asset);
 					this.scene.add(ship.mesh);

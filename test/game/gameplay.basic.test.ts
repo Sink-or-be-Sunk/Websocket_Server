@@ -7,7 +7,7 @@ import {
 import Player from "../../src/models/gameplay/Player";
 import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
-import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
+import { Position, POSITION_TYPE } from "../../src/models/gameplay/Layout";
 
 describe("Validate basic back and forth game", () => {
 	const p1 = new Player("one");
@@ -47,10 +47,10 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 1 to position ships vertical", () => {
-		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
-		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
-		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
@@ -70,10 +70,10 @@ describe("Validate basic back and forth game", () => {
 	 *  |0|1|2|3|4|5|6|7|
 	 */
 	it("Allow Player 2 to position ships vertical", () => {
-		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
-		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
-		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const resp = game.positionShips(p2.id, list);
 		expect(resp).toEqual(

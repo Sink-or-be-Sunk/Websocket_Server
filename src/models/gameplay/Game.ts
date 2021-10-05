@@ -1,7 +1,7 @@
 import { Board, Square } from "./Board";
 import Player from "./Player";
 import { Move } from "./Move";
-import { Layout, LAYOUT_TYPE } from "./Layout";
+import { Layout, LAYOUT_TYPE, POSITION_TYPE } from "./Layout";
 import { Ship, SHIP_DESCRIPTOR } from "./Ship";
 export class Game {
 	/**
@@ -310,7 +310,7 @@ export class Rules {
 	/**
 	 * Number of ships per player
 	 */
-	ships: LAYOUT_TYPE[];
+	ships: POSITION_TYPE[];
 	/**
 	 * m x m size of game board
 	 */
@@ -322,17 +322,17 @@ export class Rules {
 		this.boardSize = this.initBoard(type);
 	}
 
-	private initShips(type: GAME_TYPE): LAYOUT_TYPE[] {
+	private initShips(type: GAME_TYPE): POSITION_TYPE[] {
 		if (type == GAME_TYPE.CLASSIC) {
 			return [
-				LAYOUT_TYPE.PATROL,
-				LAYOUT_TYPE.SUBMARINE,
-				LAYOUT_TYPE.DESTROYER,
-				LAYOUT_TYPE.BATTLESHIP,
-				LAYOUT_TYPE.CARRIER,
+				POSITION_TYPE.PATROL,
+				POSITION_TYPE.SUBMARINE,
+				POSITION_TYPE.DESTROYER,
+				POSITION_TYPE.BATTLESHIP,
+				POSITION_TYPE.CARRIER,
 			];
 		} else if (type == GAME_TYPE.BASIC) {
-			return [LAYOUT_TYPE.PATROL, LAYOUT_TYPE.DESTROYER];
+			return [POSITION_TYPE.PATROL, POSITION_TYPE.DESTROYER];
 		} else {
 			throw new Error("Invalid Rule Type: This should never happen");
 		}

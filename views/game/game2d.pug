@@ -2,5 +2,19 @@ extends ../layout
 
 block content
 	h1 Sink or be Sunk 2D Gameplay
-	input.form-group.form-control(id="gameID")
-	p.lead A Websocket Server Endpoint
+	label Attack Grid
+	each row in [1, 2, 3, 4, 5, 6, 7, 8]
+		.row
+			each col in [1, 2, 3, 4, 5, 6, 7, 8]
+				button.btn.gButton.col-sm(type="button", id="Ar" + row + "c"+c) R#{row}C#{col} 
+	label Position Grid
+	each row in [1, 2, 3, 4, 5, 6, 7, 8]
+		.row
+			each col in [1, 2, 3, 4, 5, 6, 7, 8]
+				button.btn.gButton.col-sm(type="button", id="Pr" + row + "c"+c) R#{row}C#{col} 
+	- var username = user.username
+	script.
+		const username = "#{ username }";
+		
+	script(src="/js/GameSocket.js")
+	script(src="/js/Game2d.js")

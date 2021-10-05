@@ -6,7 +6,7 @@ import {
 } from "../src/models/gameplay/Game";
 import Player from "../src/models/gameplay/Player";
 import { BOARD_STATE, MoveAllowed } from "../src/models/gameplay/Board";
-import { LAYOUT_TYPE, Position } from "../src/models/gameplay/Layout";
+import { POSITION_TYPE, Position } from "../src/models/gameplay/Layout";
 import { Move, MOVE_TYPE } from "../src/models/gameplay/Move";
 
 export class GameRunner {
@@ -30,17 +30,17 @@ export class GameRunner {
 
 	//PRIVATE
 
-	private toLayoutPosition(p: RUNNER_POSITION): LAYOUT_TYPE {
+	private toLayoutPosition(p: RUNNER_POSITION): POSITION_TYPE {
 		if (p == RUNNER_POSITION.B) {
-			return LAYOUT_TYPE.BATTLESHIP;
+			return POSITION_TYPE.BATTLESHIP;
 		} else if (p == RUNNER_POSITION.C) {
-			return LAYOUT_TYPE.CARRIER;
+			return POSITION_TYPE.CARRIER;
 		} else if (p == RUNNER_POSITION.D) {
-			return LAYOUT_TYPE.DESTROYER;
+			return POSITION_TYPE.DESTROYER;
 		} else if (p == RUNNER_POSITION.P) {
-			return LAYOUT_TYPE.PATROL;
+			return POSITION_TYPE.PATROL;
 		} else if (p == RUNNER_POSITION.S) {
-			return LAYOUT_TYPE.SUBMARINE;
+			return POSITION_TYPE.SUBMARINE;
 		} else {
 			throw new Error(
 				"Invalid GameRunner Position: this should never occur",
@@ -196,11 +196,11 @@ export class GameRunner {
 }
 export enum RUNNER_POSITION {
 	E = BOARD_STATE.EMPTY,
-	P = LAYOUT_TYPE.PATROL,
-	S = LAYOUT_TYPE.SUBMARINE,
-	D = LAYOUT_TYPE.DESTROYER,
-	B = LAYOUT_TYPE.BATTLESHIP,
-	C = LAYOUT_TYPE.CARRIER,
+	P = POSITION_TYPE.PATROL,
+	S = POSITION_TYPE.SUBMARINE,
+	D = POSITION_TYPE.DESTROYER,
+	B = POSITION_TYPE.BATTLESHIP,
+	C = POSITION_TYPE.CARRIER,
 }
 
 export interface MoveResp {

@@ -6,7 +6,7 @@ import {
 } from "../../src/models/gameplay/Game";
 import Player from "../../src/models/gameplay/Player";
 import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
-import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
+import { Position, POSITION_TYPE } from "../../src/models/gameplay/Layout";
 
 describe("Validate classic back and forth game", () => {
 	const p1 = new Player("one");
@@ -35,28 +35,28 @@ describe("Validate classic back and forth game", () => {
 		const list = [];
 		list.push(
 			//PATROL
-			new Position(1, 5, LAYOUT_TYPE.PATROL),
-			new Position(1, 6, LAYOUT_TYPE.PATROL),
+			new Position(1, 5, POSITION_TYPE.PATROL),
+			new Position(1, 6, POSITION_TYPE.PATROL),
 		);
 		list.push(
 			//BATTLESHIP
-			new Position(4, 7, LAYOUT_TYPE.BATTLESHIP),
-			new Position(4, 4, LAYOUT_TYPE.BATTLESHIP),
+			new Position(4, 7, POSITION_TYPE.BATTLESHIP),
+			new Position(4, 4, POSITION_TYPE.BATTLESHIP),
 		);
 		list.push(
 			//CARRIER
-			new Position(3, 4, LAYOUT_TYPE.CARRIER),
-			new Position(3, 0, LAYOUT_TYPE.CARRIER),
+			new Position(3, 4, POSITION_TYPE.CARRIER),
+			new Position(3, 0, POSITION_TYPE.CARRIER),
 		);
 		list.push(
 			//DESTROYER
-			new Position(4, 3, LAYOUT_TYPE.DESTROYER),
-			new Position(6, 3, LAYOUT_TYPE.DESTROYER),
+			new Position(4, 3, POSITION_TYPE.DESTROYER),
+			new Position(6, 3, POSITION_TYPE.DESTROYER),
 		);
 		list.push(
 			//SUBMARINE
-			new Position(0, 1, LAYOUT_TYPE.SUBMARINE),
-			new Position(2, 1, LAYOUT_TYPE.SUBMARINE),
+			new Position(0, 1, POSITION_TYPE.SUBMARINE),
+			new Position(2, 1, POSITION_TYPE.SUBMARINE),
 		);
 		const resp = game.positionShips(p1.id, list);
 		expect(resp).toEqual(
@@ -79,28 +79,28 @@ describe("Validate classic back and forth game", () => {
 		const list = [];
 		list.push(
 			//PATROL
-			new Position(4, 6, LAYOUT_TYPE.PATROL),
-			new Position(4, 5, LAYOUT_TYPE.PATROL),
+			new Position(4, 6, POSITION_TYPE.PATROL),
+			new Position(4, 5, POSITION_TYPE.PATROL),
 		);
 		list.push(
 			//BATTLESHIP
-			new Position(0, 5, LAYOUT_TYPE.BATTLESHIP),
-			new Position(3, 5, LAYOUT_TYPE.BATTLESHIP),
+			new Position(0, 5, POSITION_TYPE.BATTLESHIP),
+			new Position(3, 5, POSITION_TYPE.BATTLESHIP),
 		);
 		list.push(
 			//CARRIER
-			new Position(0, 0, LAYOUT_TYPE.CARRIER),
-			new Position(0, 4, LAYOUT_TYPE.CARRIER),
+			new Position(0, 0, POSITION_TYPE.CARRIER),
+			new Position(0, 4, POSITION_TYPE.CARRIER),
 		);
 		list.push(
 			//DESTROYER
-			new Position(3, 3, LAYOUT_TYPE.DESTROYER),
-			new Position(3, 1, LAYOUT_TYPE.DESTROYER),
+			new Position(3, 3, POSITION_TYPE.DESTROYER),
+			new Position(3, 1, POSITION_TYPE.DESTROYER),
 		);
 		list.push(
 			//SUBMARINE
-			new Position(4, 3, LAYOUT_TYPE.SUBMARINE),
-			new Position(6, 3, LAYOUT_TYPE.SUBMARINE),
+			new Position(4, 3, POSITION_TYPE.SUBMARINE),
+			new Position(6, 3, POSITION_TYPE.SUBMARINE),
 		);
 		const resp = game.positionShips(p2.id, list);
 		expect(resp).toEqual(

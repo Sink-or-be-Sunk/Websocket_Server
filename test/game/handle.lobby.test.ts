@@ -2,7 +2,11 @@ import Lobby from "../../src/models/gameplay/Lobby";
 import { Move, MOVE_RESULT, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { GAME_TYPE, ResponseHeader } from "../../src/models/gameplay/Game";
 import { WSClientMessage, REQ_TYPE } from "../../src/util/WSClientMessage";
-import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
+import {
+	Position,
+	LAYOUT_TYPE,
+	POSITION_TYPE,
+} from "../../src/models/gameplay/Layout";
 import {
 	SERVER_HEADERS,
 	WSServerMessage,
@@ -102,10 +106,10 @@ describe("Handle Lobby Requests ", () => {
 	});
 
 	it("Allow Player 1 to position ships", () => {
-		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
-		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
-		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
 		const str = JSON.stringify(obj);
@@ -130,10 +134,10 @@ describe("Handle Lobby Requests ", () => {
 	});
 
 	it("Allow Player 2 to position ships", () => {
-		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
-		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
-		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
 		const str = JSON.stringify(obj);

@@ -1,5 +1,5 @@
 import { Square, BOARD_STATE } from "./Board";
-import { LAYOUT_TYPE } from "./Layout";
+import { POSITION_TYPE } from "./Layout";
 import { Move } from "./Move";
 
 export class Ship {
@@ -7,7 +7,7 @@ export class Ship {
 	type: ShipType;
 	state: SHIP_STATE;
 
-	constructor(type: LAYOUT_TYPE, squares: Square[]) {
+	constructor(type: POSITION_TYPE, squares: Square[]) {
 		this.type = this.initType(type);
 		this.squares = squares;
 		this.state = SHIP_STATE.WHOLE;
@@ -16,23 +16,23 @@ export class Ship {
 		}
 	}
 
-	initType(type: LAYOUT_TYPE): ShipType {
-		if (type == LAYOUT_TYPE.PATROL) {
+	initType(type: POSITION_TYPE): ShipType {
+		if (type == POSITION_TYPE.PATROL) {
 			return new ShipType(SHIP_DESCRIPTOR.PATROL);
-		} else if (type == LAYOUT_TYPE.DESTROYER) {
+		} else if (type == POSITION_TYPE.DESTROYER) {
 			return new ShipType(SHIP_DESCRIPTOR.DESTROYER);
-		} else if (type == LAYOUT_TYPE.SUBMARINE) {
+		} else if (type == POSITION_TYPE.SUBMARINE) {
 			return new ShipType(SHIP_DESCRIPTOR.SUBMARINE);
-		} else if (type == LAYOUT_TYPE.BATTLESHIP) {
+		} else if (type == POSITION_TYPE.BATTLESHIP) {
 			return new ShipType(SHIP_DESCRIPTOR.BATTLESHIP);
-		} else if (type == LAYOUT_TYPE.CARRIER) {
+		} else if (type == POSITION_TYPE.CARRIER) {
 			return new ShipType(SHIP_DESCRIPTOR.CARRIER);
 		} else {
 			throw new Error("Invalid Layout type: this should never happen");
 		}
 	}
 
-	checkSunk() {
+	checkSunk(): boolean {
 		for (let i = 0; i < this.squares.length; i++) {
 			const square = this.squares[i];
 			if (square.state != BOARD_STATE.HIT) {
@@ -42,7 +42,7 @@ export class Ship {
 		return true;
 	}
 
-	attack(move: Move) {
+	attack(move: Move): boolean {
 		for (let i = 0; i < this.squares.length; i++) {
 			const square = this.squares[i];
 			if (square.c == move.c && square.r == move.r) {
