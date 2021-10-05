@@ -2,16 +2,28 @@ extends ../layout
 
 block content
 	h1 Sink or be Sunk 2D Gameplay
+	.row
+		label.col-sm-2 Game ID
+		input.col-sm-4(type="text",id="game", placeholder="Enter Game ID")
+	.row
+		label.col-sm-2 Opponent ID
+		input.col-sm-4(type="text",id="opponent", placeholder="Enter Opponent ID")
+	.row
+		button.btn(type="button", onclick='game.sendNewGame()') New Game
 	label Attack Grid
 	each row in [1, 2, 3, 4, 5, 6, 7, 8]
 		.row
 			each col in [1, 2, 3, 4, 5, 6, 7, 8]
-				button.btn.gButton.col-sm(type="button", id="Ar" + row + "c"+c) R#{row}C#{col} 
+				button.btn.gButton.col-sm(type="button", id=row + "," +col, onclick="clickAttack(this.id)") R#{row}C#{col} 
 	label Position Grid
 	each row in [1, 2, 3, 4, 5, 6, 7, 8]
 		.row
 			each col in [1, 2, 3, 4, 5, 6, 7, 8]
-				button.btn.gButton.col-sm(type="button", id="Pr" + row + "c"+c) R#{row}C#{col} 
+				button.btn.gButton.col-sm(type="button", id=row + "," +col, onclick="togglePosition(this)") R#{row}C#{col} 
+	.row
+		button.btn.btn-success.col-sm-2(type="button", onclick="addShip()") Add Ship
+		button.btn.btn-success.col-sm-2(type="button", onclick="clickPositionShips()") Send Positions
+
 	- var username = user.username
 	script.
 		const username = "#{ username }";

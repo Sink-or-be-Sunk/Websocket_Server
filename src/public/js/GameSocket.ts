@@ -11,6 +11,9 @@ interface Move {
 	to: string;
 }
 class GameSocket {
+	// ERRORS
+	private readonly SOCKET_NOT_OPEN =
+		"Must wait for socket to be open before sending message";
 	// CLIENT HEADERS
 	private readonly NEW_GAME = "NEW GAME";
 	private readonly MAKE_MOVE = "MAKE MOVE";
@@ -29,8 +32,8 @@ class GameSocket {
 	/**
 	 * unique identifier: either username for web or device id for mcu
 	 */
-	private uid;
-	private socket;
+	private uid: string;
+	private socket: WebSocket;
 
 	constructor(uid: string) {
 		this.uid = uid;
@@ -45,10 +48,6 @@ class GameSocket {
 
 		this.socket.onopen = (event: any) => {
 			console.log(event);
-			this.sendNewGame();
-			this.sendJoinGame("mitchaarndt");
-			this.sendMakeMove({ r: 0, c: 0, type: "SOLO", to: "mitchaarndt" });
-			this.sendShipPositions([{ r: 0, c: 0, t: "P" }]);
 		};
 	}
 
@@ -67,8 +66,14 @@ class GameSocket {
 	}
 
 	private _send(obj: any) {
-		const str = JSON.stringify(obj);
-		this.socket.send(str);
+		if (this.socket.readyState == this.socket.OPEN) {
+			console.info("Sending Message:");
+			console.info(obj);
+			const str = JSON.stringify(obj);
+			this.socket.send(str);
+		} else {
+			console.error(this.SOCKET_NOT_OPEN);
+		}
 	}
 
 	public sendNewGame() {
