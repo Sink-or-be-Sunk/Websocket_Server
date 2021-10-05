@@ -22,7 +22,8 @@ export default class Lobby {
 			req === REQ_TYPE.NEW_GAME ||
 			req === REQ_TYPE.MAKE_MOVE ||
 			req === REQ_TYPE.JOIN_GAME ||
-			req === REQ_TYPE.GAME_TYPE
+			req === REQ_TYPE.GAME_TYPE ||
+			req === REQ_TYPE.POSITION_SHIPS
 		) {
 			return true;
 		} else {

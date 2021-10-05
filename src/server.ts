@@ -94,6 +94,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			const list = await registrar.handleReq(msg);
 			await sendList(list); //FIXME: REMOVE AWAIT
 		} else {
+			logger.error(msg);
 			socket.send(
 				new WSServerMessage({
 					header: SERVER_HEADERS.BAD_CLIENT_MSG,

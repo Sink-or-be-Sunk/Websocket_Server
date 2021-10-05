@@ -5,8 +5,10 @@ interface ShipPos {
 }
 
 interface Move {
+	type: "SOLO"; //TODO: ADD OTHER TYPES
 	r: number;
 	c: number;
+	to: string;
 }
 class GameSocket {
 	// CLIENT HEADERS
@@ -44,6 +46,9 @@ class GameSocket {
 		this.socket.onopen = (event: any) => {
 			console.log(event);
 			this.sendNewGame();
+			this.sendJoinGame("mitchaarndt");
+			this.sendMakeMove({ r: 0, c: 0, type: "SOLO", to: "mitchaarndt" });
+			this.sendShipPositions([{ r: 0, c: 0, t: "P" }]);
 		};
 	}
 
@@ -81,5 +86,8 @@ class GameSocket {
 		this._send(obj);
 	}
 
-	public sendMakeMove(move: Move) {}
+	public sendMakeMove(move: Move) {
+		const obj = { req: this.MAKE_MOVE, id: this.uid, data: move };
+		this._send(obj);
+	}
 }
