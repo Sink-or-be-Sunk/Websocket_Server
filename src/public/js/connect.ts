@@ -21,7 +21,7 @@ const getDeviceList = {
 	},
 };
 
-const protocol = location.protocol == "https" ? "wss" : "ws";
+const protocol = location.protocol == "https:" ? "wss" : "ws";
 // const uri = protocol + "//" + location.hostname + ":3000/"
 const uri = protocol + "://" + location.hostname + ":" + location.port;
 
