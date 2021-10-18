@@ -82,7 +82,8 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			connections.set(socket.id, socket);
 		}
 
-		assert(socket.id == msg.id); //FIXME: ADD A BETTER CHECK HERE
+		assert(socket.id == msg.id, "Error: socket and msg id differ"); //FIXME: ADD A BETTER CHECK HERE
+		//TODO: THIS ERRORS THE SYSTEM OUT WHEN PLAYER FIRST CONNECTS TO DEVICE THEN IMMEDIATELY TRIED TO START GAME
 
 		if (dbManager.handles(msg.req)) {
 			// const resp = await dbManager.handleReq(msg);

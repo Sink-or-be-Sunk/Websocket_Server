@@ -21,7 +21,7 @@ const getDeviceList = {
 	},
 };
 
-const protocol = location.protocol == "https" ? "wss" : "ws";
+const protocol = location.protocol == "https:" ? "wss" : "ws";
 // const uri = protocol + "//" + location.hostname + ":3000/"
 const uri = protocol + "://" + location.hostname + ":" + location.port;
 
@@ -122,5 +122,3 @@ function updatePairingList(
 $("#mcuWait").on("hidden.bs.modal", function () {
 	console.log("closed modal"); //TODO: ADD CODE TO CANCEL PAIRING HERE
 });
-
-export {};

@@ -38,7 +38,7 @@ class GameSocket {
 	constructor(uid: string) {
 		this.uid = uid;
 
-		const protocol = location.protocol == "https" ? "wss" : "ws";
+		const protocol = location.protocol == "https:" ? "wss" : "ws";
 		const uri = protocol + "://" + location.hostname + ":" + location.port;
 		this.socket = new WebSocket(uri);
 
