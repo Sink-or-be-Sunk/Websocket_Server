@@ -24,7 +24,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |
 	 * 1|h|h|h|v| | | | |
 	 * 2| | | |v| | | | |
-	 * 3| | | |v|h|h|h| |
+	 * 3| | | |v| | | | |
 	 * 4| | | |v|v| | | |
 	 * 5| |v| | |v| | | |
 	 * 6| |v| | |v| | | |
@@ -49,11 +49,6 @@ describe("Validate classic back and forth game", () => {
 			new Position(3, 0, POSITION_TYPE.CARRIER),
 		);
 		list.push(
-			//DESTROYER
-			new Position(4, 3, POSITION_TYPE.DESTROYER),
-			new Position(6, 3, POSITION_TYPE.DESTROYER),
-		);
-		list.push(
 			//SUBMARINE
 			new Position(0, 1, POSITION_TYPE.SUBMARINE),
 			new Position(2, 1, POSITION_TYPE.SUBMARINE),
@@ -68,7 +63,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0|v| | | | | | | |
 	 * 1|v| | |v| | | | |
 	 * 2|v| | |v| | | | |
-	 * 3|v| | |v|h|h|h| |
+	 * 3|v| | |v| | | | |
 	 * 4|v| | | | | | | |
 	 * 5|h|h|h|h|v| | | |
 	 * 6| | | | |v| | | |
@@ -93,11 +88,6 @@ describe("Validate classic back and forth game", () => {
 			new Position(0, 4, POSITION_TYPE.CARRIER),
 		);
 		list.push(
-			//DESTROYER
-			new Position(3, 3, POSITION_TYPE.DESTROYER),
-			new Position(3, 1, POSITION_TYPE.DESTROYER),
-		);
-		list.push(
 			//SUBMARINE
 			new Position(4, 3, POSITION_TYPE.SUBMARINE),
 			new Position(6, 3, POSITION_TYPE.SUBMARINE),
@@ -116,7 +106,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v| | |v| | | |	 * 5|h|h|h|H|v| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -139,7 +129,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v| |M|v| | | |	 * 5|h|h|h|H|v| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -162,7 +152,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v| |M|v| | | |	 * 5|h|h|h|H|H| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -186,7 +176,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v| |M|H| | | |	 * 5|h|h|h|H|H| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -210,7 +200,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v| |M|H| | | |	 * 5|h|h|H|H|H| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -234,7 +224,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v|M|M|H| | | |	 * 5|h|h|H|H|H| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -258,7 +248,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |v|M|M|H| | | |	 * 5|h|H|H|H|H| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
@@ -282,7 +272,7 @@ describe("Validate classic back and forth game", () => {
 	 * 0| | | |v| | | | |	 * 0|v| | | | | | | |
 	 * 1|h|h|h|v| | | | |	 * 1|v| | |v| | | | |
 	 * 2| | | |v| | | | |	 * 2|v| | |v| | | | |
-	 * 3| | | |v|h|h|h| |	 * 3|v| | |v|h|h|h| |
+	 * 3| | | |v| | | | |	 * 3|v| | |v| | | | |
 	 * 4| | | |v|v| | | |	 * 4|v| | | | | | | |
 	 * 5| |H|M|M|H| | | |	 * 5|h|H|H|H|H| | | |
 	 * 6| |v| | |v| | | |	 * 6| | | | |v| | | |
