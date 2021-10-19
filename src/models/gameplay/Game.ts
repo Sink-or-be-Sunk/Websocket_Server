@@ -327,7 +327,7 @@ export class Rules {
 			return [
 				POSITION_TYPE.PATROL,
 				POSITION_TYPE.SUBMARINE,
-				POSITION_TYPE.DESTROYER,
+				// POSITION_TYPE.DESTROYER,
 				POSITION_TYPE.BATTLESHIP,
 				POSITION_TYPE.CARRIER,
 			];
@@ -375,8 +375,8 @@ export class Rules {
 				}
 			}
 		} else if (this.type == GAME_TYPE.CLASSIC) {
-			// class mode allows for one of each ship type/descriptor (two size 3 ships)
-			if (curFleet.length >= 5) {
+			// class mode allows for one of each ship type/descriptor
+			if (curFleet.length >= 4) {
 				return false;
 			}
 			for (let i = 0; i < curFleet.length; i++) {
