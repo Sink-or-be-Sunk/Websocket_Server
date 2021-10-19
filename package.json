@@ -60,7 +60,7 @@
     "express-validator": "6.9.2",
     "fbgraph": "1.4.4",
     "lusca": "1.6.1",
-    "mongoose": "5.11.15",
+    "mongoose": "^6.0.11",
     "passport": "0.4.1",
     "passport-local": "1.0.0",
     "pug": "3.0.2",

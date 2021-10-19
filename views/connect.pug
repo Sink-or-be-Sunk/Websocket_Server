@@ -54,11 +54,12 @@ block content
 				button.btn.btn-danger(type="button", data-dismiss="modal") Cancel
 				button.btn.btn-success(type="button",id="acceptPairing", data-dismiss="modal") Accept
 
+	script(src="/js/connect.js")
+	script(src="/js/socket.js")
 	- var username = user.username
 	- var profile = user.profile
 	script.
 		const username = "#{ username }";
 		const profile = !{ profile };
+		const manager = new ConnectManager(profile.deviceID, username);
 
-	script(src="/js/connect.js")
-	script(src="/js/socket.js")
