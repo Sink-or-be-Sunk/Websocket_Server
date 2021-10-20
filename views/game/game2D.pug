@@ -21,7 +21,7 @@ block content
 		button.btn.col-sm-6(type="button",onclick='game.sendAttack()') Send Attack
 	
 	script(src="/js/GameSocket.js")
-	script(src="/js/Game2d.js")
+	script(src="/js/Game2D.js")
 	script.
 		const socket = new GameSocket("#{user.username}");
 		const game = new Game2D(socket);
