@@ -105,7 +105,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			);
 		}
 	} else {
-		console.error(`id:${msg.id}; client message:\n${raw}`);
+		logger.error(`id:${msg.id}; client message:\n${raw}`);
 		socket.send(
 			new WSServerMessage({
 				header: SERVER_HEADERS.BAD_CLIENT_MSG,

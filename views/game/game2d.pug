@@ -2,31 +2,29 @@ extends ../layout
 
 block content
 	h1 Sink or be Sunk 2D Gameplay
-	.row
+	.row.form-group
 		label.col-sm-2 Game ID
-		input.col-sm-4(type="text",id="game", placeholder="Enter Game ID")
-	.row
-		label.col-sm-2 Opponent ID
-		input.col-sm-4(type="text",id="opponent", placeholder="Enter Opponent ID")
-	.row
-		button.btn(type="button", onclick='game.sendNewGame()') New Game
-	label Attack Grid
-	each row in [1, 2, 3, 4, 5, 6, 7, 8]
-		.row
-			each col in [1, 2, 3, 4, 5, 6, 7, 8]
-				button.btn.gButton.col-sm(type="button", id=row + "," +col, onclick="clickAttack(this.id)") R#{row}C#{col} 
-	label Position Grid
-	each row in [1, 2, 3, 4, 5, 6, 7, 8]
-		.row
-			each col in [1, 2, 3, 4, 5, 6, 7, 8]
-				button.btn.gButton.col-sm(type="button", id=row + "," +col, onclick="togglePosition(this)") R#{row}C#{col} 
-	.row
-		button.btn.btn-success.col-sm-2(type="button", onclick="addShip()") Add Ship
-		button.btn.btn-success.col-sm-2(type="button", onclick="clickPositionShips()") Send Positions
-
-	- var username = user.username
-	script.
-		const username = "#{ username }";
-		
+		input.col-sm-6(type="text",id="game_id", placeholder="Enter Game ID")
+	.row.form-group
+		label.col-sm-2 New Game
+		button.btn.col-sm-6(type="button",onclick='game.sendNewGame()') Create New Game
+	.row.form-group
+		label.col-sm-2 Ready Up
+		button.btn.col-sm-6(type="button",onclick='game.sendShipPositions()') Position Ships/Ready Up
+	.row.form-group
+		label.col-sm-2 Attack Col
+		input.col-sm-2(type="text",id="attack_col", placeholder="Enter Col")
+		label.col-sm-2 Attack Row
+		input.col-sm-2(type="text",id="attack_row", placeholder="Enter Row")
+	.row.form-group
+		label.col-sm-2 Attack
+		button.btn.col-sm-6(type="button",onclick='game.sendAttack()') Send Attack
+	
 	script(src="/js/GameSocket.js")
 	script(src="/js/Game2d.js")
+	script.
+		const socket = new GameSocket("#{user.username}");
+		const game = new Game2D(socket);
+
+	//- Comment here to fix Pug Lint Error
+		

@@ -22,6 +22,7 @@ class GameSocket {
 	// private readonly GAME_TYPE = "GAME TYPE";
 	// private readonly GAME_TYPE_BASIC = "BASIC";
 	// private readonly GAME_TYPE_CLASSIC = "CLASSIC";
+	// private readonly GAME_TYPE_SOLO = "SOLO";
 
 	// SERVER HEADERS
 	private readonly MOVE_MADE = "MADE MOVE";
@@ -29,9 +30,7 @@ class GameSocket {
 	private readonly JOINED_GAME = "JOINED GAME";
 	private readonly INVALID_JOIN = "INVALID JOIN";
 
-	/**
-	 * unique identifier: either username for web or device id for mcu
-	 */
+	/** unique identifier: either username for web or device id for mcu */
 	private uid: string;
 	private socket: WebSocket;
 
