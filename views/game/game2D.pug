@@ -3,6 +3,9 @@ extends ../layout
 block content
 	h1 Sink or be Sunk 2D Gameplay
 	.row.form-group
+		label.col-sm-2 Opponent ID
+		input.col-sm-6(type="text",id="opponent", placeholder="Enter Opponent ID")
+	.row.form-group
 		label.col-sm-2 Join Game
 		input.col-sm-4(type="text",id="game_id", placeholder="Enter Game ID")
 		button.btn.col-sm-2(type="button",onclick='game.joinGame()') Join Game
@@ -14,9 +17,9 @@ block content
 		button.btn.col-sm-6(type="button",onclick='game.readyUp()') Position Ships/Ready Up
 	.row.form-group
 		label.col-sm-2 Attack Col
-		input.col-sm-2(type="text",id="attack_col", placeholder="Enter Col")
+		input.col-sm-2(type="number",id="attack_col", placeholder="Enter Col")
 		label.col-sm-2 Attack Row
-		input.col-sm-2(type="text",id="attack_row", placeholder="Enter Row")
+		input.col-sm-2(type="number",id="attack_row", placeholder="Enter Row")
 	.row.form-group
 		label.col-sm-2 Attack
 		button.btn.col-sm-6(type="button",onclick='game.attack()') Send Attack

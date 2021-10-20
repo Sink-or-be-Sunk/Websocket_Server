@@ -1,11 +1,15 @@
 interface ShipPos {
 	r: number;
 	c: number;
-	t: "P" | "D" | "S" | "B" | "C";
+	t: "P" | "S" | "B" | "C";
+}
+
+enum MOVE_TYPES {
+	SOLO = "SOLO", //TODO: ADD OTHER TYPES
 }
 
 interface Move {
-	type: "SOLO"; //TODO: ADD OTHER TYPES
+	type: MOVE_TYPES;
 	r: number;
 	c: number;
 	to: string;
