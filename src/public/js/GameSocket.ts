@@ -35,7 +35,8 @@ class GameSocket {
 	private socket: WebSocket;
 
 	constructor(uid: string) {
-		this.uid = uid;
+		this.uid = uid + "-web";
+		//TODO: NEED BETTER WAY TO DISTINGUISH BETWEEN MCU AND WEB PLAYERS
 
 		const protocol = location.protocol == "https:" ? "wss" : "ws";
 		const uri = protocol + "://" + location.hostname + ":" + location.port;
