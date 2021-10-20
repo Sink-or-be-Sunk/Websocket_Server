@@ -34,9 +34,10 @@ mongoose
 		/** ready to use. The `mongoose.connect()` promise resolves to undefined. */
 	})
 	.catch((err) => {
-		console.log(
+		logger.error(
 			`MongoDB connection error. Please make sure MongoDB is running. ${err}`,
 		);
+
 		// process.exit();
 	});
 

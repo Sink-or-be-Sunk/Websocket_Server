@@ -58,14 +58,14 @@ wss.on("connection", (ws) => {
 	});
 
 	ws.on("error", (err: Error) => {
-		console.log("Websocket Error!");
-		console.log(err);
+		logger.error("Websocket Error!");
+		logger.error(err);
 	});
 });
 
 wss.on("error", (err: Error) => {
-	console.log("Websocket SERVER Error!");
-	console.log(err);
+	logger.error("Websocket SERVER Error!");
+	logger.error(err);
 });
 
 async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {

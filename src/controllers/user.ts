@@ -676,7 +676,7 @@ export const postFriendDeleteAction = (
 		if (err) {
 			return next(err);
 		}
-		console.log(doc);
+		logger.error(doc);
 		req.flash("info", { msg: `Friend Removed` });
 		res.redirect("/account");
 	});
@@ -708,7 +708,7 @@ export const postFriendAcceptAction = (
 			if (err) {
 				return next(err);
 			}
-			console.log(doc);
+			logger.log(doc);
 			req.flash("info", { msg: `Friend Added` });
 			res.redirect("/account");
 		},

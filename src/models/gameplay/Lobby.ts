@@ -9,6 +9,7 @@ import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
 import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import Player from "./Player";
 import { Move } from "./Move";
+import logger from "../../util/logger";
 
 export default class Lobby {
 	games: Map<string, Game>;
@@ -321,12 +322,12 @@ export default class Lobby {
 	public leaveGame(socketID: string): void {
 		const game = this.games.get(socketID);
 		if (game) {
-			console.log(`Host <${socketID}> Ended Game by Leaving`);
+			logger.warn(`Host <${socketID}> Ended Game by Leaving`);
 			//player leaving game is the "game owner"/created the game
 			for (let i = 0; i < game.players.length; i++) {
 				const player = game.players[i];
 				if (player.id != socketID) {
-					console.log(`Booting Player: <${player.id}>`);
+					logger.warn(`Booting Player: <${player.id}>`);
 					//TODO: SEND WS MESSAGE TO PLAYERS KICKED FROM GAME
 				}
 			}
@@ -338,7 +339,7 @@ export default class Lobby {
 				const player = players[j];
 				if (player.id == socketID) {
 					if (game.remove(player)) {
-						console.log(
+						logger.warn(
 							`Game #${gameID}<${game.id}> removed from Lobby`,
 						);
 						//TODO: SEND WS MESSAGE TO PLAYERS STILL IN GAME

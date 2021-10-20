@@ -2,6 +2,8 @@ import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
 import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import { DBRequest } from "./DBRequest";
 import { User } from "../User";
+import logger from "../../util/logger";
+
 export class DBManager {
 	static readonly TAG = "REGISTRATION";
 	static readonly ORDER_ERROR = "CONFIRM BEFORE REGISTER";
@@ -37,8 +39,8 @@ export class DBManager {
 		}
 	}
 
-	public async getFriends(id: string) {
+	public async getFriends(id: string): Promise<void> {
 		const doc = await User.findOne({ username: id });
-		console.log(JSON.stringify(doc));
+		logger.info(doc);
 	}
 }
