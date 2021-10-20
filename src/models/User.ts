@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt-nodejs";
+import bcrypt from "bcrypt";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import { Friend, FriendDocument } from "./Friend";
@@ -44,9 +44,6 @@ const userSchema = new mongoose.Schema<UserDocument>(
 		passwordResetToken: String,
 		passwordResetExpires: Date,
 
-		facebook: String,
-		twitter: String,
-		google: String,
 		tokens: Array,
 
 		profile: {
