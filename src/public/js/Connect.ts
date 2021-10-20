@@ -6,7 +6,6 @@ class ConnectManager {
 
 	// HEADERS
 	private readonly REGISTRATION_HEADER = "REGISTRATION";
-	private readonly INITIATE_HEADER = "INITIATE";
 	private readonly SERVER_SUCCESS_RESPONSE = "WEB REQ SUCCESS";
 	private readonly REGISTER_SUCCESS = "REGISTER SUCCESS";
 
@@ -49,7 +48,7 @@ class ConnectManager {
 		if (data.header == this.SERVER_SUCCESS_RESPONSE) {
 			this.updatePairingList(data.payload);
 		} else if (data.header == this.REGISTER_SUCCESS) {
-			this.socket.send(JSON.stringify(this.getDeviceList));
+			this.socket.send(JSON.stringify(this.getDeviceList()));
 			($("#mcuWait") as any).modal("hide");
 			($("#mcuConnected") as any).modal("show");
 		}
@@ -125,7 +124,7 @@ class ConnectManager {
 			buttonDiv.classList.add("col-sm-2", "text-right");
 			buttonDiv.appendChild(button);
 
-			const outer = document.createElement("div");
+			const outer = document.createElement("li");
 			outer.classList.add(
 				"form-group",
 				"row",
@@ -133,7 +132,7 @@ class ConnectManager {
 			);
 			outer.appendChild(field);
 			outer.appendChild(buttonDiv);
-			outer.id = obj.mcuID;
+			outer.id = obj.ssid;
 
 			container.append(outer);
 		}
@@ -143,4 +142,18 @@ class ConnectManager {
 /** ----------------- popup code ------------------- */
 $("#mcuWait").on("hidden.bs.modal", function () {
 	console.log("closed modal"); //TODO: ADD CODE TO CANCEL PAIRING HERE
+});
+
+/** ----------------- search bar code --------------- */
+$("#search").on("keyup", function () {
+	const value = ($(this).val() as string).toLowerCase();
+	$("#devices li").filter(function () {
+		const res = this.id.toLowerCase().indexOf(value) > -1;
+		if (!res) {
+			$(this).hide();
+		} else {
+			$(this).show();
+		}
+		return res;
+	});
 });
