@@ -1,6 +1,3 @@
-
-// const client = { deviceID: profile.device, username: username }; //ts throws error because username is located in connect page script tag
-
 class ConnectManager {
 	deviceID: string;
 	username: string;
@@ -14,15 +11,17 @@ class ConnectManager {
 	private readonly REGISTER_SUCCESS = "REGISTER SUCCESS";
 
 	// MESSAGES
-	private readonly getDeviceList = {
-		req: this.REGISTRATION_HEADER,
-		id: client.username,
-		data: {
-			type: "GET_LIST",
-			ssid: "unknown",
-		},
-	};
-	constructor(deviceID: string, username: string) {
+	private getDeviceList() {
+		return {
+			req: this.REGISTRATION_HEADER,
+			id: this.username,
+			data: {
+				type: "GET_LIST",
+				ssid: "unknown",
+			},
+		};
+	}
+	constructor(username: string, deviceID: string) {
 		this.deviceID = deviceID;
 		this.username = username;
 		console.log("deviceID:", deviceID);
@@ -31,15 +30,16 @@ class ConnectManager {
 		const protocol = location.protocol == "https:" ? "wss" : "ws";
 		const uri = protocol + "://" + location.hostname + ":" + location.port;
 
+		console.log(uri);
+
 		this.socket = new WebSocket(uri);
 		this.socket.onmessage = (event) => {
 			this._onmessage(event);
-		}
+		};
 
 		this.socket.onopen = (event) => {
 			this._onopen(event);
-		}
-
+		};
 	}
 
 	private _onmessage(event: any) {
@@ -53,12 +53,12 @@ class ConnectManager {
 			($("#mcuWait") as any).modal("hide");
 			($("#mcuConnected") as any).modal("show");
 		}
-	};
+	}
 
 	private _onopen(event: any) {
 		console.log(event);
-		this.socket.send(JSON.stringify(this.getDeviceList));
-	};
+		this.socket.send(JSON.stringify(this.getDeviceList()));
+	}
 
 	/** Functions to Update Dom */
 	private updatePairingList(
@@ -113,7 +113,7 @@ class ConnectManager {
 				};
 				const msg = {
 					req: "REGISTRATION",
-					id: client.username,
+					id: this.username,
 					data: register,
 				};
 				console.log("sending msg:");
@@ -126,7 +126,11 @@ class ConnectManager {
 			buttonDiv.appendChild(button);
 
 			const outer = document.createElement("div");
-			outer.classList.add("form-group", "row", "justify-content-md-center");
+			outer.classList.add(
+				"form-group",
+				"row",
+				"justify-content-md-center",
+			);
 			outer.appendChild(field);
 			outer.appendChild(buttonDiv);
 			outer.id = obj.mcuID;
@@ -134,9 +138,7 @@ class ConnectManager {
 			container.append(outer);
 		}
 	}
-
 }
-
 
 /** ----------------- popup code ------------------- */
 $("#mcuWait").on("hidden.bs.modal", function () {

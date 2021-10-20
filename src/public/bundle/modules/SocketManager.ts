@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 export default class SocketManager {
 	socket: WebSocket;
 	id: string;
@@ -14,7 +12,6 @@ export default class SocketManager {
 		if (cachedID) {
 			this.id = cachedID;
 		} else {
-			this.id = uuidv4();
 			window.localStorage.setItem("id", this.id);
 		}
 

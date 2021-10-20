@@ -55,43 +55,8 @@ block content
 				button.btn.btn-success(type="button",id="acceptPairing", data-dismiss="modal") Accept
 
 	script(src="/js/Connect.js")
-	//- - var username = user.username
-	//- - var profile = user.profile
+	- var profile = user.profile.device
 	script.
-		//- const username = "#{ username }";
-		//- const profile = !{ profile };
-		const manager = new ConnectManager(user.profile.deviceID, user.username);
+		const manager = new ConnectManager("#{user.username}", "#{ profile }");
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	//- leave comment here to fix pug error
