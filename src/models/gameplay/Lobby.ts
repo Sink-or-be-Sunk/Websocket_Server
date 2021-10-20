@@ -103,13 +103,17 @@ export default class Lobby {
 		} else if (message.req == REQ_TYPE.POSITION_SHIPS) {
 			const resp = this.positionShips(message.id, message.data);
 			if (resp.valid) {
-				const list = [
-					new WSServerMessage({
-						header: SERVER_HEADERS.POSITIONED_SHIPS,
-						at: message.id,
-					}),
-				];
-				list.push(...this.broadcastPosition(message.id));
+				const list = [];
+				if (resp.meta.includes(ResponseHeader.GAME_STARTED)) {
+					list.push(...this.broadcastGameStarted(message.id));
+				} else {
+					list.push(
+						new WSServerMessage({
+							header: SERVER_HEADERS.POSITIONED_SHIPS,
+							at: message.id,
+						}),
+					);
+				}
 				return list;
 			} else {
 				return [
@@ -224,20 +228,19 @@ export default class Lobby {
 		);
 	}
 
-	private broadcastPosition(sourceID: string): WSServerMessage[] {
+	private broadcastGameStarted(sourceID: string): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
 				const list = [];
-				const players = game.getPlayers(player.id);
+				const players = game.getPlayers();
 				for (let i = 0; i < players.length; i++) {
 					const p = players[i];
 					list.push(
 						new WSServerMessage({
-							header: SERVER_HEADERS.POSITIONED_SHIPS,
+							header: SERVER_HEADERS.GAME_STARTED,
 							at: p.id,
-							meta: sourceID,
 						}),
 					);
 				}
@@ -245,7 +248,7 @@ export default class Lobby {
 			}
 		}
 		throw new Error(
-			"Couldn't find source game to broadcast position: this should never happen",
+			"Couldn't find source game to broadcast started: this should never happen",
 		);
 	}
 

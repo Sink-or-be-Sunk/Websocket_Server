@@ -47,8 +47,12 @@ export class Game {
 		return this.state == STATE.OVER;
 	}
 
-	getPlayers(ignoreID: string): Player[] {
-		return this.players.filter((player) => player.id != ignoreID);
+	getPlayers(ignoreID?: string): Player[] {
+		if (ignoreID) {
+			return this.players.filter((player) => player.id != ignoreID);
+		} else {
+			return this.players;
+		}
 	}
 
 	/**

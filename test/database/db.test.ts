@@ -4,11 +4,7 @@ import { MONGODB_URI } from "../../src/util/secrets";
 
 beforeAll(() => {
 	mongoose
-		.connect(MONGODB_URI, {
-			useNewUrlParser: true,
-			useCreateIndex: true,
-			useUnifiedTopology: true,
-		})
+		.connect(MONGODB_URI)
 		.then(() => {
 			/** ready to use. The `mongoose.connect()` promise resolves to undefined. */
 		})

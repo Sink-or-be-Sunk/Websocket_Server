@@ -120,11 +120,6 @@ describe("Handle Lobby Requests ", () => {
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
 			}),
-			new WSServerMessage({
-				header: SERVER_HEADERS.POSITIONED_SHIPS,
-				at: "two",
-				meta: obj.id,
-			}),
 		];
 		for (let i = 0; i < results.length; i++) {
 			const result = results[i];
@@ -145,13 +140,12 @@ describe("Handle Lobby Requests ", () => {
 		const responses = lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
-				header: SERVER_HEADERS.POSITIONED_SHIPS,
-				at: obj.id,
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "one",
 			}),
 			new WSServerMessage({
-				header: SERVER_HEADERS.POSITIONED_SHIPS,
-				at: "one",
-				meta: obj.id,
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: obj.id,
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
