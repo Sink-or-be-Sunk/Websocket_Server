@@ -2,11 +2,7 @@ import Lobby from "../../src/models/gameplay/Lobby";
 import { Move, MOVE_RESULT, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { GAME_TYPE, ResponseHeader } from "../../src/models/gameplay/Game";
 import { WSClientMessage, REQ_TYPE } from "../../src/util/WSClientMessage";
-import {
-	Position,
-	LAYOUT_TYPE,
-	POSITION_TYPE,
-} from "../../src/models/gameplay/Layout";
+import { Position, POSITION_TYPE } from "../../src/models/gameplay/Layout";
 import {
 	SERVER_HEADERS,
 	WSServerMessage,
@@ -49,6 +45,19 @@ describe("Handle Lobby Requests ", () => {
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
+	});
+
+	it("Accepts Duplicate New Game Request", () => {
+		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const resp = lobby.handleReq(msg);
+		const result = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+			}),
+		];
+		expect(resp.toString()).toEqual(result.toString());
 	});
 
 	it("Reject Join Game Request from Player One already in game", () => {

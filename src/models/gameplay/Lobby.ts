@@ -44,7 +44,7 @@ export default class Lobby {
 				// ];
 				return [
 					new WSServerMessage({
-						header: SERVER_HEADERS.GAME_CREATED,
+						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
 					}),
 				];
