@@ -53,6 +53,7 @@ export class Ship {
 				}
 				return true;
 			}
+			//FIXME: FIND OUT WHERE WE ARE GETTING MISS INFORMATION!
 		}
 		return false;
 	}
@@ -112,7 +113,7 @@ export class ShipType {
 		}
 	}
 
-	toString() {
+	toString(): string {
 		let str = this.descriptor.toString();
 		if (this.name != SHIP_NAME.DEFAULT) {
 			str += `-${this.name}`;
