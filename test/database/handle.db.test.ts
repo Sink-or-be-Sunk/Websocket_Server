@@ -35,7 +35,7 @@ describe("Handle Database Requests", () => {
 		const msg = new WSClientMessage(str);
 		const friends = await manager.handleReq(msg);
 		const response = new WSServerMessage({
-			header: SERVER_HEADERS.DATABASE,
+			header: SERVER_HEADERS.DATABASE_SUCCESS,
 			at: obj.id,
 			payload: [new DBFriend("m", "m"), new DBFriend("test", "test")],
 		});

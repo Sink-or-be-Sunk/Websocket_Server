@@ -4,6 +4,8 @@ import { DBRequest, DB_REQ_TYPE } from "./DBRequest";
 import { User, UserDocument } from "../User";
 import logger from "../../util/logger";
 import { FriendDocument } from "../Friend";
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export class DBFriend {
 	/** Username */
@@ -21,11 +23,28 @@ export class DBFriend {
 }
 
 export class DBManager {
-	static readonly TAG = "REGISTRATION";
-	static readonly ORDER_ERROR = "CONFIRM BEFORE REGISTER";
+	static readonly TAG = "DATABASE";
+	static readonly INVITE_SENT = "INVITE SENT";
 	private pending: Map<string, DBRequest>;
 	constructor() {
 		this.pending = new Map<string, DBRequest>();
+	}
+
+	public static chooseUserDoc(
+		doc: FriendDocument,
+		username: string,
+	): UserDocument {
+		const recipient = doc.recipient as unknown as UserDocument;
+		const requester = doc.requester as unknown as UserDocument;
+		if (recipient.username == username) {
+			return requester;
+		} else if (requester.username == username) {
+			return recipient;
+		} else {
+			throw new Error(
+				"User not found in Friend Document.  This should never happen!",
+			);
+		}
 	}
 
 	public async handleReq(
@@ -48,52 +67,76 @@ export class DBManager {
 					const friendDoc = userDoc.friends[
 						i
 					] as unknown as FriendDocument;
-					const recipient =
-						friendDoc.recipient as unknown as UserDocument;
-					const requester =
-						friendDoc.requester as unknown as UserDocument;
-					logger.debug(recipient);
-					if (recipient.username == userDoc.username) {
-						list.push(
-							new DBFriend(
-								requester.username,
-								requester.profile.name,
-							),
-						);
-					} else if (requester.username == userDoc.username) {
-						list.push(
-							new DBFriend(
-								recipient.username,
-								recipient.profile.name,
-							),
-						);
-					} else {
-						throw new Error(
-							"User not found in Friend Document.  This should never happen!",
-						);
-					}
+
+					const friendUserDoc = DBManager.chooseUserDoc(
+						friendDoc,
+						userDoc.username,
+					);
+
+					list.push(
+						new DBFriend(
+							friendUserDoc.username,
+							friendUserDoc.profile.name,
+						),
+					);
 				}
+
 				return [
 					new WSServerMessage({
-						header: SERVER_HEADERS.DATABASE,
+						header: SERVER_HEADERS.DATABASE_SUCCESS,
 						at: message.id,
 						payload: list,
 					}),
 				];
-			} else if (message.req == DB_REQ_TYPE.INVITE_TO_GAME) {
-				//empty
-				return [];
+			} else if (req.type == DB_REQ_TYPE.INVITE_TO_GAME) {
+				const userDoc = (await User.findOne({
+					username: message.id,
+				})) as UserDocument;
+
+				const friendDoc = (await User.findOne({
+					username: req.data,
+				})) as UserDocument;
+
+				const userDN = userDoc.profile.name
+					? `${userDoc.profile.name} (${userDoc.username})`
+					: userDoc.username;
+
+				const friendDN = friendDoc.profile.name
+					? `${friendDoc.profile.name} (${friendDoc.username})`
+					: friendDoc.username;
+
+				const mailOptions = {
+					to: friendDoc.email,
+					from: "SinkOrBeSunkRobot@gmail.com",
+					subject: "Game Invite",
+					text: `Hello ${friendDN}, ${userDN} invited you to play a game!`,
+				};
+
+				sgMail.send(mailOptions, undefined, (err) => {
+					if (err) {
+						logger.error(err);
+					}
+					logger.info(
+						`Email invite sent from <${userDoc.username}> to <${mailOptions.to}>`,
+					);
+				});
+				return [
+					new WSServerMessage({
+						header: SERVER_HEADERS.DATABASE_SUCCESS,
+						at: message.id,
+						meta: DBManager.INVITE_SENT,
+					}),
+				];
 			}
-		} else {
-			//fall through case
-			return [
-				new WSServerMessage({
-					header: SERVER_HEADERS.BAD_CLIENT_MSG,
-					at: message.id,
-					meta: DBManager.TAG,
-				}),
-			];
 		}
+		//fall through case
+		return [
+			new WSServerMessage({
+				header: SERVER_HEADERS.BAD_CLIENT_MSG,
+				at: message.id,
+				meta: DBManager.TAG,
+			}),
+		];
 	}
 
 	public handles(req: string): boolean {
