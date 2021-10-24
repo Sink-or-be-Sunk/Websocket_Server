@@ -18,5 +18,11 @@ const logger = winston.createLogger(options);
 if (process.env.NODE_ENV !== "production") {
 	logger.debug("Logging initialized at debug level");
 }
+if (process.env.NODE_ENV == "test") {
+	logger.warn("Silencing Logs For Tests");
+	logger.transports.forEach((transport) => {
+		transport.silent = true;
+	});
+}
 
 export default logger;

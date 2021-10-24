@@ -103,11 +103,6 @@ export class Game {
 	}
 
 	private readyUp(id: string): void {
-		if (this.players.length < this.rules.minPlayers) {
-			this.state = STATE.IDLE;
-			return;
-		}
-
 		this.state = STATE.STARTED;
 		for (let i = 0; i < this.players.length; i++) {
 			const player = this.players[i];
@@ -118,7 +113,9 @@ export class Game {
 				this.state = STATE.IDLE;
 			}
 		}
-		if (this.state == STATE.STARTED) {
+		if (this.players.length < this.rules.minPlayers) {
+			this.state = STATE.IDLE;
+		} else if (this.state == STATE.STARTED) {
 			logger.info("Game Started");
 		}
 	}
@@ -244,6 +241,7 @@ export class Game {
 			return new Response(false, ResponseHeader.PLAYER_READY);
 		} else {
 			this.rules = new Rules(type);
+			logger.info(`Game type changed to <${this.rules.type}>`);
 			return new Response(
 				true,
 				ResponseHeader.GAME_TYPE_CHANGED,

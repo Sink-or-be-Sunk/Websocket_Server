@@ -3,18 +3,18 @@ extends ../layout
 block content
 	h1 Sink or be Sunk 2D Gameplay
 	.row.form-group
-		label.col-sm-2 Opponent ID
-		input.col-sm-6(type="text",id="opponent", placeholder="Enter Opponent ID")
+		label.col-sm-2 Basic Mode
+		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
 	.row.form-group
 		label.col-sm-2 Join Game
 		input.col-sm-4(type="text",id="game_id", placeholder="Enter Game ID")
-		button.btn.col-sm-2(type="button",onclick='game.joinGame()') Join Game
+		button.btn.col-sm-2(type="button",onclick='socket.sendJoinGame()') Join Game
 	.row.form-group
 		label.col-sm-2 New Game
-		button.btn.col-sm-6(type="button",onclick='game.newGame()') Create New Game
+		button.btn.col-sm-6(type="button",onclick='socket.sendNewGame()') Create New Game
 	.row.form-group
 		label.col-sm-2 Ready Up
-		button.btn.col-sm-6(type="button",onclick='game.readyUp()') Position Ships/Ready Up
+		button.btn.col-sm-6(type="button",onclick='socket.sendShipPositions()') Position Ships/Ready Up
 	.row.form-group
 		label.col-sm-2 Attack Col
 		input.col-sm-2(type="number",id="attack_col", placeholder="Enter Col")
@@ -22,7 +22,7 @@ block content
 		input.col-sm-2(type="number",id="attack_row", placeholder="Enter Row")
 	.row.form-group
 		label.col-sm-2 Attack
-		button.btn.col-sm-6(type="button",onclick='game.attack()') Send Attack
+		button.btn.col-sm-6(type="button",onclick='socket.sendMakeMove()') Send Attack
 	
 	script(src="/js/GameSocket.js")
 	script(src="/js/Game2D.js")

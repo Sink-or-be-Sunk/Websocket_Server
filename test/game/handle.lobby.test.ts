@@ -32,12 +32,12 @@ describe("Handle Lobby Requests ", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
 				at: obj.id,
-				meta: obj.data,
+				payload: { opponent: obj.data, gameType: GAME_TYPE.CLASSIC },
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
 				at: obj.data,
-				meta: obj.id,
+				payload: { opponent: obj.id, gameType: GAME_TYPE.CLASSIC },
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
@@ -100,6 +100,7 @@ describe("Handle Lobby Requests ", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,
 				at: obj.id,
+				meta: obj.data,
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,

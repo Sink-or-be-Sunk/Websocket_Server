@@ -23,24 +23,31 @@ class GameSocket {
 	private readonly MAKE_MOVE = "MAKE MOVE";
 	private readonly POSITION_SHIPS = "POSITION SHIPS";
 	private readonly JOIN_GAME = "JOIN GAME";
-	// private readonly GAME_TYPE = "GAME TYPE";
-	// private readonly GAME_TYPE_BASIC = "BASIC";
-	// private readonly GAME_TYPE_CLASSIC = "CLASSIC";
+	private readonly GAME_TYPE = "GAME TYPE";
+	private readonly GAME_TYPE_BASIC = "BASIC";
+	private readonly GAME_TYPE_CLASSIC = "CLASSIC";
 	// private readonly GAME_TYPE_SOLO = "SOLO";
 
 	// SERVER HEADERS
 	private readonly MOVE_MADE = "MADE MOVE";
 	private readonly INVALID_MOVE = "INVALID MOVE";
 	private readonly JOINED_GAME = "JOINED GAME";
+	private readonly GAME_TYPE_APPROVED = "GAME TYPE APPROVED";
 	private readonly INVALID_JOIN = "INVALID JOIN";
+	private readonly INVALID_OPPONENT = "INVALID OPPONENT";
 
 	/** unique identifier: either username for web or device id for mcu */
 	private uid: string;
 	private socket: WebSocket;
+	private opponent: string;
+	private gameMode: string;
 
 	constructor(uid: string) {
 		this.uid = uid + "-web";
 		//TODO: NEED BETTER WAY TO DISTINGUISH BETWEEN MCU AND WEB PLAYERS
+
+		this.opponent = this.INVALID_OPPONENT;
+		this.gameMode = this.GAME_TYPE_CLASSIC;
 
 		const protocol = location.protocol == "https:" ? "wss" : "ws";
 		const uri = protocol + "://" + location.hostname + ":" + location.port;
@@ -63,7 +70,11 @@ class GameSocket {
 		if (data.header === this.MOVE_MADE) {
 		} else if (data.header === this.INVALID_MOVE) {
 		} else if (data.header === this.JOINED_GAME) {
+			this.opponent = data.payload.opponent;
+			this.gameMode = data.payload.gameType;
 		} else if (data.header === this.INVALID_JOIN) {
+		} else if (data.header === this.GAME_TYPE_APPROVED) {
+			this.gameMode = data.meta;
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
 		}
@@ -80,22 +91,60 @@ class GameSocket {
 		}
 	}
 
+	public sendBasicMode() {
+		const obj = {
+			req: this.GAME_TYPE,
+			id: this.uid,
+			data: this.GAME_TYPE_BASIC,
+		};
+		this._send(obj);
+	}
+
 	public sendNewGame() {
 		const obj = { req: this.NEW_GAME, id: this.uid };
 		this._send(obj);
 	}
 
-	public sendJoinGame(game: string) {
+	public sendJoinGame() {
+		const game = $("#game_id").val() as string;
 		const obj = { req: this.JOIN_GAME, id: this.uid, data: game };
 		this._send(obj);
 	}
 
-	public sendShipPositions(list: ShipPos[]) {
+	public sendShipPositions() {
+		const list = [];
+		if (this.gameMode == this.GAME_TYPE_BASIC) {
+			list.push({ r: 0, c: 0, t: "P" });
+			list.push({ r: 0, c: 1, t: "P" });
+
+			list.push({ r: 0, c: 0, t: "D" });
+			list.push({ r: 0, c: 2, t: "D" });
+		} else {
+			list.push({ r: 0, c: 0, t: "P" });
+			list.push({ r: 0, c: 1, t: "P" });
+
+			list.push({ r: 1, c: 0, t: "S" });
+			list.push({ r: 1, c: 2, t: "S" });
+
+			list.push({ r: 2, c: 0, t: "B" });
+			list.push({ r: 2, c: 3, t: "B" });
+
+			list.push({ r: 3, c: 0, t: "C" });
+			list.push({ r: 3, c: 4, t: "C" });
+		}
 		const obj = { req: this.POSITION_SHIPS, id: this.uid, data: list };
 		this._send(obj);
 	}
 
-	public sendMakeMove(move: Move) {
+	public sendMakeMove() {
+		const col = $("#attack_col").val() as number;
+		const row = $("#attack_row").val() as number;
+		const move = {
+			type: MOVE_TYPES.SOLO,
+			r: row,
+			c: col,
+			to: this.opponent,
+		};
 		const obj = { req: this.MAKE_MOVE, id: this.uid, data: move };
 		this._send(obj);
 	}

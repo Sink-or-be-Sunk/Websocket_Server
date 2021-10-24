@@ -81,13 +81,16 @@ export default class Lobby {
 				];
 			}
 		} else if (message.req == REQ_TYPE.JOIN_GAME) {
-			const resp = this.joinGame(new Player(message.id), message.data);
+			const [resp, type] = this.joinGame(
+				new Player(message.id),
+				message.data,
+			);
 			if (resp.valid) {
 				const list = [
 					new WSServerMessage({
 						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
-						meta: message.data,
+						payload: { opponent: message.data, gameType: type },
 					}),
 				];
 				list.push(...this.broadcastJoin(message.id));
@@ -132,6 +135,7 @@ export default class Lobby {
 					new WSServerMessage({
 						header: SERVER_HEADERS.GAME_TYPE_APPROVED,
 						at: message.id,
+						meta: type,
 					}),
 				];
 				list.push(...this.broadcastGameType(message.id, type));
@@ -217,7 +221,10 @@ export default class Lobby {
 						new WSServerMessage({
 							header: SERVER_HEADERS.JOINED_GAME,
 							at: p.id,
-							meta: sourceID,
+							payload: {
+								opponent: sourceID,
+								gameType: game.rules.type,
+							},
 						}),
 					);
 				}
@@ -306,16 +313,19 @@ export default class Lobby {
 		return [new Response(false, ResponseHeader.NO_SUCH_GAME), type];
 	}
 
-	private joinGame(player: Player, toJoinID: string): Response {
+	private joinGame(player: Player, toJoinID: string): [Response, GAME_TYPE] {
 		const game = this.games.get(toJoinID);
 		if (game) {
 			if (game.add(player)) {
-				return new Response(true);
+				return [new Response(true), game.rules.type];
 			} else {
-				return new Response(false, ResponseHeader.ALREADY_IN_GAME);
+				return [
+					new Response(false, ResponseHeader.ALREADY_IN_GAME),
+					null,
+				];
 			}
 		} else {
-			return new Response(false, ResponseHeader.NO_SUCH_GAME);
+			return [new Response(false, ResponseHeader.NO_SUCH_GAME), null];
 		}
 	}
 

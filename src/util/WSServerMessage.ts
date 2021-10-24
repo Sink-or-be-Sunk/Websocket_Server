@@ -1,4 +1,5 @@
 import { Move } from "../models/gameplay/Move";
+import { GAME_TYPE } from "../models/gameplay/Game";
 
 type payloadType =
 	| Move
@@ -6,7 +7,8 @@ type payloadType =
 			ssid: string;
 			mcuID: string;
 	  }[]
-	| { username: string };
+	| { username: string }
+	| { opponent: string; gameType: GAME_TYPE };
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;
