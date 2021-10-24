@@ -27,6 +27,9 @@ class GameSocket {
 	private readonly GAME_TYPE_BASIC = "BASIC";
 	private readonly GAME_TYPE_CLASSIC = "CLASSIC";
 	// private readonly GAME_TYPE_SOLO = "SOLO";
+	private readonly DATABASE_REQUEST = "DATABASE";
+	private readonly GET_FRIENDS = "GET FRIENDS";
+	private readonly INVITE_TO_GAME = "INVITE TO GAME";
 
 	// SERVER HEADERS
 	private readonly MOVE_MADE = "MADE MOVE";
@@ -43,8 +46,8 @@ class GameSocket {
 	private gameMode: string;
 
 	constructor(uid: string) {
-		this.uid = uid + "-web";
-		//TODO: NEED BETTER WAY TO DISTINGUISH BETWEEN MCU AND WEB PLAYERS
+		this.uid = uid;
+		//FIXME: NEED TO FIND A WAY TO ID THIS AS A WEB VS MCU REQUEST, maybe have MCU send device id and do database call for username
 
 		this.opponent = this.INVALID_OPPONENT;
 		this.gameMode = this.GAME_TYPE_CLASSIC;
@@ -97,6 +100,12 @@ class GameSocket {
 			id: this.uid,
 			data: this.GAME_TYPE_BASIC,
 		};
+		this._send(obj);
+	}
+
+	public sendGetFriends() {
+		const req = { type: this.GET_FRIENDS };
+		const obj = { req: this.DATABASE_REQUEST, id: this.uid, data: req };
 		this._send(obj);
 	}
 

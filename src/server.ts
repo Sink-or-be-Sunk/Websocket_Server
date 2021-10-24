@@ -86,14 +86,14 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 		//TODO: THIS ERRORS THE SYSTEM OUT WHEN PLAYER FIRST CONNECTS TO DEVICE THEN IMMEDIATELY TRIED TO START GAME
 
 		if (dbManager.handles(msg.req)) {
-			// const resp = await dbManager.handleReq(msg);
-			// socket.send(resp.toString());
+			const list = await dbManager.handleReq(msg);
+			sendList(list);
 		} else if (lobby.handles(msg.req)) {
 			const list = lobby.handleReq(msg);
-			await sendList(list); //FIXME: REMOVE AWAIT
+			sendList(list);
 		} else if (registrar.handles(msg.req)) {
 			const list = await registrar.handleReq(msg);
-			await sendList(list); //FIXME: REMOVE AWAIT
+			sendList(list);
 		} else {
 			logger.error(msg);
 			socket.send(
@@ -120,13 +120,12 @@ function _onWSClose(ws: WebSocket) {
 	lobby.leaveGame(ws.id);
 }
 
-async function sendList(list: WSServerMessage[]) {
-	//FIXME: CHANGE BACK TO NON ASYNC FUNCTION
+function sendList(list: WSServerMessage[]) {
 	for (let i = 0; i < list.length; i++) {
 		const msg = list[i];
 		const socket = connections.get(msg.at);
 		if (socket) {
-			socket.send(JSON.stringify(msg));
+			socket.send(msg.toString());
 		} else {
 			logger.error(`socket not found: ${msg.at}`);
 		}

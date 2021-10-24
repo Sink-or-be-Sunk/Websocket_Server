@@ -3,6 +3,9 @@ extends ../layout
 block content
 	h1 Sink or be Sunk 2D Gameplay
 	.row.form-group
+		label.col-sm-2 Get Friends
+		button.btn.col-sm-6(type="button",onclick='socket.sendGetFriends()') Get Friends List
+	.row.form-group
 		label.col-sm-2 Basic Mode
 		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
 	.row.form-group

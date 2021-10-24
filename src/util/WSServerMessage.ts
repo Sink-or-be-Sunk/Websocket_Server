@@ -1,5 +1,6 @@
 import { Move } from "../models/gameplay/Move";
 import { GAME_TYPE } from "../models/gameplay/Game";
+import { DBFriend } from "../models/database/DBManager";
 
 type payloadType =
 	| Move
@@ -8,7 +9,8 @@ type payloadType =
 			mcuID: string;
 	  }[]
 	| { username: string }
-	| { opponent: string; gameType: GAME_TYPE };
+	| { opponent: string; gameType: GAME_TYPE }
+	| Array<DBFriend>;
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;
@@ -28,7 +30,7 @@ export class WSServerMessage {
 		this.payload = options.payload ?? null;
 	}
 
-	toString() {
+	toString(): string {
 		const obj = { header: this.header } as any;
 		if (this.meta !== "") {
 			obj.meta = this.meta;
@@ -42,6 +44,7 @@ export class WSServerMessage {
 
 export enum SERVER_HEADERS {
 	WEB_REQ_SUCCESS = "WEB REQ SUCCESS",
+	DATABASE = "DATABASE",
 	REGISTER_PENDING = "REGISTER PENDING",
 	REGISTER_SUCCESS = "REGISTER SUCCESS",
 	REGISTER_ERROR = "REGISTER ERROR",
