@@ -9,6 +9,7 @@ import { WSClientMessage, REQ_TYPE } from "../../util/WSClientMessage";
 import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import Player from "./Player";
 import { Move } from "./Move";
+import logger from "../../util/logger";
 
 export default class Lobby {
 	games: Map<string, Game>;
@@ -22,7 +23,8 @@ export default class Lobby {
 			req === REQ_TYPE.NEW_GAME ||
 			req === REQ_TYPE.MAKE_MOVE ||
 			req === REQ_TYPE.JOIN_GAME ||
-			req === REQ_TYPE.GAME_TYPE
+			req === REQ_TYPE.GAME_TYPE ||
+			req === REQ_TYPE.POSITION_SHIPS
 		) {
 			return true;
 		} else {
@@ -34,9 +36,15 @@ export default class Lobby {
 		if (message.req == REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
 			if (this.games.has(message.id)) {
+				// return [
+				// 	new WSServerMessage({
+				// 		header: SERVER_HEADERS.GAME_ALREADY_EXISTS, //FIXME: REMOVE GAME ALREADY EXISTS, NO LONGER VALID MESSAGE
+				// 		at: message.id,
+				// 	}),
+				// ];
 				return [
 					new WSServerMessage({
-						header: SERVER_HEADERS.GAME_ALREADY_EXISTS,
+						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
 					}),
 				];
@@ -59,9 +67,12 @@ export default class Lobby {
 						header: SERVER_HEADERS.MOVE_MADE,
 						at: message.id,
 						payload: move,
+						meta: resp.meta.includes(ResponseHeader.GAME_OVER)
+							? ResponseHeader.GAME_OVER
+							: "",
 					}),
 				];
-				list.push(...this.broadcastMove(message.id, move));
+				list.push(...this.broadcastMove(message.id, move, resp));
 				return list;
 			} else {
 				return [
@@ -73,13 +84,16 @@ export default class Lobby {
 				];
 			}
 		} else if (message.req == REQ_TYPE.JOIN_GAME) {
-			const resp = this.joinGame(new Player(message.id), message.data);
+			const [resp, type] = this.joinGame(
+				new Player(message.id),
+				message.data,
+			);
 			if (resp.valid) {
 				const list = [
 					new WSServerMessage({
 						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
-						meta: message.data,
+						payload: { opponent: message.data, gameType: type },
 					}),
 				];
 				list.push(...this.broadcastJoin(message.id));
@@ -96,13 +110,17 @@ export default class Lobby {
 		} else if (message.req == REQ_TYPE.POSITION_SHIPS) {
 			const resp = this.positionShips(message.id, message.data);
 			if (resp.valid) {
-				const list = [
-					new WSServerMessage({
-						header: SERVER_HEADERS.POSITIONED_SHIPS,
-						at: message.id,
-					}),
-				];
-				list.push(...this.broadcastPosition(message.id));
+				const list = [];
+				if (resp.meta.includes(ResponseHeader.GAME_STARTED)) {
+					list.push(...this.broadcastGameStarted(message.id));
+				} else {
+					list.push(
+						new WSServerMessage({
+							header: SERVER_HEADERS.POSITIONED_SHIPS,
+							at: message.id,
+						}),
+					);
+				}
 				return list;
 			} else {
 				return [
@@ -120,6 +138,7 @@ export default class Lobby {
 					new WSServerMessage({
 						header: SERVER_HEADERS.GAME_TYPE_APPROVED,
 						at: message.id,
+						meta: type,
 					}),
 				];
 				list.push(...this.broadcastGameType(message.id, type));
@@ -167,7 +186,11 @@ export default class Lobby {
 	 * @param sourceID
 	 * @param move
 	 */
-	private broadcastMove(sourceID: string, move: Move): WSServerMessage[] {
+	private broadcastMove(
+		sourceID: string,
+		move: Move,
+		resp: Response,
+	): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
@@ -181,6 +204,9 @@ export default class Lobby {
 							header: SERVER_HEADERS.MOVE_MADE,
 							at: p.id,
 							payload: move,
+							meta: resp.meta.includes(ResponseHeader.GAME_OVER)
+								? ResponseHeader.GAME_OVER
+								: "",
 						}),
 					);
 				}
@@ -205,7 +231,10 @@ export default class Lobby {
 						new WSServerMessage({
 							header: SERVER_HEADERS.JOINED_GAME,
 							at: p.id,
-							meta: sourceID,
+							payload: {
+								opponent: sourceID,
+								gameType: game.rules.type,
+							},
 						}),
 					);
 				}
@@ -217,20 +246,19 @@ export default class Lobby {
 		);
 	}
 
-	private broadcastPosition(sourceID: string): WSServerMessage[] {
+	private broadcastGameStarted(sourceID: string): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
 				const list = [];
-				const players = game.getPlayers(player.id);
+				const players = game.getPlayers();
 				for (let i = 0; i < players.length; i++) {
 					const p = players[i];
 					list.push(
 						new WSServerMessage({
-							header: SERVER_HEADERS.POSITIONED_SHIPS,
+							header: SERVER_HEADERS.GAME_STARTED,
 							at: p.id,
-							meta: sourceID,
 						}),
 					);
 				}
@@ -238,7 +266,7 @@ export default class Lobby {
 			}
 		}
 		throw new Error(
-			"Couldn't find source game to broadcast position: this should never happen",
+			"Couldn't find source game to broadcast started: this should never happen",
 		);
 	}
 
@@ -295,28 +323,31 @@ export default class Lobby {
 		return [new Response(false, ResponseHeader.NO_SUCH_GAME), type];
 	}
 
-	private joinGame(player: Player, toJoinID: string): Response {
+	private joinGame(player: Player, toJoinID: string): [Response, GAME_TYPE] {
 		const game = this.games.get(toJoinID);
 		if (game) {
 			if (game.add(player)) {
-				return new Response(true);
+				return [new Response(true), game.rules.type];
 			} else {
-				return new Response(false, ResponseHeader.ALREADY_IN_GAME);
+				return [
+					new Response(false, ResponseHeader.ALREADY_IN_GAME),
+					null,
+				];
 			}
 		} else {
-			return new Response(false, ResponseHeader.NO_SUCH_GAME);
+			return [new Response(false, ResponseHeader.NO_SUCH_GAME), null];
 		}
 	}
 
 	public leaveGame(socketID: string): void {
 		const game = this.games.get(socketID);
 		if (game) {
-			console.log(`Host <${socketID}> Ended Game by Leaving`);
+			logger.warn(`Host <${socketID}> Ended Game by Leaving`);
 			//player leaving game is the "game owner"/created the game
 			for (let i = 0; i < game.players.length; i++) {
 				const player = game.players[i];
 				if (player.id != socketID) {
-					console.log(`Booting Player: <${player.id}>`);
+					logger.warn(`Booting Player: <${player.id}>`);
 					//TODO: SEND WS MESSAGE TO PLAYERS KICKED FROM GAME
 				}
 			}
@@ -328,7 +359,7 @@ export default class Lobby {
 				const player = players[j];
 				if (player.id == socketID) {
 					if (game.remove(player)) {
-						console.log(
+						logger.warn(
 							`Game #${gameID}<${game.id}> removed from Lobby`,
 						);
 						//TODO: SEND WS MESSAGE TO PLAYERS STILL IN GAME

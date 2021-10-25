@@ -1,6 +1,7 @@
 import { GAME_TYPE, Rules } from "../../src/models/gameplay/Game";
 import {
 	Layout,
+	POSITION_TYPE,
 	LAYOUT_TYPE,
 	Position,
 } from "../../src/models/gameplay/Layout";
@@ -11,10 +12,10 @@ describe("Validate Layout Change from Client Message", () => {
 
 	it("Accepts valid basic element list", () => {
 		const list = [];
-		list.push({ c: 0, r: 0, t: LAYOUT_TYPE.PATROL });
-		list.push({ c: 0, r: 1, t: LAYOUT_TYPE.PATROL });
-		list.push({ c: 1, r: 0, t: LAYOUT_TYPE.DESTROYER });
-		list.push({ c: 1, r: 2, t: LAYOUT_TYPE.DESTROYER });
+		list.push({ c: 0, r: 0, t: POSITION_TYPE.PATROL });
+		list.push({ c: 0, r: 1, t: POSITION_TYPE.PATROL });
+		list.push({ c: 1, r: 0, t: POSITION_TYPE.DESTROYER });
+		list.push({ c: 1, r: 2, t: POSITION_TYPE.DESTROYER });
 		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [
@@ -29,10 +30,10 @@ describe("Validate Layout Change from Client Message", () => {
 
 	it("Accepts valid basic element list with string (c,r)", () => {
 		const list = [];
-		list.push({ c: "0", r: "0", t: LAYOUT_TYPE.PATROL });
-		list.push({ c: "0", r: "1", t: LAYOUT_TYPE.PATROL });
-		list.push({ c: "1", r: "0", t: LAYOUT_TYPE.DESTROYER });
-		list.push({ c: "1", r: "2", t: LAYOUT_TYPE.DESTROYER });
+		list.push({ c: "0", r: "0", t: POSITION_TYPE.PATROL });
+		list.push({ c: "0", r: "1", t: POSITION_TYPE.PATROL });
+		list.push({ c: "1", r: "0", t: POSITION_TYPE.DESTROYER });
+		list.push({ c: "1", r: "2", t: POSITION_TYPE.DESTROYER });
 		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [
@@ -47,10 +48,10 @@ describe("Validate Layout Change from Client Message", () => {
 
 	it("Rejects single element list with invalid string numbers", () => {
 		const list = [];
-		list.push({ c: "0a", r: "0", t: LAYOUT_TYPE.PATROL });
-		list.push({ c: "0", r: "1b", t: LAYOUT_TYPE.PATROL });
-		list.push({ c: "1", r: "0", t: LAYOUT_TYPE.DESTROYER });
-		list.push({ c: "1c", r: "2", t: LAYOUT_TYPE.DESTROYER });
+		list.push({ c: "0a", r: "0", t: POSITION_TYPE.PATROL });
+		list.push({ c: "0", r: "1b", t: POSITION_TYPE.PATROL });
+		list.push({ c: "1", r: "0", t: POSITION_TYPE.DESTROYER });
+		list.push({ c: "1c", r: "2", t: POSITION_TYPE.DESTROYER });
 		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [],
@@ -60,10 +61,10 @@ describe("Validate Layout Change from Client Message", () => {
 
 	it("Rejects invalid array object", () => {
 		const list = {} as any;
-		list.obj1 = { c: 0, r: 0, t: LAYOUT_TYPE.PATROL };
-		list.obj2 = { c: 0, r: 1, t: LAYOUT_TYPE.PATROL };
-		list.obj3 = { c: 1, r: 0, t: LAYOUT_TYPE.DESTROYER };
-		list.obj4 = { c: 1, r: 2, t: LAYOUT_TYPE.DESTROYER };
+		list.obj1 = { c: 0, r: 0, t: POSITION_TYPE.PATROL };
+		list.obj2 = { c: 0, r: 1, t: POSITION_TYPE.PATROL };
+		list.obj3 = { c: 1, r: 0, t: POSITION_TYPE.DESTROYER };
+		list.obj4 = { c: 1, r: 2, t: POSITION_TYPE.DESTROYER };
 		const msg = new Layout(list, basic);
 		expect(msg).toEqual({
 			list: [],

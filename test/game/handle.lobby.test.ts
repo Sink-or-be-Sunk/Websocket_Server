@@ -2,7 +2,7 @@ import Lobby from "../../src/models/gameplay/Lobby";
 import { Move, MOVE_RESULT, MOVE_TYPE } from "../../src/models/gameplay/Move";
 import { GAME_TYPE, ResponseHeader } from "../../src/models/gameplay/Game";
 import { WSClientMessage, REQ_TYPE } from "../../src/util/WSClientMessage";
-import { Position, LAYOUT_TYPE } from "../../src/models/gameplay/Layout";
+import { Position, POSITION_TYPE } from "../../src/models/gameplay/Layout";
 import {
 	SERVER_HEADERS,
 	WSServerMessage,
@@ -32,12 +32,12 @@ describe("Handle Lobby Requests ", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
 				at: obj.id,
-				meta: obj.data,
+				payload: { opponent: obj.data, gameType: GAME_TYPE.CLASSIC },
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
 				at: obj.data,
-				meta: obj.id,
+				payload: { opponent: obj.id, gameType: GAME_TYPE.CLASSIC },
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
@@ -45,6 +45,19 @@ describe("Handle Lobby Requests ", () => {
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
+	});
+
+	it("Accepts Duplicate New Game Request", () => {
+		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const resp = lobby.handleReq(msg);
+		const result = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+			}),
+		];
+		expect(resp.toString()).toEqual(result.toString());
 	});
 
 	it("Reject Join Game Request from Player One already in game", () => {
@@ -87,6 +100,7 @@ describe("Handle Lobby Requests ", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,
 				at: obj.id,
+				meta: obj.data,
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,
@@ -102,10 +116,10 @@ describe("Handle Lobby Requests ", () => {
 	});
 
 	it("Allow Player 1 to position ships", () => {
-		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
-		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
-		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
 		const str = JSON.stringify(obj);
@@ -116,11 +130,6 @@ describe("Handle Lobby Requests ", () => {
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
 			}),
-			new WSServerMessage({
-				header: SERVER_HEADERS.POSITIONED_SHIPS,
-				at: "two",
-				meta: obj.id,
-			}),
 		];
 		for (let i = 0; i < results.length; i++) {
 			const result = results[i];
@@ -130,10 +139,10 @@ describe("Handle Lobby Requests ", () => {
 	});
 
 	it("Allow Player 2 to position ships", () => {
-		const pos0 = new Position(0, 0, LAYOUT_TYPE.PATROL);
-		const pos1 = new Position(0, 1, LAYOUT_TYPE.PATROL);
-		const pos2 = new Position(1, 0, LAYOUT_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, LAYOUT_TYPE.DESTROYER);
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
 		const list = [pos2, pos1, pos0, pos3];
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
 		const str = JSON.stringify(obj);
@@ -141,13 +150,12 @@ describe("Handle Lobby Requests ", () => {
 		const responses = lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
-				header: SERVER_HEADERS.POSITIONED_SHIPS,
-				at: obj.id,
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "one",
 			}),
 			new WSServerMessage({
-				header: SERVER_HEADERS.POSITIONED_SHIPS,
-				at: "one",
-				meta: obj.id,
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: obj.id,
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {

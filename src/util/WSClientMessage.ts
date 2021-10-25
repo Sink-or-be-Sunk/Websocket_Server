@@ -34,6 +34,7 @@ export class WSClientMessage {
 		if ("req" in object && "id" in object) {
 			if (
 				object.req === REQ_TYPE.NEW_GAME ||
+				object.req === REQ_TYPE.DATABASE ||
 				object.req === REQ_TYPE.MAKE_MOVE ||
 				object.req === REQ_TYPE.JOIN_GAME ||
 				object.req === REQ_TYPE.GAME_TYPE ||
@@ -68,6 +69,5 @@ export enum REQ_TYPE {
 	JOIN_GAME = "JOIN GAME",
 	GAME_TYPE = "GAME TYPE",
 	REGISTRATION = "REGISTRATION",
-	GET_FRIENDS = "GET FRIENDS",
-	INVITE_TO_GAME = "INVITE TO GAME",
+	DATABASE = "DATABASE",
 }

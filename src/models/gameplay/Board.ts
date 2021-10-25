@@ -62,6 +62,7 @@ export class Board {
 				if (ship.state == SHIP_STATE.SUNK) {
 					if (this.shipsRemaining()) {
 						move.result = MOVE_RESULT.SUNK;
+						move.result_ship = ship.type;
 						return new Response(
 							true,
 							ResponseHeader.SUNK,
@@ -69,6 +70,7 @@ export class Board {
 						);
 					} else {
 						move.result = MOVE_RESULT.SUNK;
+						move.result_ship = ship.type;
 						return new Response(
 							true,
 							ResponseHeader.GAME_OVER,
@@ -81,6 +83,7 @@ export class Board {
 				}
 			}
 		}
+		move.result = MOVE_RESULT.MISS;
 		return new Response(true, ResponseHeader.MISS);
 	}
 

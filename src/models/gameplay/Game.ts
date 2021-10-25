@@ -1,8 +1,10 @@
 import { Board, Square } from "./Board";
 import Player from "./Player";
 import { Move } from "./Move";
-import { Layout, LAYOUT_TYPE } from "./Layout";
+import { Layout, POSITION_TYPE } from "./Layout";
 import { Ship, SHIP_DESCRIPTOR } from "./Ship";
+import logger from "../../util/logger";
+
 export class Game {
 	/**
 	 * List of all players in the game
@@ -34,7 +36,7 @@ export class Game {
 		this.rules = new Rules(type);
 		this.players = new Array<Player>();
 		this.boards = new Array<Board>();
-		console.log(`New ${this.rules.type} Game Created`);
+		logger.info(`New ${this.rules.type} Game Created`);
 		this.turn = 0;
 		this.state = STATE.IDLE; //wait for ship positions to be locked in;
 	}
@@ -47,8 +49,12 @@ export class Game {
 		return this.state == STATE.OVER;
 	}
 
-	getPlayers(ignoreID: string): Player[] {
-		return this.players.filter((player) => player.id != ignoreID);
+	getPlayers(ignoreID?: string): Player[] {
+		if (ignoreID) {
+			return this.players.filter((player) => player.id != ignoreID);
+		} else {
+			return this.players;
+		}
 	}
 
 	/**
@@ -62,7 +68,7 @@ export class Game {
 			if (player == p) {
 				this.players.splice(i, 1); // remove player from game
 				this.boards.splice(i, 1); //remove players board from game
-				console.log(
+				logger.info(
 					`Player <${player.id}> Removed From Game <${this.id}`,
 				);
 				if (this.players.length == 0) {
@@ -74,7 +80,7 @@ export class Game {
 	}
 
 	private newPlayer(player: Player): void {
-		console.log(`Player <${player.id}> added to Game <${this.id}>`);
+		logger.info(`Player <${player.id}> added to Game <${this.id}>`);
 
 		this.players.push(player);
 		this.boards.push(new Board(player.id, this.rules));
@@ -107,8 +113,10 @@ export class Game {
 				this.state = STATE.IDLE;
 			}
 		}
-		if (this.state == STATE.STARTED) {
-			console.log("Game Started");
+		if (this.players.length < this.rules.minPlayers) {
+			this.state = STATE.IDLE;
+		} else if (this.state == STATE.STARTED) {
+			logger.info("Game Started");
 		}
 	}
 
@@ -156,10 +164,11 @@ export class Game {
 					if (board) {
 						const res = board.makeMove(move);
 						if (res.valid) {
-							console.log(
+							logger.info(
 								`player <${id}> made move ${move.toString()}`,
 							);
 							if (res.meta.includes(ResponseHeader.GAME_OVER)) {
+								logger.info(`Game Over: Player <${id}> won`);
 								this.state = STATE.OVER;
 							}
 							this.nextTurn();
@@ -199,7 +208,9 @@ export class Game {
 						if (this.isStarted()) {
 							res.addDetail(ResponseHeader.GAME_STARTED);
 						}
-						this.nextTurn();
+						logger.info(`Player <${id}> Ready Up`);
+
+						// this.nextTurn();
 					}
 					return res;
 				} else {
@@ -231,6 +242,7 @@ export class Game {
 			return new Response(false, ResponseHeader.PLAYER_READY);
 		} else {
 			this.rules = new Rules(type);
+			logger.info(`Game type changed to <${this.rules.type}>`);
 			return new Response(
 				true,
 				ResponseHeader.GAME_TYPE_CHANGED,
@@ -245,7 +257,7 @@ export class Game {
 		if (this.turn >= this.players.length) {
 			this.turn = 0;
 		}
-		console.log(
+		logger.info(
 			`Turn changed from <${this.players[prevTurn].id}> to <${
 				this.players[this.turn].id
 			}>`,
@@ -256,6 +268,7 @@ export class Game {
 export enum GAME_TYPE {
 	CLASSIC = "CLASSIC",
 	BASIC = "BASIC", //SMALL game mode for testing
+	SOLO = "SOLO", // Play against AI
 }
 
 export enum STATE {
@@ -269,8 +282,10 @@ export function parseGameType(raw: string): GAME_TYPE {
 		return GAME_TYPE.CLASSIC;
 	} else if (raw === GAME_TYPE.BASIC) {
 		return GAME_TYPE.BASIC;
+	} else if (raw === GAME_TYPE.SOLO) {
+		return GAME_TYPE.SOLO;
 	} else {
-		console.log("Invalid Game Type Request: Defaulting to Classic");
+		logger.warn("Invalid Game Type Request: Defaulting to Classic");
 		return GAME_TYPE.CLASSIC;
 	}
 }
@@ -303,43 +318,40 @@ export enum ResponseHeader {
 }
 
 export class Rules {
-	/**
-	 * Game type
-	 */
+	/** Game type */
 	type: GAME_TYPE;
-	/**
-	 * Number of ships per player
-	 */
-	ships: LAYOUT_TYPE[];
-	/**
-	 * m x m size of game board
-	 */
+	/** Number of ships per player */
+	ships: POSITION_TYPE[];
+	/** m x m size of game board */
 	boardSize: number;
 
+	/** minimum number of players that need to be in game before game start */
+	minPlayers: number;
 	constructor(type: GAME_TYPE) {
 		this.type = type;
 		this.ships = this.initShips(type);
 		this.boardSize = this.initBoard(type);
+		this.minPlayers = 2; //TODO: ALLOW FOR SOLO
 	}
 
-	private initShips(type: GAME_TYPE): LAYOUT_TYPE[] {
-		if (type == GAME_TYPE.CLASSIC) {
+	private initShips(type: GAME_TYPE): POSITION_TYPE[] {
+		if (type == GAME_TYPE.CLASSIC || type == GAME_TYPE.SOLO) {
 			return [
-				LAYOUT_TYPE.PATROL,
-				LAYOUT_TYPE.SUBMARINE,
-				LAYOUT_TYPE.DESTROYER,
-				LAYOUT_TYPE.BATTLESHIP,
-				LAYOUT_TYPE.CARRIER,
+				POSITION_TYPE.PATROL,
+				POSITION_TYPE.SUBMARINE,
+				// POSITION_TYPE.DESTROYER,
+				POSITION_TYPE.BATTLESHIP,
+				POSITION_TYPE.CARRIER,
 			];
 		} else if (type == GAME_TYPE.BASIC) {
-			return [LAYOUT_TYPE.PATROL, LAYOUT_TYPE.DESTROYER];
+			return [POSITION_TYPE.PATROL, POSITION_TYPE.DESTROYER];
 		} else {
 			throw new Error("Invalid Rule Type: This should never happen");
 		}
 	}
 
 	private initBoard(type: GAME_TYPE): number {
-		if (type == GAME_TYPE.CLASSIC) {
+		if (type == GAME_TYPE.CLASSIC || type == GAME_TYPE.SOLO) {
 			return 8;
 		} else if (type == GAME_TYPE.BASIC) {
 			return 6;
@@ -374,9 +386,12 @@ export class Rules {
 					return true;
 				}
 			}
-		} else if (this.type == GAME_TYPE.CLASSIC) {
-			// class mode allows for one of each ship type/descriptor (two size 3 ships)
-			if (curFleet.length >= 5) {
+		} else if (
+			this.type == GAME_TYPE.CLASSIC ||
+			this.type == GAME_TYPE.SOLO
+		) {
+			// class mode allows for one of each ship type/descriptor
+			if (curFleet.length >= 4) {
 				return false;
 			}
 			for (let i = 0; i < curFleet.length; i++) {
@@ -417,7 +432,7 @@ export class Response {
 		}
 	}
 
-	addDetail(detail: string) {
+	addDetail(detail: string): void {
 		this.meta += `-${detail}`;
 	}
 }

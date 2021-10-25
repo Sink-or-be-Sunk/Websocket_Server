@@ -59,6 +59,16 @@ curl https://get.volta.sh | bash
 
 - [Smart Web Socket Chrome Extension][smart-web-socket]
 
+### Cloudflare Tunnel
+For testing the server with the microcontroller, it is helpful to expose the localhost server to the internet.  Cloudflare is a server that allows for this.  More information can be found [here][cloudflared]
+
+To start the tunnel:
+```
+npm run watch
+cloudflared tunnel --url localhost:3000
+```
+
+
 ### Mongosh
 
 This project used a MongoDB backend database. To interact with the local version of the database, you can use mongosh.
@@ -154,3 +164,4 @@ Licensed under the APLv2. See the [LICENSE](https://github.com/marndt26/SobS_Web
 [destroyer-model]: https://sketchfab.com/3d-models/z-39-4bf9941a596b4b8b8a12302946d51181
 [carrier-model]: https://sketchfab.com/3d-models/enterprise-303b76d3efdf472d8a105702c44ff571#download
 [pt-model]: https://sketchfab.com/3d-models/elco-80ft-pt-e759cb35865c480f8db77c91020e8f6c#download
+[cloudflared]: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/create-tunnel

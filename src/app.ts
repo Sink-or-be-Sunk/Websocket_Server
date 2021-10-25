@@ -29,19 +29,15 @@ const mongoUrl = MONGODB_URI;
 mongoose.Promise = bluebird;
 
 mongoose
-	.connect(mongoUrl, {
-		useNewUrlParser: true,
-		useUnifiedTopology: true,
-		useFindAndModify: false,
-		useCreateIndex: true,
-	})
+	.connect(mongoUrl)
 	.then(() => {
 		/** ready to use. The `mongoose.connect()` promise resolves to undefined. */
 	})
 	.catch((err) => {
-		console.log(
+		logger.error(
 			`MongoDB connection error. Please make sure MongoDB is running. ${err}`,
 		);
+
 		// process.exit();
 	});
 
@@ -128,7 +124,7 @@ app.post(
 app.post(
 	"/account/friend",
 	passportConfig.isAuthenticated,
-	userController.postUpdateFriends,
+	userController.postAddFriend,
 );
 app.post(
 	"/account/friend/delete/:id",
@@ -140,7 +136,16 @@ app.post(
 	passportConfig.isAuthenticated,
 	userController.postFriendAcceptAction,
 );
-app.get("/game", passportConfig.isAuthenticated, gameController.getGame);
+app.get(
+	"/game/game3d",
+	passportConfig.isAuthenticated,
+	gameController.getGame3D,
+);
+app.get(
+	"/game/game2d",
+	passportConfig.isAuthenticated,
+	gameController.getGame2D,
+);
 app.get(
 	"/connect",
 	passportConfig.isAuthenticated,

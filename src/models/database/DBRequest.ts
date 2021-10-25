@@ -1,15 +1,15 @@
 export class DBRequest {
 	type: DB_REQ_TYPE;
-	id: string;
+	data: string;
 
 	constructor(raw: unknown) {
 		this.type = DB_REQ_TYPE.INVALID;
-		this.id = "";
+		this.data = "";
 
 		try {
 			if (isInstance(raw)) {
 				const req = raw as DBRequest;
-				this.id = req.id;
+				this.data = req.data;
 				this.type = req.type;
 			} else {
 				this.type = DB_REQ_TYPE.INVALID;
@@ -36,9 +36,12 @@ export class DBRequest {
 }
 export function isInstance(object: unknown): boolean {
 	if (typeof object === "object" && object !== null) {
-		if ("id" in object && "type" in object) {
+		if ("type" in object) {
 			const instance = object as DBRequest;
-			if (instance.type === DB_REQ_TYPE.GET_FRIENDS) {
+			if (
+				instance.type === DB_REQ_TYPE.GET_FRIENDS ||
+				instance.type == DB_REQ_TYPE.INVITE_TO_GAME
+			) {
 				return true;
 			}
 		}

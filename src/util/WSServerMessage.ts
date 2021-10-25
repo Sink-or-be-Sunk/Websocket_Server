@@ -1,4 +1,6 @@
 import { Move } from "../models/gameplay/Move";
+import { GAME_TYPE } from "../models/gameplay/Game";
+import { DBFriend } from "../models/database/DBManager";
 
 type payloadType =
 	| Move
@@ -6,7 +8,9 @@ type payloadType =
 			ssid: string;
 			mcuID: string;
 	  }[]
-	| { username: string };
+	| { username: string }
+	| { opponent: string; gameType: GAME_TYPE }
+	| Array<DBFriend>;
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;
@@ -26,7 +30,7 @@ export class WSServerMessage {
 		this.payload = options.payload ?? null;
 	}
 
-	toString() {
+	toString(): string {
 		const obj = { header: this.header } as any;
 		if (this.meta !== "") {
 			obj.meta = this.meta;
@@ -40,6 +44,7 @@ export class WSServerMessage {
 
 export enum SERVER_HEADERS {
 	WEB_REQ_SUCCESS = "WEB REQ SUCCESS",
+	DATABASE_SUCCESS = "DATABASE SUCCESS",
 	REGISTER_PENDING = "REGISTER PENDING",
 	REGISTER_SUCCESS = "REGISTER SUCCESS",
 	REGISTER_ERROR = "REGISTER ERROR",
@@ -47,6 +52,7 @@ export enum SERVER_HEADERS {
 	BAD_CLIENT_MSG = "BAD CLIENT MSG",
 	GAME_ALREADY_EXISTS = "GAME ALREADY EXISTS",
 	GAME_CREATED = "GAME CREATED",
+	GAME_STARTED = "GAME STARTED",
 	MOVE_MADE = "MADE MOVE",
 	INVALID_MOVE = "INVALID MOVE",
 	JOINED_GAME = "JOINED GAME",

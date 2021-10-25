@@ -1,0 +1,75 @@
+import {
+	Game,
+	GAME_TYPE,
+	Response,
+	ResponseHeader,
+} from "../../src/models/gameplay/Game";
+import Player from "../../src/models/gameplay/Player";
+import { Move, MOVE_TYPE } from "../../src/models/gameplay/Move";
+import { SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
+import { Position, POSITION_TYPE } from "../../src/models/gameplay/Layout";
+
+describe("Dis-Allow Single Player to start game", () => {
+	// TODO: CREATE WAY FOR PLAYER TO REQUEST AI TO JOIN GAME FOR SOLO PLAY
+	const p1 = new Player("one");
+
+	const game = new Game(p1.id, GAME_TYPE.BASIC);
+	game.add(p1);
+
+	it("Reject Player 1 from making a move until game has started", () => {
+		const move_obj = { type: MOVE_TYPE.SOLO, c: 0, r: 0 };
+		const move = new Move(move_obj);
+		const resp = game.makeMove(p1.id, move);
+		expect(resp).toEqual(
+			new Response(false, ResponseHeader.GAME_NOT_STARTED),
+		);
+	});
+
+	/**
+	 * 0|P|D| | | | | | |
+	 * 1|P|D| | | | | | |
+	 * 2| |D| | | | | | |
+	 * 3| | | | | | | | |
+	 * 4| | | | | | | | |
+	 * 5| | | | | | | | |
+	 * 6| | | | | | | | |
+	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Allow Player 1 to position ships vertical", () => {
+		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
+		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
+		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
+		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
+		const list = [pos2, pos1, pos0, pos3];
+		const resp = game.positionShips(p1.id, list);
+		expect(resp).toEqual(
+			new Response(true, ResponseHeader.SHIP_POSITIONED),
+		);
+	});
+
+	/**     Player1				   Player 2
+	 * 0|P|D| | | | | | |	 * 0|H|D| | | | | | |
+	 * 1|P|D| | | | | | |	 * 1|P|D| | | | | | |
+	 * 2| |D| | | | | | |	 * 2| |D| | | | | | |
+	 * 3| | | | | | | | |	 * 3| | | | | | | | |
+	 * 4| | | | | | | | |	 * 4| | | | | | | | |
+	 * 5| | | | | | | | |	 * 5| | | | | | | | |
+	 * 6| | | | | | | | |	 * 6| | | | | | | | |
+	 * 7| | | | | | | | |	 * 7| | | | | | | | |
+	 *  |0|1|2|3|4|5|6|7|	 *  |0|1|2|3|4|5|6|7|
+	 */
+	it("Reject Player 1 from making move until game has started", () => {
+		const move_obj = {
+			type: MOVE_TYPE.SOLO,
+			c: 0,
+			r: 0,
+			to: "one",
+		};
+		const move = new Move(move_obj);
+		const resp = game.makeMove(p1.id, move);
+		expect(resp).toEqual(
+			new Response(false, ResponseHeader.GAME_NOT_STARTED),
+		);
+	});
+});

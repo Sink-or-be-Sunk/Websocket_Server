@@ -53,7 +53,7 @@ export enum LAYOUT_TYPE {
 	BREAKS_RULES = "BREAKS RULES",
 }
 
-export enum LAYOUT_TYPE {
+export enum POSITION_TYPE {
 	PATROL = "P",
 	DESTROYER = "D",
 	SUBMARINE = "S",
@@ -63,9 +63,9 @@ export enum LAYOUT_TYPE {
 export class Position {
 	c: number;
 	r: number;
-	t: LAYOUT_TYPE;
+	t: POSITION_TYPE;
 
-	constructor(c: number, r: number, t: LAYOUT_TYPE) {
+	constructor(c: number, r: number, t: POSITION_TYPE) {
 		this.c = +c; //+ is shorthand for converting string to number
 		this.r = +r;
 		this.t = t;
@@ -75,11 +75,11 @@ export class Position {
 		if ("r" in obj && "c" in obj && "t" in obj) {
 			if (!isNaN(obj.c) && !isNaN(obj.r)) {
 				if (
-					obj.t === LAYOUT_TYPE.PATROL ||
-					obj.t === LAYOUT_TYPE.DESTROYER ||
-					obj.t === LAYOUT_TYPE.SUBMARINE ||
-					obj.t === LAYOUT_TYPE.BATTLESHIP ||
-					obj.t === LAYOUT_TYPE.CARRIER
+					obj.t === POSITION_TYPE.PATROL ||
+					obj.t === POSITION_TYPE.DESTROYER ||
+					obj.t === POSITION_TYPE.SUBMARINE ||
+					obj.t === POSITION_TYPE.BATTLESHIP ||
+					obj.t === POSITION_TYPE.CARRIER
 				) {
 					return true;
 				}
