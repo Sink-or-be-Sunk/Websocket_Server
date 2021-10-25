@@ -16,9 +16,12 @@ block content
 		label.col-sm-2 Basic Mode
 		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
 	.row.form-group
-		label.col-sm-2 Join Game
-		input.col-sm-4(type="text",id="game_id", placeholder="Enter Game ID")
-		button.btn.col-sm-2(type="button",onclick='socket.sendJoinGame()') Join Game
+		label.col-sm-2 Invite Friend
+		select.form-select.col-sm-4(id="game_id")
+			option(disabled selected) Select Game to Join
+			each friend in friendsList
+				option(value=friend.username) #{friend.displayName}
+		button.btn.col-sm-2(type="button", onclick='socket.sendJoinGame()') Join Game
 	.row.form-group
 		label.col-sm-2 New Game
 		button.btn.col-sm-6(type="button",onclick='socket.sendNewGame()') Create New Game
@@ -35,10 +38,8 @@ block content
 		button.btn.col-sm-6(type="button",onclick='socket.sendMakeMove()') Send Attack
 	
 	script(src="/js/GameSocket.js")
-	script(src="/js/Game2D.js")
 	script.
 		const socket = new GameSocket("#{user.username}");
-		const game = new Game2D(socket);
 
 	//- Comment here to fix Pug Lint Error
 		
