@@ -124,7 +124,7 @@ app.post(
 app.post(
 	"/account/friend",
 	passportConfig.isAuthenticated,
-	userController.postUpdateFriends,
+	userController.postAddFriend,
 );
 app.post(
 	"/account/friend/delete/:id",

@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { UserDocument, User } from "../../src/models/User";
+import { FriendDocument, Friend } from "../../src/models/Friend";
 import { DBManager, DBFriend } from "../../src/models/database/DBManager";
 import { DB_REQ_TYPE } from "../../src/models/database/DBRequest";
 import { MONGODB_URI } from "../../src/util/secrets";
@@ -8,17 +10,18 @@ import {
 	WSServerMessage,
 } from "../../src/util/WSServerMessage";
 
+const fakeID = new mongoose.Types.ObjectId();
+
 beforeAll(() => {
 	mongoose
 		.connect(MONGODB_URI)
-		.then(() => {
-			/** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+		.then(async () => {
+			//empty
 		})
 		.catch((err) => {
 			console.log(
 				`MongoDB connection error. Please make sure MongoDB is running. ${err}`,
 			);
-			// process.exit();
 		});
 });
 
@@ -34,11 +37,16 @@ describe("Handle Database Requests", () => {
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
 		const friends = await manager.handleReq(msg);
-		const response = new WSServerMessage({
-			header: SERVER_HEADERS.DATABASE_SUCCESS,
-			at: obj.id,
-			payload: [new DBFriend("m", "m"), new DBFriend("test", "test")],
-		});
-		expect(friends).toBe(response);
+		const response = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.DATABASE_SUCCESS,
+				at: obj.id,
+				payload: [
+					new DBFriend("m", "m"),
+					new DBFriend("test", "test display name"),
+				],
+			}),
+		];
+		expect(friends).toEqual(response);
 	});
 });

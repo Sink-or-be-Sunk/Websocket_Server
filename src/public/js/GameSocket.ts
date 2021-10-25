@@ -138,8 +138,8 @@ class GameSocket {
 			list.push({ r: 0, c: 0, t: "P" });
 			list.push({ r: 0, c: 1, t: "P" });
 
-			list.push({ r: 0, c: 0, t: "D" });
-			list.push({ r: 0, c: 2, t: "D" });
+			list.push({ r: 1, c: 0, t: "D" });
+			list.push({ r: 1, c: 2, t: "D" });
 		} else {
 			list.push({ r: 0, c: 0, t: "P" });
 			list.push({ r: 0, c: 1, t: "P" });

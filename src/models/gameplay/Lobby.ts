@@ -67,9 +67,12 @@ export default class Lobby {
 						header: SERVER_HEADERS.MOVE_MADE,
 						at: message.id,
 						payload: move,
+						meta: resp.meta.includes(ResponseHeader.GAME_OVER)
+							? ResponseHeader.GAME_OVER
+							: "",
 					}),
 				];
-				list.push(...this.broadcastMove(message.id, move));
+				list.push(...this.broadcastMove(message.id, move, resp));
 				return list;
 			} else {
 				return [
@@ -183,7 +186,11 @@ export default class Lobby {
 	 * @param sourceID
 	 * @param move
 	 */
-	private broadcastMove(sourceID: string, move: Move): WSServerMessage[] {
+	private broadcastMove(
+		sourceID: string,
+		move: Move,
+		resp: Response,
+	): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
@@ -197,6 +204,9 @@ export default class Lobby {
 							header: SERVER_HEADERS.MOVE_MADE,
 							at: p.id,
 							payload: move,
+							meta: resp.meta.includes(ResponseHeader.GAME_OVER)
+								? ResponseHeader.GAME_OVER
+								: "",
 						}),
 					);
 				}

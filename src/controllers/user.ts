@@ -332,20 +332,52 @@ export const postUpdatePassword = async (
  * Delete user account.
  * @route POST /account/delete
  */
-export const postDeleteAccount = (
+export const postDeleteAccount = async (
 	req: Request,
 	res: Response,
-	next: NextFunction,
-): void => {
+): Promise<void> => {
 	const user = req.user as UserDocument;
-	User.deleteOne({ _id: user.id }, undefined, (err) => {
-		if (err) {
-			return next(err);
-		}
-		req.logout();
-		req.flash("info", { msg: "Your account has been deleted." });
-		res.redirect("/");
+
+	const doc = await User.findByIdAndDelete(user.id);
+
+	const results = await Friend.find({
+		$or: [
+			{
+				recipient: doc._id,
+			},
+			{
+				requester: doc._id,
+			},
+		],
 	});
+
+	const ids = [];
+	for (let i = 0; i < results.length; i++) {
+		const result = results[i];
+		ids.push(result._id);
+	}
+
+	// remove any friend documents referencing user account
+	await Friend.deleteMany({
+		$or: [
+			{
+				recipient: doc._id,
+			},
+			{
+				requester: doc._id,
+			},
+		],
+	});
+
+	// clean user accounts that reference friend doc
+	await User.updateMany(
+		{ friends: { $in: ids } },
+		{ $pull: { friends: { $in: ids } } },
+	);
+
+	req.logout();
+	req.flash("info", { msg: "Your account has been deleted." });
+	res.redirect("/");
 };
 
 /**
@@ -595,13 +627,12 @@ export const postForgot = async (
 };
 
 /**
- * Update current password.
+ * Add Friend.
  * @route POST /account/friend
  */
-export const postUpdateFriends = async (
+export const postAddFriend = async (
 	req: Request,
 	res: Response,
-	next: NextFunction,
 ): Promise<void> => {
 	await check("friend", "Must Enter Valid Username")
 		.matches(USERNAME_REGEX)
@@ -617,7 +648,7 @@ export const postUpdateFriends = async (
 		return res.redirect("/account");
 	}
 
-	// //A is requesting B
+	// A is requesting B
 	const userA = req.user as UserDocument;
 	const userB = await User.findOne({ username: req.body.friend });
 
@@ -665,21 +696,24 @@ export const postUpdateFriends = async (
  * Delete user friend.
  * @route POST /account/friend/delete
  */
-export const postFriendDeleteAction = (
+export const postFriendDeleteAction = async (
 	req: Request,
 	res: Response,
-	next: NextFunction,
-): void => {
+): Promise<void> => {
 	const toDelete = req.params.id;
 	logger.debug(toDelete);
-	Friend.findByIdAndDelete({ _id: toDelete }, null, (err, doc) => {
-		if (err) {
-			return next(err);
-		}
-		logger.error(doc);
-		req.flash("info", { msg: `Friend Removed` });
-		res.redirect("/account");
-	});
+
+	//remove friend doc
+	const doc = await Friend.findByIdAndDelete(toDelete);
+
+	// clean user accounts that reference friend doc
+	await User.updateMany(
+		{ friends: doc._id },
+		{ $pull: { friends: doc._id } },
+	);
+
+	req.flash("info", { msg: `Friend Removed` });
+	res.redirect("/account");
 };
 
 /**
@@ -708,7 +742,7 @@ export const postFriendAcceptAction = (
 			if (err) {
 				return next(err);
 			}
-			logger.log(doc);
+			logger.info(doc);
 			req.flash("info", { msg: `Friend Added` });
 			res.redirect("/account");
 		},

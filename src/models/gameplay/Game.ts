@@ -168,6 +168,7 @@ export class Game {
 								`player <${id}> made move ${move.toString()}`,
 							);
 							if (res.meta.includes(ResponseHeader.GAME_OVER)) {
+								logger.info(`Game Over: Player <${id}> won`);
 								this.state = STATE.OVER;
 							}
 							this.nextTurn();

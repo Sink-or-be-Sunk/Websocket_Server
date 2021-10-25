@@ -29,18 +29,4 @@ const friendSchema = new mongoose.Schema<FriendDocument>(
 	},
 	{ timestamps: true },
 );
-
-friendSchema.pre(/[d,D]elete/, function remove(next) {
-	const query = this as unknown as mongoose.Query<any, FriendDocument>;
-	const str = query.getFilter()["_id"] as any;
-	const id = str._id;
-	User.updateMany(
-		{ friends: id },
-		{ $pull: { friends: id } },
-		undefined,
-		(err, res) => {
-			next(err);
-		},
-	);
-});
 export const Friend = mongoose.model<FriendDocument>("Friend", friendSchema);
