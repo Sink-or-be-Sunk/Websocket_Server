@@ -9,6 +9,20 @@ html(lang='')
 		meta(name='theme-color' content='#4DA5F4')
 		link(rel='stylesheet', href='/css/main.css')
 		link(rel="icon" type="image/ico" href="/images/favicon.ico")
+		//- Global site tag (gtag.js) - Google Analytics
+		script(async src="https://www.googletagmanager.com/gtag/js?id=G-00VHHSZZ10")
+		script.
+			const host = window.location.hostname;
+			if (host != "localhost") {
+				console.warn("Collecting Google Analytics Data");
+				window.dataLayer = window.dataLayer || [];
+				function gtag() {
+					dataLayer.push(arguments);
+				}
+				gtag("js", new Date());
+
+				gtag("config", "G-00VHHSZZ10");
+			}
 
 	body
 		script(src='/lib/jquery-3.1.1.min.js')
@@ -23,15 +37,3 @@ html(lang='')
 
 		include partials/footer
 
-
-		//- //TODO: Google Analytics: change UA-38177297-2 to be your site's ID
-		script.
-			window.ga = function () {
-				ga.q.push(arguments);
-			};
-			ga.q = [];
-			ga.l = +new Date();
-			ga("create", "UA-38177297-2", "auto");
-			ga("send", "pageview");
-
-		script(src='https://www.google-analytics.com/analytics.js' async defer)
