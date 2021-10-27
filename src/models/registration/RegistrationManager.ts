@@ -3,6 +3,7 @@ import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import { RegisterRequest, REGISTER_TYPE } from "./RegisterRequest";
 import { RegisterInfo, REGISTER_STATE } from "./RegisterInfo";
 import { User } from "../User";
+import logger from "../../util/logger";
 
 export class RegistrationManager {
 	static readonly TAG = "REGISTRATION";
@@ -66,26 +67,24 @@ export class RegistrationManager {
 				} else if (req.type == REGISTER_TYPE.CONFIRM) {
 					if (device.state == REGISTER_STATE.WAITING_ESP_CONFIRM) {
 						if (process.env.NODE_ENV != "test") {
-							User.findOneAndUpdate(
+							const prevOwner = await User.updateMany(
+								{
+									"profile.device": device.mcuID,
+								},
+								{ $set: { "profile.device": "" } },
+							);
+							//TODO: SEND AN EMAIL TO PREV OWNER THAT THEY NEED TO RECONNECT DEVICE BECAUSE ITS CHANGED OWNERS
+							logger.info("previous owner document:");
+							logger.info(prevOwner);
+
+							const newOwner = await User.findOneAndUpdate(
 								{
 									username: device.username,
 								},
 								{ "profile.device": device.mcuID },
-								null,
-								(err, doc) => {
-									if (err) {
-										console.error("DB Error:");
-										console.error(err);
-										return new WSServerMessage({
-											header: SERVER_HEADERS.REGISTER_ERROR,
-											at: message.id,
-											meta: "DB ERROR",
-										});
-									}
-									console.info("Updated document:");
-									console.info(doc);
-								},
 							);
+							logger.info("new owner document");
+							logger.info(newOwner);
 						}
 						this.pending.delete(tempID);
 						const list = [

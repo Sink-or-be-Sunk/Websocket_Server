@@ -36,16 +36,20 @@ export default class Lobby {
 		if (message.req == REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
 			if (this.games.has(message.id)) {
-				// return [
-				// 	new WSServerMessage({
-				// 		header: SERVER_HEADERS.GAME_ALREADY_EXISTS, //FIXME: REMOVE GAME ALREADY EXISTS, NO LONGER VALID MESSAGE
-				// 		at: message.id,
-				// 	}),
-				// ];
+				return [
+					new WSServerMessage({
+						header: SERVER_HEADERS.GAME_ALREADY_EXISTS, //FIXME: REMOVE GAME ALREADY EXISTS, NO LONGER VALID MESSAGE
+						at: message.id,
+					}),
+				];
 				return [
 					new WSServerMessage({
 						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
+						payload: {
+							opponent: "Empty Game",
+							gameType: this.games.get(message.id).rules.type,
+						},
 					}),
 				];
 			}

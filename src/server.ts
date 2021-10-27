@@ -11,6 +11,7 @@ import { DBManager } from "./models/database/DBManager";
 import { REGISTER_TYPE } from "./models/registration/RegisterRequest"; //FIXME: REMOVE THIS: FOR TESTING ONLY
 
 const connections = new Map<string, WebSocket>();
+const timeouts = new Map<string, NodeJS.Timeout>();
 
 const lobby = new Lobby();
 const registrar = new RegistrationManager();
@@ -78,11 +79,26 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			// socket in the eyes of the server
 			// TODO: add security where socket must authenticate username with password
 			// TODO: check that the user has been registered to a device
-			socket.id = msg.id;
-			connections.set(socket.id, socket);
+			if (msg.id) {
+				socket.id = msg.id;
+				connections.set(socket.id, socket);
+			} else {
+				logger.error("msg received without id!");
+				return;
+			}
 		}
 
-		assert(socket.id == msg.id, "Error: socket and msg id differ"); //FIXME: ADD A BETTER CHECK HERE
+		if (timeouts.has(socket.id)) {
+			clearTimeout(timeouts.get(socket.id));
+		}
+
+		if (socket.id != msg.id) {
+			logger.error(
+				`Ignoring message where socket id <${socket.id}> differs from msg id <${msg.id}>`,
+			);
+			return;
+		}
+		//FIXME: ADD A BETTER CHECK HERE
 		//TODO: THIS ERRORS THE SYSTEM OUT WHEN PLAYER FIRST CONNECTS TO DEVICE THEN IMMEDIATELY TRIED TO START GAME
 
 		if (dbManager.handles(msg.req)) {
@@ -117,7 +133,22 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 }
 
 function _onWSClose(ws: WebSocket) {
+	logger.warn(`Connection <${ws.id}> closed`);
+
+	logger.warn(`Connection <${ws.id}> timeout occurred`);
 	lobby.leaveGame(ws.id);
+
+	// ws.send(JSON.stringify({ header: "RECONNECT" }));
+
+	// if (timeouts.has(ws.id)) {
+	// 	clearTimeout(timeouts.get(ws.id));
+	// }
+
+	// timeouts.set(
+	// 	ws.id,
+	// 	setTimeout(() => {
+	// 	}, 5000),
+	// ); //30 second timeout for stale MCU websocket
 }
 
 function sendList(list: WSServerMessage[]) {
@@ -131,3 +162,16 @@ function sendList(list: WSServerMessage[]) {
 		}
 	}
 }
+
+setInterval(() => {
+	if (connections.size > 0) {
+		logger.info("Refreshing Sockets");
+		for (const [key, value] of connections) {
+			const msg = new WSServerMessage({
+				header: SERVER_HEADERS.REFRESH,
+				at: key,
+			});
+			value.send(JSON.stringify(msg));
+		}
+	}
+}, 10000);
