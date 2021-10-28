@@ -39,7 +39,8 @@ export class WSClientMessage {
 				object.req === REQ_TYPE.JOIN_GAME ||
 				object.req === REQ_TYPE.GAME_TYPE ||
 				object.req === REQ_TYPE.POSITION_SHIPS ||
-				object.req === REQ_TYPE.REGISTRATION
+				object.req === REQ_TYPE.REGISTRATION ||
+				object.req === REQ_TYPE.CONNECTED
 			) {
 				return true;
 			}
@@ -70,4 +71,5 @@ export enum REQ_TYPE {
 	GAME_TYPE = "GAME TYPE",
 	REGISTRATION = "REGISTRATION",
 	DATABASE = "DATABASE",
+	CONNECTED = "CONNECTED",
 }

@@ -25,6 +25,7 @@ export class DBFriend {
 export class DBManager {
 	static readonly TAG = "DATABASE";
 	static readonly INVITE_SENT = "INVITE SENT";
+	static readonly LIST_SENT = "LIST SENT";
 	private pending: Map<string, DBRequest>;
 	constructor() {
 		this.pending = new Map<string, DBRequest>();
@@ -86,6 +87,7 @@ export class DBManager {
 						header: SERVER_HEADERS.DATABASE_SUCCESS,
 						at: message.id,
 						payload: list,
+						meta: DBManager.LIST_SENT,
 					}),
 				];
 			} else if (req.type == DB_REQ_TYPE.INVITE_TO_GAME) {

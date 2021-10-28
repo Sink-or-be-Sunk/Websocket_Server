@@ -33,6 +33,8 @@ import { ZlibOptions } from "zlib";
 declare class WebSocket extends EventEmitter {
     /** Comes from the client username */
     public id: string;
+    /** Number of missed connections from web socket */
+    public dropped: number;
     /** The connection is not yet open. */
     static readonly CONNECTING: 0;
     /** The connection is open and ready to communicate. */

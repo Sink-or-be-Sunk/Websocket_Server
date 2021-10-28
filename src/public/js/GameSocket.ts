@@ -19,6 +19,7 @@ class GameSocket {
 	private readonly SOCKET_NOT_OPEN =
 		"Must wait for socket to be open before sending message";
 	// CLIENT HEADERS
+	private readonly CONNECTED = "CONNECTED";
 	private readonly NEW_GAME = "NEW GAME";
 	private readonly MAKE_MOVE = "MAKE MOVE";
 	private readonly POSITION_SHIPS = "POSITION SHIPS";
@@ -62,7 +63,24 @@ class GameSocket {
 
 		this.socket.onopen = (event: any) => {
 			console.log(event);
+			this.configureConnection();
 		};
+	}
+
+	private configureConnection() {
+		const obj = { req: this.CONNECTED, id: this.uid };
+		const str = JSON.stringify(obj);
+
+		this.socket.send(str);
+		const interval = setInterval(() => {
+			if (this.socket.readyState == this.socket.OPEN) {
+				this.socket.send(str);
+			} else {
+				console.error("Websocket Disconnected.  Please Refresh Page");
+				clearInterval(interval);
+			}
+			// this._send(obj); //TODO: MAYBE UPDATE THIS BACK TO COMMON _send() FUNCTION BUT REALLY ANNOYING CONSOLE LOGS
+		}, 1000);
 	}
 
 	private _onmessage(event: any) {
