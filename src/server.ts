@@ -100,8 +100,10 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 		}
 		//FIXME: ADD A BETTER CHECK HERE
 		//TODO: THIS ERRORS THE SYSTEM OUT WHEN PLAYER FIRST CONNECTS TO DEVICE THEN IMMEDIATELY TRIED TO START GAME
-
-		if (dbManager.handles(msg.req)) {
+		if (msg.req == REQ_TYPE.CONNECTED) {
+			logger.debug(`Device connected: ${msg.id}`);
+		}
+		else if (dbManager.handles(msg.req)) {
 			const list = await dbManager.handleReq(msg);
 			sendList(list);
 		} else if (lobby.handles(msg.req)) {
@@ -163,15 +165,15 @@ function sendList(list: WSServerMessage[]) {
 	}
 }
 
-setInterval(() => {
-	if (connections.size > 0) {
-		logger.info("Refreshing Sockets");
-		for (const [key, value] of connections) {
-			const msg = new WSServerMessage({
-				header: SERVER_HEADERS.REFRESH,
-				at: key,
-			});
-			value.send(JSON.stringify(msg));
-		}
-	}
-}, 10000);
+// setInterval(() => {
+// 	if (connections.size > 0) {
+// 		logger.info("Refreshing Sockets");
+// 		for (const [key, value] of connections) {
+// 			const msg = new WSServerMessage({
+// 				header: SERVER_HEADERS.REFRESH,
+// 				at: key,
+// 			});
+// 			value.send(JSON.stringify(msg));
+// 		}
+// 	}
+// }, 10000);
