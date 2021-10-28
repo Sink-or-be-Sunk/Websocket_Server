@@ -38,12 +38,6 @@ export default class Lobby {
 			if (this.games.has(message.id)) {
 				return [
 					new WSServerMessage({
-						header: SERVER_HEADERS.GAME_ALREADY_EXISTS, //FIXME: REMOVE GAME ALREADY EXISTS, NO LONGER VALID MESSAGE
-						at: message.id,
-					}),
-				];
-				return [
-					new WSServerMessage({
 						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
 						payload: {

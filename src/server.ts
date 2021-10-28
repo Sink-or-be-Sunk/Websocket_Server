@@ -81,6 +81,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			// TODO: check that the user has been registered to a device
 			if (msg.id) {
 				socket.id = msg.id;
+				socket.dropped = 0;
 				connections.set(socket.id, socket);
 			} else {
 				logger.error("msg received without id!");
@@ -88,9 +89,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			}
 		}
 
-		if (timeouts.has(socket.id)) {
-			clearTimeout(timeouts.get(socket.id));
-		}
+		socket.dropped = 0;
 
 		if (socket.id != msg.id) {
 			logger.error(
@@ -101,9 +100,8 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 		//FIXME: ADD A BETTER CHECK HERE
 		//TODO: THIS ERRORS THE SYSTEM OUT WHEN PLAYER FIRST CONNECTS TO DEVICE THEN IMMEDIATELY TRIED TO START GAME
 		if (msg.req == REQ_TYPE.CONNECTED) {
-			logger.debug(`Device connected: ${msg.id}`);
-		}
-		else if (dbManager.handles(msg.req)) {
+			// logger.debug(`Device connected: ${msg.id}`);
+		} else if (dbManager.handles(msg.req)) {
 			const list = await dbManager.handleReq(msg);
 			sendList(list);
 		} else if (lobby.handles(msg.req)) {
@@ -137,8 +135,8 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 function _onWSClose(ws: WebSocket) {
 	logger.warn(`Connection <${ws.id}> closed`);
 
-	logger.warn(`Connection <${ws.id}> timeout occurred`);
-	lobby.leaveGame(ws.id);
+	// logger.warn(`Connection <${ws.id}> timeout occurred`);
+	// lobby.leaveGame(ws.id);
 
 	// ws.send(JSON.stringify({ header: "RECONNECT" }));
 
@@ -165,15 +163,16 @@ function sendList(list: WSServerMessage[]) {
 	}
 }
 
-// setInterval(() => {
-// 	if (connections.size > 0) {
-// 		logger.info("Refreshing Sockets");
-// 		for (const [key, value] of connections) {
-// 			const msg = new WSServerMessage({
-// 				header: SERVER_HEADERS.REFRESH,
-// 				at: key,
-// 			});
-// 			value.send(JSON.stringify(msg));
-// 		}
-// 	}
-// }, 10000);
+/** Check Connections at 1Hz to determine if connection has timed out */
+setInterval(() => {
+	// logger.debug(`Number of Connections: ${connections.size}`);
+	for (const [id, connection] of connections) {
+		// logger.debug(`<${id}> has dropped <${connection.dropped}>`);
+		if (connection.dropped > 10) {
+			logger.error(`Connection to <${id}> timed out!`);
+			lobby.leaveGame(id); // This does nothing when player isn't apart of any game
+			connections.delete(id);
+		}
+		connection.dropped++;
+	}
+}, 1000);
