@@ -503,8 +503,15 @@ export const postReset = async (
 				const mailOptions = {
 					to: user.email,
 					from: "SinkOrBeSunk@gmail.com",
-					subject: "Your password has been changed",
-					text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`,
+					// subject: "Your password has been changed",
+					templateId: "d-903f079d201f4654b6f4d96eb6ea6cc6",
+					dynamicTemplateData: {
+						username:
+							user.profile?.name == ""
+								? user.username
+								: user.profile.name,
+					},
+					// text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`,
 				};
 				sgMail.send(mailOptions, undefined, (err) => {
 					req.flash("success", {

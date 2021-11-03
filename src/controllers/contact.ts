@@ -47,14 +47,24 @@ export const postContact = async (req: Request, res: Response) => {
 		opponent: "TEST",
 	};
 
+	// const mailOptions = {
+	// 	to: "SinkOrBeSunk@gmail.com",
+	// 	from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
+	// 	// subject: "Contact Form",
+	// 	templateId: "d-903f079d201f4654b6f4d96eb6ea6cc6",
+	// 	dynamicTemplateData: {
+	// 		...emailData,
+	// 	},
+	// };
 	const mailOptions = {
-		to: "SinkOrBeSunk@gmail.com",
+		to: req.body.email,
 		from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
-		subject: "Contact Form",
+		// subject: "Contact Form",
 
-		templateId: "d-76fabe69dd374d1393c43d101205843f",
+		// templateId: "d-76fabe69dd374d1393c43d101205843f",
+		templateId: "d-903f079d201f4654b6f4d96eb6ea6cc6",
 		dynamicTemplateData: {
-			...emailData,
+			username: req.body.name,
 		},
 	};
 
