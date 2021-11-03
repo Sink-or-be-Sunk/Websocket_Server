@@ -33,39 +33,12 @@ export const postContact = async (req: Request, res: Response) => {
 
 	const body = `from: ${req.body.name} <${req.body.email}>\ncontent: ${req.body.message}`;
 
-	// const mailOptions = {
-	// 	to: "SinkOrBeSunk@gmail.com",
-	// 	from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
-	// 	subject: "Contact Form",
-
-	// 	text: body, //this is an internal email, probably don't need a template for it
-	// };
-
-	//TODO: YOU WIN TEMPLATE WORKING
-	const emailData = {
-		player: _.startCase(_.toLower(req.body.name)),
-		opponent: "TEST",
-	};
-
-	// const mailOptions = {
-	// 	to: "SinkOrBeSunk@gmail.com",
-	// 	from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
-	// 	// subject: "Contact Form",
-	// 	templateId: "d-903f079d201f4654b6f4d96eb6ea6cc6",
-	// 	dynamicTemplateData: {
-	// 		...emailData,
-	// 	},
-	// };
 	const mailOptions = {
-		to: req.body.email,
+		to: "SinkOrBeSunk@gmail.com",
 		from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
-		// subject: "Contact Form",
+		subject: "Contact Form",
 
-		// templateId: "d-76fabe69dd374d1393c43d101205843f",
-		templateId: "d-903f079d201f4654b6f4d96eb6ea6cc6",
-		dynamicTemplateData: {
-			username: req.body.name,
-		},
+		text: body, //this is an internal email, probably don't need a template for it
 	};
 
 	sgMail.send(mailOptions, undefined, (err) => {
