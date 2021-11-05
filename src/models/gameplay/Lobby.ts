@@ -12,6 +12,7 @@ import { Move } from "./Move";
 import logger from "../../util/logger";
 
 export default class Lobby {
+	public static readonly EMPTY_GAME_MSG = "Empty Game";
 	games: Map<string, Game>;
 
 	constructor() {
@@ -41,7 +42,7 @@ export default class Lobby {
 						header: SERVER_HEADERS.JOINED_GAME,
 						at: message.id,
 						payload: {
-							opponent: "Empty Game",
+							opponent: Lobby.EMPTY_GAME_MSG,
 							gameType: this.games.get(message.id).rules.type,
 						},
 					}),
@@ -71,6 +72,10 @@ export default class Lobby {
 					}),
 				];
 				list.push(...this.broadcastMove(message.id, move, resp));
+
+				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
+					this.endGame(message.id);
+				}
 				return list;
 			} else {
 				return [
@@ -152,6 +157,16 @@ export default class Lobby {
 			}
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
+		}
+	}
+
+	private endGame(playerID) {
+		for (const [id, game] of this.games) {
+			const player = game.getPlayerByID(playerID);
+			if (player) {
+				this.games.delete(id);
+				return;
+			}
 		}
 	}
 

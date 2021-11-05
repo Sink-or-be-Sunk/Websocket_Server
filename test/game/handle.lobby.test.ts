@@ -55,6 +55,10 @@ describe("Handle Lobby Requests ", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
 				at: obj.id,
+				payload: {
+					opponent: Lobby.EMPTY_GAME_MSG,
+					gameType: GAME_TYPE.CLASSIC,
+				},
 			}),
 		];
 		expect(resp.toString()).toEqual(result.toString());
