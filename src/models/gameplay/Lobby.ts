@@ -10,6 +10,8 @@ import { WSServerMessage, SERVER_HEADERS } from "../../util/WSServerMessage";
 import Player from "./Player";
 import { Move } from "./Move";
 import logger from "../../util/logger";
+import { User } from "../User";
+import sgMail from "@sendgrid/mail";
 
 export default class Lobby {
 	public static readonly EMPTY_GAME_MSG = "Empty Game";
@@ -33,7 +35,9 @@ export default class Lobby {
 		}
 	}
 
-	public handleReq(message: WSClientMessage): WSServerMessage[] {
+	public async handleReq(
+		message: WSClientMessage,
+	): Promise<WSServerMessage[]> {
 		if (message.req == REQ_TYPE.NEW_GAME) {
 			//attempt to create new game
 			if (this.games.has(message.id)) {
@@ -74,7 +78,7 @@ export default class Lobby {
 				list.push(...this.broadcastMove(message.id, move, resp));
 
 				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
-					this.endGame(message.id);
+					this.endGame(message.id); //caution, this is async
 				}
 				return list;
 			} else {
@@ -160,14 +164,68 @@ export default class Lobby {
 		}
 	}
 
-	private endGame(playerID) {
-		for (const [id, game] of this.games) {
+	private getGameByPlayerID(playerID: string): Game | undefined {
+		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
-				this.games.delete(id);
-				return;
+				return game;
 			}
 		}
+		return undefined;
+	}
+
+	private async endGame(playerID: string) {
+		const game = this.getGameByPlayerID(playerID);
+		const winner = game.getPlayerByID(playerID);
+		const looser = game.getOpponent(playerID);
+		if (winner && looser) {
+			const winnerDoc = await User.findOne({ username: winner.id });
+			const looserDoc = await User.findOne({ username: looser.id });
+
+			const winnerName = winnerDoc.profile?.name
+				? winnerDoc.profile.name
+				: winnerDoc.username;
+			const looserName = looserDoc.profile?.name
+				? looserDoc.profile.name
+				: looserDoc.username;
+
+			const winnerEmail = {
+				to: winnerDoc.email,
+				from: "SinkOrBeSunkRobot@gmail.com",
+				templateId: "d-1e6cfed4fce14d6dab19c711cc3ee91d",
+				dynamicTemplateData: {
+					player: winnerName,
+					opponent: looserName,
+				},
+			};
+
+			sgMail.send(winnerEmail, undefined, (err) => {
+				if (err) {
+					logger.error(`Email Send Error: ${err.message}`);
+				}
+				logger.info("Email has been sent successfully!");
+			});
+
+			const looserEmail = {
+				to: looserDoc.email,
+				from: "SinkOrBeSunkRobot@gmail.com",
+				templateId: "d-95adbce222b2448d8aad5b92da617ad3",
+				dynamicTemplateData: {
+					player: looserName,
+					opponent: winnerName,
+				},
+			};
+
+			sgMail.send(looserEmail, undefined, (err) => {
+				if (err) {
+					logger.error(`Email Send Error: ${err.message}`);
+				}
+				logger.info("Email has been sent successfully!");
+			});
+			//TODO: get game summary (boats sunk for each player)
+			//TODO: update wins/losses in db
+		}
+		this.games.delete(game.id);
 	}
 
 	/**

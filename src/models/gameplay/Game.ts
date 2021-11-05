@@ -136,6 +136,21 @@ export class Game {
 	}
 
 	/**
+	 * Get the opposing player from the current players id
+	 * //FIXME: THIS DOESN'T WORK FOR MORE THAN 2 PLAYERS
+	 * @param id of target player
+	 * @returns player object that is the opponent of player id
+	 */
+	getOpponent(id: string): Player | false {
+		for (let i = 0; i < this.players.length; i++) {
+			const player = this.players[i];
+			if (player.id != id) {
+				return player;
+			}
+		}
+	}
+
+	/**
 	 * Gets a player's game board by their id
 	 * @param id - id of player
 	 * @returns board of player if player is in game, false otherwise
