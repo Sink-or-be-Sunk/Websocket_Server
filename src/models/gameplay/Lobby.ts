@@ -122,6 +122,7 @@ export default class Lobby {
 				const list = [];
 				if (resp.meta.includes(ResponseHeader.GAME_STARTED)) {
 					list.push(...this.broadcastGameStarted(message.id));
+					list.push(...this.broadcastBoards(message.id));
 				} else {
 					list.push(
 						new WSServerMessage({
