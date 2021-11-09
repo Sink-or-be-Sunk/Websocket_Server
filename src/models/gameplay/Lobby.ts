@@ -77,6 +77,8 @@ export default class Lobby {
 				];
 				list.push(...this.broadcastMove(message.id, move, resp));
 
+				list.push(...this.broadcastBoards(message.id));
+
 				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
 					this.endGame(message.id); //caution, this is async
 				}
@@ -281,6 +283,34 @@ export default class Lobby {
 						}),
 					);
 				}
+				return list;
+			}
+		}
+		throw new Error(
+			"Couldn't find source game to broadcast move: this should never happen",
+		);
+	}
+
+	private broadcastBoards(sourceID: string): WSServerMessage[] {
+		for (const [, game] of this.games) {
+			const player = game.getPlayerByID(sourceID);
+			if (player) {
+				//found game
+				const list = [];
+
+				const boards = game.getBoards();
+
+				for (let i = 0; i < boards.length; i++) {
+					const board = boards[i];
+					list.push(
+						new WSServerMessage({
+							header: SERVER_HEADERS.BOARD_UPDATE,
+							at: board.id,
+							meta: board.str,
+						}),
+					);
+				}
+
 				return list;
 			}
 		}

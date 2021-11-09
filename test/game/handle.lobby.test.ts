@@ -40,7 +40,7 @@ describe("Handle Lobby Requests ", () => {
 				payload: { opponent: obj.id, gameType: GAME_TYPE.CLASSIC },
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -112,7 +112,7 @@ describe("Handle Lobby Requests ", () => {
 				meta: obj.data,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -135,7 +135,7 @@ describe("Handle Lobby Requests ", () => {
 				at: obj.id,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -162,7 +162,7 @@ describe("Handle Lobby Requests ", () => {
 				at: obj.id,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -194,8 +194,18 @@ describe("Handle Lobby Requests ", () => {
 				at: move.to,
 				payload: move_res,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: obj.id,
+				meta: "FFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: move.to,
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -227,8 +237,18 @@ describe("Handle Lobby Requests ", () => {
 				at: move.to,
 				payload: move_res,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: move.to,
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: obj.id,
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
