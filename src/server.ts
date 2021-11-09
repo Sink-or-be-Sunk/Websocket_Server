@@ -105,7 +105,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			const list = await dbManager.handleReq(msg);
 			sendList(list);
 		} else if (lobby.handles(msg.req)) {
-			const list = lobby.handleReq(msg);
+			const list = await lobby.handleReq(msg);
 			sendList(list);
 		} else if (registrar.handles(msg.req)) {
 			const list = await registrar.handleReq(msg);

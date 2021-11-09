@@ -16,10 +16,10 @@ import { ShipType, SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
 describe("Mimic Game Play From Two Web Players", () => {
 	const lobby = new Lobby();
 
-	it("Accepts New Game Request", () => {
+	it("Accepts New Game Request", async () => {
 		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_CREATED,
@@ -29,10 +29,10 @@ describe("Mimic Game Play From Two Web Players", () => {
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
-	it("Accept Join Game Request", () => {
+	it("Accept Join Game Request", async () => {
 		const obj = { req: REQ_TYPE.JOIN_GAME, id: "two", data: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
@@ -52,7 +52,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		}
 	});
 
-	it("Allow Player 1 to position ships", () => {
+	it("Allow Player 1 to position ships", async () => {
 		const list = [];
 		list.push(new Position(0, 0, POSITION_TYPE.PATROL));
 		list.push(new Position(0, 1, POSITION_TYPE.PATROL));
@@ -65,7 +65,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
@@ -79,7 +79,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		}
 	});
 
-	it("Allow Player 2 to position ships", () => {
+	it("Allow Player 2 to position ships", async () => {
 		const list = [];
 		list.push(new Position(0, 0, POSITION_TYPE.PATROL));
 		list.push(new Position(0, 1, POSITION_TYPE.PATROL));
@@ -92,7 +92,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
@@ -110,7 +110,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		}
 	});
 
-	it("Allow Player 1 to make a move", () => {
+	it("Allow Player 1 to make a move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -123,7 +123,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -143,7 +143,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		}
 	});
 
-	it("Allow Player 2 to make a move", () => {
+	it("Allow Player 2 to make a move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 7,
@@ -156,7 +156,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -176,7 +176,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		}
 	});
 
-	it("Allow Player 1 to sink PT boat", () => {
+	it("Allow Player 1 to sink PT boat", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -190,7 +190,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -214,10 +214,10 @@ describe("Mimic Game Play From Two Web Players", () => {
 describe("Game Two Web Players with different setup message order", () => {
 	const lobby = new Lobby();
 
-	it("Accepts New Game Request", () => {
+	it("Accepts New Game Request", async () => {
 		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_CREATED,
@@ -227,14 +227,14 @@ describe("Game Two Web Players with different setup message order", () => {
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
-	it("Accepts Change to Basic Game Mode", () => {
+	it("Accepts Change to Basic Game Mode", async () => {
 		const obj = {
 			req: REQ_TYPE.GAME_TYPE,
 			id: "one",
 			data: GAME_TYPE.BASIC,
 		};
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,
@@ -245,7 +245,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
-	it("Allow Player 1 to position ships", () => {
+	it("Allow Player 1 to position ships", async () => {
 		const list = [];
 		list.push(new Position(0, 0, POSITION_TYPE.PATROL));
 		list.push(new Position(0, 1, POSITION_TYPE.PATROL));
@@ -254,7 +254,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
@@ -268,10 +268,10 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Accept Join Game Request", () => {
+	it("Accept Join Game Request", async () => {
 		const obj = { req: REQ_TYPE.JOIN_GAME, id: "two", data: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
@@ -291,7 +291,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 2 to position ships", () => {
+	it("Allow Player 2 to position ships", async () => {
 		const list = [];
 		list.push(new Position(0, 0, POSITION_TYPE.PATROL));
 		list.push(new Position(0, 1, POSITION_TYPE.PATROL));
@@ -300,7 +300,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
@@ -318,7 +318,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 1 to make first move", () => {
+	it("Allow Player 1 to make first move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -331,7 +331,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -351,7 +351,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 2 to make first move", () => {
+	it("Allow Player 2 to make first move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -364,7 +364,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -384,7 +384,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 1 to make 2nd move", () => {
+	it("Allow Player 1 to make 2nd move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -398,7 +398,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -418,7 +418,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 2 to make 2nd move", () => {
+	it("Allow Player 2 to make 2nd move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -432,7 +432,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -452,7 +452,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 1 to make 3nd move", () => {
+	it("Allow Player 1 to make 3nd move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
@@ -465,7 +465,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -485,7 +485,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 2 to make 3nd move", () => {
+	it("Allow Player 2 to make 3nd move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
@@ -498,7 +498,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -518,7 +518,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 1 to make 4th move", () => {
+	it("Allow Player 1 to make 4th move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
@@ -531,7 +531,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -551,7 +551,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 2 to make 4th move", () => {
+	it("Allow Player 2 to make 4th move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
@@ -564,7 +564,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -584,7 +584,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 1 to make 5th move", () => {
+	it("Allow Player 1 to make 5th move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,
@@ -598,7 +598,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,

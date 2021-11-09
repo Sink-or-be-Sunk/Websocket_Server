@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { check, validationResult } from "express-validator";
 import sgMail from "@sendgrid/mail";
+import logger from "../util/logger";
+import _ from "lodash";
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 /**
@@ -35,7 +37,8 @@ export const postContact = async (req: Request, res: Response) => {
 		to: "SinkOrBeSunk@gmail.com",
 		from: "SinkOrBeSunkRobot@gmail.com", //this would be the robot account (sender only)
 		subject: "Contact Form",
-		text: body,
+
+		text: body, //this is an internal email, probably don't need a template for it
 	};
 
 	sgMail.send(mailOptions, undefined, (err) => {

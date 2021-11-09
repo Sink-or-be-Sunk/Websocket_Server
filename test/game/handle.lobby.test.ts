@@ -11,10 +11,10 @@ import {
 describe("Handle Lobby Requests ", () => {
 	const lobby = new Lobby();
 
-	it("Accepts New Game Request", () => {
+	it("Accepts New Game Request", async () => {
 		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_CREATED,
@@ -24,10 +24,10 @@ describe("Handle Lobby Requests ", () => {
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
-	it("Accept Join Game Request", () => {
+	it("Accept Join Game Request", async () => {
 		const obj = { req: REQ_TYPE.JOIN_GAME, id: "two", data: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
@@ -40,30 +40,34 @@ describe("Handle Lobby Requests ", () => {
 				payload: { opponent: obj.id, gameType: GAME_TYPE.CLASSIC },
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
 	});
 
-	it("Accepts Duplicate New Game Request", () => {
+	it("Accepts Duplicate New Game Request", async () => {
 		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.JOINED_GAME,
 				at: obj.id,
+				payload: {
+					opponent: Lobby.EMPTY_GAME_MSG,
+					gameType: GAME_TYPE.CLASSIC,
+				},
 			}),
 		];
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
-	it("Reject Join Game Request from Player One already in game", () => {
+	it("Reject Join Game Request from Player One already in game", async () => {
 		const obj = { req: REQ_TYPE.JOIN_GAME, id: "one", data: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.INVALID_JOIN,
@@ -73,10 +77,10 @@ describe("Handle Lobby Requests ", () => {
 		];
 		expect(resp.toString()).toEqual(result.toString());
 	});
-	it("Reject Join Game Request from Player Two already in game", () => {
+	it("Reject Join Game Request from Player Two already in game", async () => {
 		const obj = { req: REQ_TYPE.JOIN_GAME, id: "two", data: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.INVALID_JOIN,
@@ -87,7 +91,7 @@ describe("Handle Lobby Requests ", () => {
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
-	it("Allow Player 1 to change game type", () => {
+	it("Allow Player 1 to change game type", async () => {
 		const obj = {
 			req: REQ_TYPE.GAME_TYPE,
 			id: "one",
@@ -95,7 +99,7 @@ describe("Handle Lobby Requests ", () => {
 		};
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,
@@ -108,14 +112,14 @@ describe("Handle Lobby Requests ", () => {
 				meta: obj.data,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
 	});
 
-	it("Allow Player 1 to position ships", () => {
+	it("Allow Player 1 to position ships", async () => {
 		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
 		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
 		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
@@ -124,21 +128,21 @@ describe("Handle Lobby Requests ", () => {
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
 	});
 
-	it("Allow Player 2 to position ships", () => {
+	it("Allow Player 2 to position ships", async () => {
 		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
 		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
 		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
@@ -147,7 +151,7 @@ describe("Handle Lobby Requests ", () => {
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
@@ -157,15 +161,25 @@ describe("Handle Lobby Requests ", () => {
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: obj.id,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "FFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "FFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
 	});
 
-	it("Allow Player 1 to make a move", () => {
+	it("Allow Player 1 to make a move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -178,7 +192,7 @@ describe("Handle Lobby Requests ", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -190,15 +204,25 @@ describe("Handle Lobby Requests ", () => {
 				at: move.to,
 				payload: move_res,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: obj.id,
+				meta: "FFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: move.to,
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
 	});
 
-	it("Allow Player 2 to make a move", () => {
+	it("Allow Player 2 to make a move", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -211,7 +235,7 @@ describe("Handle Lobby Requests ", () => {
 		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
-		const responses = lobby.handleReq(msg);
+		const responses = await lobby.handleReq(msg);
 		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
@@ -223,15 +247,25 @@ describe("Handle Lobby Requests ", () => {
 				at: move.to,
 				payload: move_res,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: move.to,
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: obj.id,
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
 		}
 	});
 
-	it("Player 2 Tries to Make Move when its Player 1's Turn", () => {
+	it("Player 2 Tries to Make Move when its Player 1's Turn", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 0,
@@ -244,7 +278,7 @@ describe("Handle Lobby Requests ", () => {
 			data: move,
 		};
 		const msg = new WSClientMessage(JSON.stringify(req));
-		const resp = lobby.handleReq(msg);
+		const resp = await lobby.handleReq(msg);
 		const result = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.INVALID_MOVE,

@@ -187,10 +187,14 @@ export class Board {
 }
 
 export enum BOARD_STATE {
-	EMPTY = " ",
+	EMPTY = "E",
 	FILLED = "F",
 	HIT = "H",
 	MISS = "M",
+	// EMPTY = 0,
+	// FILLED = 1,
+	// HIT = 2,
+	// MISS = 3,
 }
 
 /**

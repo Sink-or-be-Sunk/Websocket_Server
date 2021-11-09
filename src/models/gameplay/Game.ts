@@ -136,6 +136,21 @@ export class Game {
 	}
 
 	/**
+	 * Get the opposing player from the current players id
+	 * //FIXME: THIS DOESN'T WORK FOR MORE THAN 2 PLAYERS
+	 * @param id of target player
+	 * @returns player object that is the opponent of player id
+	 */
+	getOpponent(id: string): Player | false {
+		for (let i = 0; i < this.players.length; i++) {
+			const player = this.players[i];
+			if (player.id != id) {
+				return player;
+			}
+		}
+	}
+
+	/**
 	 * Gets a player's game board by their id
 	 * @param id - id of player
 	 * @returns board of player if player is in game, false otherwise
@@ -148,6 +163,27 @@ export class Game {
 			}
 		}
 		return false;
+	}
+
+	getBoards(): ResponseBoard[] {
+		const responses = [];
+		for (let i = 0; i < this.boards.length; i++) {
+			const board = this.boards[i];
+			const opponent = this.getOpponent(board.id);
+			let found = false;
+			if (opponent) {
+				const opponentBoard = this.getBoardByID(opponent.id);
+				if (opponentBoard) {
+					responses.push(new ResponseBoard(board, opponentBoard));
+					found = true;
+				}
+			}
+
+			if (!found) {
+				throw new Error("Invalid Attempt to Build Response Board!");
+			}
+		}
+		return responses;
 	}
 
 	/**
@@ -418,6 +454,27 @@ export class Rules {
 			}
 		}
 		return count;
+	}
+}
+
+export class ResponseBoard {
+	readonly id: string;
+	readonly str: string;
+	constructor(mine: Board, opponent: Board) {
+		this.id = mine.id;
+		this.str = this.boardToStr(mine) + this.boardToStr(opponent);
+	}
+
+	private boardToStr(board: Board): string {
+		let str = "";
+		for (let i = 0; i < board.grid.length; i++) {
+			const squares = board.grid[i];
+			for (let j = 0; j < squares.length; j++) {
+				const square = squares[j];
+				str += square.state;
+			}
+		}
+		return str;
 	}
 }
 export class Response {

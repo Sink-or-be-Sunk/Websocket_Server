@@ -503,8 +503,14 @@ export const postReset = async (
 				const mailOptions = {
 					to: user.email,
 					from: "SinkOrBeSunk@gmail.com",
-					subject: "Your password has been changed",
-					text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`,
+					// subject: "Your password has been changed",
+					templateId: "d-903f079d201f4654b6f4d96eb6ea6cc6",
+					dynamicTemplateData: {
+						username: user.profile?.name
+							? user.profile.name
+							: user.username,
+					},
+					// text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`,
 				};
 				sgMail.send(mailOptions, undefined, (err) => {
 					req.flash("success", {
@@ -603,12 +609,20 @@ export const postForgot = async (
 				const mailOptions = {
 					to: user.email,
 					from: "SinkOrBeSunk@gmail.com",
-					subject: "Reset your password on Sink or be Sunk",
-					text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
-          Please click on the following link, or paste this into your browser to complete the process:\n\n
-          http://${req.headers.host}/reset/${token}\n\n
-          If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+					// subject: "Reset your password on Sink or be Sunk",
+					// text: `You are receiving this email because you (or someone else) have requested the reset of the password for your account.\n\n
+					//   Please click on the following link, or paste this into your browser to complete the process:\n\n
+					//   http://${req.headers.host}/reset/${token}\n\n
+					//   If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+					templateId: "d-0ed0da5c94c143438946cdc98beee76b",
+					dynamicTemplateData: {
+						username: user.profile?.name
+							? user.profile.name
+							: user.username,
+						reset_link: `http://${req.headers.host}/reset/${token}`,
+					},
 				};
+				logger.debug("Sending Password Reset Email");
 				sgMail.send(mailOptions, undefined, (err) => {
 					req.flash("info", {
 						msg: `An e-mail has been sent to ${user.email} with further instructions.`,

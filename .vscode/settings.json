@@ -27,5 +27,6 @@
   "appService.zipIgnorePattern": [".vscode{,/**}"],
   "appService.deploySubpath": "",
   "workbench.editor.showTabs": true,
-  "cSpell.words": ["gameplay", "ssid"]
+  "cSpell.words": ["gameplay", "ssid"],
+  "liveServer.settings.port": 5501
 }
