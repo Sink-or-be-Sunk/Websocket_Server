@@ -84,6 +84,7 @@ export class Board {
 			}
 		}
 		move.result = MOVE_RESULT.MISS;
+		this.grid[move.c][move.r].miss();
 		return new Response(true, ResponseHeader.MISS);
 	}
 
