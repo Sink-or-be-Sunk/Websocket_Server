@@ -162,6 +162,8 @@ export default class Lobby {
 					}),
 				];
 			}
+		} else if (message.req == REQ_TYPE.LEAVE_GAME) {
+			return this.leaveGame(message.id);
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
@@ -441,7 +443,8 @@ export default class Lobby {
 		}
 	}
 
-	public leaveGame(socketID: string): void {
+	public leaveGame(socketID: string): WSServerMessage[] {
+		const list = [];
 		const game = this.games.get(socketID);
 		if (game) {
 			logger.warn(`Host <${socketID}> Ended Game by Leaving`);
@@ -450,24 +453,41 @@ export default class Lobby {
 				const player = game.players[i];
 				if (player.id != socketID) {
 					logger.warn(`Booting Player: <${player.id}>`);
-					//TODO: SEND WS MESSAGE TO PLAYERS KICKED FROM GAME
+					list.push(
+						new WSServerMessage({
+							header: SERVER_HEADERS.LEFT_GAME,
+							at: player.id,
+							meta: socketID,
+						}),
+					);
 				}
 			}
 			this.games.delete(socketID); //remove game from lobby
-		}
-		for (const [gameID, game] of this.games) {
-			const players = game.players;
-			for (let j = 0; j < players.length; j++) {
-				const player = players[j];
-				if (player.id == socketID) {
-					if (game.remove(player)) {
-						logger.warn(
-							`Game #${gameID}<${game.id}> removed from Lobby`,
-						);
-						//TODO: SEND WS MESSAGE TO PLAYERS STILL IN GAME
+		} else {
+			for (const [gameID, game] of this.games) {
+				const players = game.players;
+				for (let j = 0; j < players.length; j++) {
+					const player = players[j];
+					if (player.id == socketID) {
+						for (let k = 0; k < players.length; k++) {
+							const player = players[k];
+							list.push(
+								new WSServerMessage({
+									header: SERVER_HEADERS.LEFT_GAME,
+									at: player.id,
+									meta: socketID,
+								}),
+							);
+						}
+						if (game.remove(player)) {
+							logger.warn(
+								`Game #${gameID}<${game.id}> removed from Lobby`,
+							);
+						}
 					}
 				}
 			}
 		}
+		return list;
 	}
 }
