@@ -452,16 +452,15 @@ export default class Lobby {
 			//player leaving game is the "game owner"/created the game
 			for (let i = 0; i < game.players.length; i++) {
 				const player = game.players[i];
-				if (player.id != socketID) {
-					logger.warn(`Booting Player: <${player.id}>`);
-					list.push(
-						new WSServerMessage({
-							header: SERVER_HEADERS.LEFT_GAME,
-							at: player.id,
-							meta: socketID,
-						}),
-					);
-				}
+
+				logger.warn(`Booting Player: <${player.id}>`);
+				list.push(
+					new WSServerMessage({
+						header: SERVER_HEADERS.LEFT_GAME,
+						at: player.id,
+						meta: socketID,
+					}),
+				);
 			}
 			this.games.delete(socketID); //remove game from lobby
 		} else {
