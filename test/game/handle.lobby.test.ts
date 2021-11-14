@@ -258,11 +258,6 @@ describe("Handle Lobby Requests ", () => {
 				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
 			}),
 		];
-		for (let i = 0; i < responses.length; i++) {
-			const result = results[i];
-			const resp = responses[i];
-			expect(resp).toEqual(result);
-		}
 	});
 
 	it("Player 2 Tries to Make Move when its Player 1's Turn", async () => {
@@ -287,5 +282,32 @@ describe("Handle Lobby Requests ", () => {
 			}),
 		];
 		expect(resp.toString()).toEqual(result.toString());
+	});
+
+	it("Player 2 Leaves the Game", async () => {
+		const req = {
+			id: "two",
+			req: REQ_TYPE.LEAVE_GAME,
+		};
+		const msg = new WSClientMessage(JSON.stringify(req));
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.LEFT_GAME,
+				at: "one",
+				meta: req.id,
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.LEFT_GAME,
+				at: req.id,
+				meta: req.id,
+			}),
+		];
+		expect(results.length).toEqual(responses.length);
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
 	});
 });
