@@ -284,6 +284,49 @@ describe("Handle Lobby Requests ", () => {
 		expect(resp.toString()).toEqual(result.toString());
 	});
 
+	it("Allow Player 1 to make a move resulting in miss", async () => {
+		const move = {
+			type: MOVE_TYPE.SOLO,
+			c: 0,
+			r: 5,
+			to: "two",
+		};
+		const move_res = new Move(move);
+		move_res.from = "one";
+		move_res.result = MOVE_RESULT.MISS;
+		const obj = { req: REQ_TYPE.MAKE_MOVE, id: move_res.from, data: move };
+		const str = JSON.stringify(obj);
+		const msg = new WSClientMessage(str);
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.MOVE_MADE,
+				at: obj.id,
+				payload: move_res,
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.MOVE_MADE,
+				at: move.to,
+				payload: move_res,
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEMEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "HFEEEMEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
 	it("Player 2 Leaves the Game", async () => {
 		const req = {
 			id: "two",
