@@ -63,29 +63,21 @@ export class Board {
 					if (this.shipsRemaining()) {
 						move.result = MOVE_RESULT.SUNK;
 						move.result_ship = ship.type;
-						return new Response(
-							true,
-							ResponseHeader.SUNK,
-							ship.type.toString(),
-						);
+						return new Response(true, move.toResultString());
 					} else {
 						move.result = MOVE_RESULT.SUNK;
 						move.result_ship = ship.type;
-						return new Response(
-							true,
-							ResponseHeader.GAME_OVER,
-							ship.type.toString(),
-						);
+						return new Response(true, ResponseHeader.GAME_OVER);
 					}
 				} else {
 					move.result = MOVE_RESULT.HIT;
-					return new Response(true, ResponseHeader.HIT);
+					return new Response(true, move.toResultString());
 				}
 			}
 		}
 		move.result = MOVE_RESULT.MISS;
 		this.grid[move.c][move.r].miss();
-		return new Response(true, ResponseHeader.MISS);
+		return new Response(true, move.toResultString());
 	}
 
 	makeMove(move: Move): Response {

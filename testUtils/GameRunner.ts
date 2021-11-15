@@ -7,7 +7,7 @@ import {
 import Player from "../src/models/gameplay/Player";
 import { BOARD_STATE, MoveAllowed } from "../src/models/gameplay/Board";
 import { POSITION_TYPE, Position } from "../src/models/gameplay/Layout";
-import { Move, MOVE_TYPE } from "../src/models/gameplay/Move";
+import { Move, MOVE_RESULT, MOVE_TYPE } from "../src/models/gameplay/Move";
 
 export class GameRunner {
 	game: Game;
@@ -119,30 +119,32 @@ export class GameRunner {
 					for (let j = 0; j < ship.squares.length; j++) {
 						const square = ship.squares[j];
 						if (MoveAllowed(square)) {
-							const move = {
+							const move = new Move({
 								type: MOVE_TYPE.SOLO,
 								c: square.c,
 								r: square.r,
 								to: attack.id,
-							};
+							});
 
-							let exp = new Response(true, ResponseHeader.HIT);
 							if (j == ship.squares.length - 1) {
-								exp = new Response(
-									true,
-									ResponseHeader.SUNK,
-									ship.type.toString(),
-								);
+								move.result_ship = ship.type;
+								move.result = MOVE_RESULT.SUNK;
+							} else {
+								move.result = MOVE_RESULT.HIT;
+							}
+
+							let exp = new Response(true, move.toResultString());
+							if (j == ship.squares.length - 1) {
+								exp = new Response(true, move.toResultString());
 								if (i == board.ships.length - 1) {
 									exp = new Response(
 										true,
 										ResponseHeader.GAME_OVER,
-										ship.type.toString(),
 									);
 								}
 							}
 
-							return { move: new Move(move), exp: exp };
+							return { move: move, exp: exp };
 						}
 					}
 				}
@@ -153,16 +155,24 @@ export class GameRunner {
 				for (let c = 0; c < board.size; c++) {
 					for (let r = 0; r < board.size; r++) {
 						const square = board.grid[c][r];
-						if (square.state != BOARD_STATE.FILLED) {
+						if (
+							MoveAllowed(square) &&
+							square.state != BOARD_STATE.FILLED
+						) {
 							//miss every time
-							const move = {
+							const move = new Move({
 								type: MOVE_TYPE.SOLO,
 								c: square.c,
 								r: square.r,
 								to: attack.id,
-							};
-							const exp = new Response(true, ResponseHeader.MISS);
-							return { move: new Move(move), exp: exp };
+							});
+							move.result = MOVE_RESULT.MISS;
+
+							const exp = new Response(
+								true,
+								move.toResultString(),
+							);
+							return { move: move, exp: exp };
 						}
 					}
 				}
@@ -182,6 +192,7 @@ export class GameRunner {
 			for (let i = 0; i < this.players.length; i++) {
 				const player = this.players[i];
 				const { move, exp } = this.pickMove(player, i == winner);
+
 				const resp = this.game.makeMove(player.id, move);
 				it(`${player.id} Makes Move ${move}`, () => {
 					expect(resp).toEqual(exp);

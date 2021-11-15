@@ -61,7 +61,10 @@ export class Ship {
 
 export enum SHIP_DESCRIPTOR {
 	SIZE_MISMATCH = "SIZE MISMATCH",
-	CARRIER = "AIRCRAFT CARRIER",
+	// =-=-=-=-=-=-=-=-
+	// SUNK 123456789ab
+	// names must have len <= 11
+	CARRIER = "CARRIER",
 	BATTLESHIP = "BATTLESHIP",
 	DESTROYER = "DESTROYER",
 	SUBMARINE = "SUBMARINE",

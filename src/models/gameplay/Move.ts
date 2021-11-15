@@ -1,6 +1,9 @@
 import { ShipType } from "./Ship";
 
 export class Move {
+	//                                  -=-=-=-=-=-=-=-=
+	public static readonly WINNER_TAG = "You Won!";
+	public static readonly LOSER_TAG = "You Lost :("; //TODO: MAYBE CHANGE THIS...OR MAYBE NOT
 	type: MOVE_TYPE;
 	from: string;
 	readonly to: string;
@@ -45,6 +48,18 @@ export class Move {
 		return true;
 	}
 
+	toResultString(): string {
+		// =-=-=-=-=-=-=-=-
+		// SUNK at r:0, c:0
+		if (this.result == MOVE_RESULT.SUNK) {
+			return `${this.result} ${this.result_ship}`;
+		} else {
+			const col = String.fromCharCode(this.c + 65);
+			const row = String.fromCharCode(this.r + 49);
+			return `${this.result} at c:${col}, r:${row}`;
+		}
+	}
+
 	toString(): string {
 		return JSON.stringify(this);
 	}
@@ -62,7 +77,7 @@ export enum MOVE_TYPE {
 	EXPLOSIVE = "EXPLOSIVE",
 	INVALID = "INVALID",
 }
-export function isInstance(object: any) {
+export function isInstance(object: any): boolean {
 	if ("c" in object && "r" in object && "to" in object && "type" in object) {
 		if (!isNaN(object.c) && !isNaN(object.r)) {
 			if (

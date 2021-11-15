@@ -198,11 +198,13 @@ describe("Handle Lobby Requests ", () => {
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: obj.id,
 				payload: move_res,
+				meta: move_res.toResultString(),
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: move.to,
 				payload: move_res,
+				meta: move_res.toResultString(),
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.BOARD_UPDATE,
@@ -241,11 +243,13 @@ describe("Handle Lobby Requests ", () => {
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: obj.id,
 				payload: move_res,
+				meta: move_res.toResultString(),
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: move.to,
 				payload: move_res,
+				meta: move_res.toResultString(),
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.BOARD_UPDATE,
@@ -258,6 +262,12 @@ describe("Handle Lobby Requests ", () => {
 				meta: "HFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHFEEEEEEFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
 			}),
 		];
+
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
 	});
 
 	it("Player 2 Tries to Make Move when its Player 1's Turn", async () => {
@@ -303,11 +313,13 @@ describe("Handle Lobby Requests ", () => {
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: obj.id,
 				payload: move_res,
+				meta: move_res.toResultString(),
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: move.to,
 				payload: move_res,
+				meta: move_res.toResultString(),
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.BOARD_UPDATE,

@@ -122,7 +122,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -145,7 +145,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -169,7 +169,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -193,7 +193,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -217,7 +217,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -241,7 +241,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -265,7 +265,7 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -289,6 +289,6 @@ describe("Validate classic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(obj.me.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 });
