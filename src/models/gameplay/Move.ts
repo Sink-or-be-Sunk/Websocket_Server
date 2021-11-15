@@ -1,8 +1,9 @@
 import { ShipType } from "./Ship";
 
 export class Move {
-	public static readonly WINNER_TAG = " Winner";
-	public static readonly LOSER_TAG = " Loser";
+	//                                  -=-=-=-=-=-=-=-=
+	public static readonly WINNER_TAG = "You Won!";
+	public static readonly LOSER_TAG = "You Lost :("; //TODO: MAYBE CHANGE THIS...OR MAYBE NOT
 	type: MOVE_TYPE;
 	from: string;
 	readonly to: string;

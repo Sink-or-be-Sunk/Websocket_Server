@@ -247,10 +247,7 @@ export default class Lobby {
 				if (player) {
 					const resp = game.makeMove(playerID, move);
 					if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
-						// -=-=-=-=-=-=-=-=
-						// Game Over Winner
-						// Game Over Loser
-						resp.meta = ResponseHeader.GAME_OVER + Move.WINNER_TAG;
+						resp.meta = Move.WINNER_TAG;
 					}
 					return [resp, move];
 				}
@@ -276,11 +273,8 @@ export default class Lobby {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
-				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
-					// -=-=-=-=-=-=-=-=
-					// Game Over Winner
-					// Game Over Loser
-					resp.meta = ResponseHeader.GAME_OVER + Move.LOSER_TAG; //TODO: MAYBE CHANGE THIS...MAYBE NOT THOUGH?
+				if (resp.meta.includes(Move.WINNER_TAG)) {
+					resp.meta = Move.LOSER_TAG;
 				}
 				const list = [];
 				const players = game.getPlayers(player.id);

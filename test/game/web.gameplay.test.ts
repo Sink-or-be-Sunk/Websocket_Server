@@ -626,13 +626,13 @@ describe("Game Two Web Players with different setup message order", () => {
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: obj.id,
 				payload: move_res,
-				meta: ResponseHeader.GAME_OVER + Move.WINNER_TAG,
+				meta: Move.WINNER_TAG,
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.MOVE_MADE,
 				at: move.to,
 				payload: move_res,
-				meta: ResponseHeader.GAME_OVER + Move.LOSER_TAG,
+				meta: Move.LOSER_TAG,
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
