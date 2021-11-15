@@ -71,9 +71,7 @@ export default class Lobby {
 						header: SERVER_HEADERS.MOVE_MADE,
 						at: message.id,
 						payload: move,
-						meta: resp.meta.includes(ResponseHeader.GAME_OVER)
-							? ResponseHeader.GAME_OVER
-							: "",
+						meta: resp.meta,
 					}),
 				];
 				list.push(...this.broadcastMove(message.id, move, resp));
@@ -248,6 +246,12 @@ export default class Lobby {
 				const player = game.getPlayerByID(playerID);
 				if (player) {
 					const resp = game.makeMove(playerID, move);
+					if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
+						// -=-=-=-=-=-=-=-=
+						// Game Over Winner
+						// Game Over Loser
+						resp.meta = ResponseHeader.GAME_OVER + Move.WINNER_TAG;
+					}
 					return [resp, move];
 				}
 			}
@@ -272,18 +276,23 @@ export default class Lobby {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
+				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
+					// -=-=-=-=-=-=-=-=
+					// Game Over Winner
+					// Game Over Loser
+					resp.meta = ResponseHeader.GAME_OVER + Move.LOSER_TAG; //TODO: MAYBE CHANGE THIS...MAYBE NOT THOUGH?
+				}
 				const list = [];
 				const players = game.getPlayers(player.id);
 				for (let i = 0; i < players.length; i++) {
 					const p = players[i];
+
 					list.push(
 						new WSServerMessage({
 							header: SERVER_HEADERS.MOVE_MADE,
 							at: p.id,
 							payload: move,
-							meta: resp.meta.includes(ResponseHeader.GAME_OVER)
-								? ResponseHeader.GAME_OVER
-								: "",
+							meta: resp.meta,
 						}),
 					);
 				}

@@ -341,7 +341,7 @@ export enum ResponseHeader {
 	INVALID_SHIP_MARKERS = "INVALID SHIP MARKERS",
 	BAD_SHIP_SIZE = "BAD SHIP SIZE",
 	SHIP_POSITIONER_MISMATCH = "SHIP POSITIONER MISMATCH",
-	GAME_OVER = "GAME OVER",
+	GAME_OVER = "Game Over",
 	BAD_LAYOUT = "BAD LAYOUT",
 	BOARD_NOT_FOUND = "BOARD NOT FOUND",
 	GAME_STARTED = "GAME STARTED",
@@ -481,7 +481,11 @@ export class Response {
 	valid: boolean;
 	meta: string;
 
-	constructor(valid: boolean, meta?: ResponseHeader, detail?: string) {
+	constructor(
+		valid: boolean,
+		meta?: ResponseHeader | string,
+		detail?: string,
+	) {
 		this.valid = valid;
 		this.meta = meta ?? ResponseHeader.NO_META;
 		if (detail) {

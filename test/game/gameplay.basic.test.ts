@@ -105,7 +105,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -128,7 +128,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	it("Reject Player 1 from repeating same move", () => {
@@ -163,9 +163,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(
-			new Response(true, ResponseHeader.SUNK, SHIP_DESCRIPTOR.PATROL),
-		);
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -188,7 +186,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -211,7 +209,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -234,7 +232,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.MISS));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -257,7 +255,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -280,7 +278,7 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p2.id, move);
-		expect(resp).toEqual(new Response(true, ResponseHeader.HIT));
+		expect(resp).toEqual(new Response(true, move.toResultString()));
 	});
 
 	/**     Player1				   Player 2
@@ -303,12 +301,6 @@ describe("Validate basic back and forth game", () => {
 		};
 		const move = new Move(move_obj);
 		const resp = game.makeMove(p1.id, move);
-		expect(resp).toEqual(
-			new Response(
-				true,
-				ResponseHeader.GAME_OVER,
-				SHIP_DESCRIPTOR.DESTROYER,
-			),
-		);
+		expect(resp).toEqual(new Response(true, ResponseHeader.GAME_OVER));
 	});
 });
