@@ -1,0 +1,59 @@
+.board {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+
+  .container {
+    height: 400px;
+    width: 400px;
+
+    .cell-clear {
+      box-sizing: content-box;
+      position: absolute;
+      border: 1px solid #444;
+      width: 49px;
+      height: 49px;
+      background-color: white;
+    }
+
+    .cell-hit {
+      position: absolute;
+      border: 1px solid #444;
+      width: 49px;
+      height: 49px;
+      background-color: red;
+    }
+
+    .cell-miss {
+      position: absolute;
+      border: 1px solid #444;
+      width: 49px;
+      height: 49px;
+      background-color: blue;
+    }
+  }
+
+  #boat2 {
+    height: 50px;
+    width: 100px;
+    background: green;
+  }
+
+  #boat3 {
+    height: 50px;
+    width: 150px;
+    background: red;
+  }
+
+  #boat4 {
+    height: 50px;
+    width: 200px;
+    background: blue;
+  }
+
+  #boat5 {
+    height: 50px;
+    width: 250px;
+    background: orange;
+  }
+}

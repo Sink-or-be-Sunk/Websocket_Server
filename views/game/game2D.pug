@@ -1,45 +1,30 @@
 extends ../layout
 
 block content
-	h1 Gameplay Dev Console
-	.row.form-group
-		label.col-sm-2 Invite Friend
-		select.form-select.col-sm-4(id="friend_list")
-			option(disabled selected) Select Friend to Invite
-			each friend in friendsList
-				option(value=friend.username) #{friend.displayName}
-		button.btn.col-sm-2(type="button", onclick='socket.sendGameInvite()') Send Invite
-	.row.form-group
-		label.col-sm-2 Get Friends
-		button.btn.col-sm-6(type="button",onclick='socket.sendGetFriends()') Get Friends List
-	.row.form-group
-		label.col-sm-2 Basic Mode
-		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
-	.row.form-group
-		label.col-sm-2 Invite Friend
-		select.form-select.col-sm-4(id="game_id")
-			option(disabled selected) Select Game to Join
-			each friend in friendsList
-				option(value=friend.username) #{friend.displayName}
-		button.btn.col-sm-2(type="button", onclick='socket.sendJoinGame()') Join Game
-	.row.form-group
-		label.col-sm-2 New Game
-		button.btn.col-sm-6(type="button",onclick='socket.sendNewGame()') Create New Game
-	.row.form-group
-		label.col-sm-2 Ready Up
-		button.btn.col-sm-6(type="button",onclick='socket.sendShipPositions()') Position Ships/Ready Up
-	.row.form-group
-		label.col-sm-2 Attack Col
-		input.col-sm-2(type="number",id="attack_col", placeholder="Enter Col")
-		label.col-sm-2 Attack Row
-		input.col-sm-2(type="number",id="attack_row", placeholder="Enter Row")
-	.row.form-group
-		label.col-sm-2 Attack
-		button.btn.col-sm-6(type="button",onclick='socket.sendMakeMove()') Send Attack
-	
-	script(src="/js/GameSocket.js")
-	script.
-		const socket = new GameSocket("#{user.username}");
-
-	//- Comment here to fix Pug Lint Error
+	h1 2D Gameplay
+	.board
+		-var grid = 8;
+		-var size = 50;
+		h2 Position Board
+		.container(id="position-board")
+			.boat(id="boat2")
+			.boat(id="boat3")
+			.boat(id="boat4")
+			.boat(id="boat5")
+			each x in [0, 1, 2, 3, 4, 5, 6, 7]
+				each y in [0, 1, 2, 3, 4, 5, 6, 7]
+					.cell-clear(style="top:"+y*size +"px;left:"+x*size + "px")
+			
 		
+		h2 Attack Board
+		.container(id="attack-board")
+			each x in [0, 1, 2, 3, 4, 5, 6, 7]
+				each y in [0, 1, 2, 3, 4, 5, 6, 7]
+					.cell-clear(style="top:"+y*size +"px;left:"+x*size + "px")
+
+	link(rel='stylesheet',type="text/css", href='/css/game2D.css')
+	script(src="/lib/TweenMax.min.js")
+	script(src="/lib/Draggable.min.js")
+	script(src="/js/GameVisuals2D.js")
+	script.
+		const visuals = new GameVisuals2D(Draggable);

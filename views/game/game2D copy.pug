@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+	h1 Gameplay Dev Console
+	.row.form-group
+		label.col-sm-2 Invite Friend
+		select.form-select.col-sm-4(id="friend_list")
+			option(disabled selected) Select Friend to Invite
+			each friend in friendsList
+				option(value=friend.username) #{friend.displayName}
+		button.btn.col-sm-2(type="button", onclick='socket.sendGameInvite()') Send Invite
+	.row.form-group
+		label.col-sm-2 Get Friends
+		button.btn.col-sm-6(type="button",onclick='socket.sendGetFriends()') Get Friends List
+	.row.form-group
+		label.col-sm-2 Basic Mode
+		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
+	.row.form-group
+		label.col-sm-2 Invite Friend
+		select.form-select.col-sm-4(id="game_id")
+			option(disabled selected) Select Game to Join
+			each friend in friendsList
+				option(value=friend.username) #{friend.displayName}
+		button.btn.col-sm-2(type="button", onclick='socket.sendJoinGame()') Join Game
+	.row.form-group
+		label.col-sm-2 New Game
+		button.btn.col-sm-6(type="button",onclick='socket.sendNewGame()') Create New Game
+	.row.form-group
+		label.col-sm-2 Ready Up
+		button.btn.col-sm-6(type="button",onclick='socket.sendShipPositions()') Position Ships/Ready Up
+	.row.form-group
+		label.col-sm-2 Attack Col
+		input.col-sm-2(type="number",id="attack_col", placeholder="Enter Col")
+		label.col-sm-2 Attack Row
+		input.col-sm-2(type="number",id="attack_row", placeholder="Enter Row")
+	.row.form-group
+		label.col-sm-2 Attack
+		button.btn.col-sm-6(type="button",onclick='socket.sendMakeMove()') Send Attack
+	
+	script(src="/js/GameSocket.js")
+	script.
+		const socket = new GameSocket("#{user.username}");
+
+	//- Comment here to fix Pug Lint Error
+		
