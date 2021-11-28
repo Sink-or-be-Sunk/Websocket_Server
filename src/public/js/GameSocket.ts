@@ -150,34 +150,14 @@ class GameSocket {
 		this._send(obj);
 	}
 
-	public sendShipPositions() {
-		const list = [];
-		if (this.gameMode == this.GAME_TYPE_BASIC) {
-			list.push({ r: 0, c: 0, t: "P" });
-			list.push({ r: 0, c: 1, t: "P" });
-
-			list.push({ r: 1, c: 0, t: "D" });
-			list.push({ r: 1, c: 2, t: "D" });
-		} else {
-			list.push({ r: 0, c: 0, t: "P" });
-			list.push({ r: 0, c: 1, t: "P" });
-
-			list.push({ r: 1, c: 0, t: "S" });
-			list.push({ r: 1, c: 2, t: "S" });
-
-			list.push({ r: 2, c: 0, t: "B" });
-			list.push({ r: 2, c: 3, t: "B" });
-
-			list.push({ r: 3, c: 0, t: "C" });
-			list.push({ r: 3, c: 4, t: "C" });
-		}
+	public sendShipPositions(list: ShipPos[]) {
 		const obj = { req: this.POSITION_SHIPS, id: this.uid, data: list };
 		this._send(obj);
 	}
 
-	public sendMakeMove() {
-		const col = $("#attack_col").val() as number;
-		const row = $("#attack_row").val() as number;
+	public sendMakeMove(col: number, row: number) {
+		// const col = $("#attack_col").val() as number;
+		// const row = $("#attack_row").val() as number;
 		const move = {
 			type: MOVE_TYPES.SOLO,
 			r: row,

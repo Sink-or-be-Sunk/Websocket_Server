@@ -13,65 +13,63 @@ block content
 			.boat(id="boat3")
 			.boat(id="boat4")
 			.boat(id="boat5")
-			
 		
 		.board-container(id="attack-board")
 			each x in [0, 1, 2, 3, 4, 5, 6, 7]
 				each y in [0, 1, 2, 3, 4, 5, 6, 7]
-					.grid-cell-clear(id=x*8+y style="top:"+y*size +"px;left:"+x*size + "px" onclick="attack("+x*8+y+")")
+					.grid-cell-clear(id=x*8+y style="top:"+y*size +"px;left:"+x*size + "px" onclick="socket.sendMakeMove("+y+"," + x +")")
 
-	button.btn.col-sm-5(type="button",onclick='sendLocations()') Position Ships
+	h3 Gameplay Dev Console
+	.row.form-group
+		label.col-sm-2 Ready Up
+		button.btn.col-sm-6(type="button",onclick='sendLocations()') Position Ships / Ready Up
+	.row.form-group
+		label.col-sm-2 Invite Friend
+		select.form-select.col-sm-4(id="friend_list")
+			option(disabled selected) Select Friend to Invite
+			each friend in friendsList
+				option(value=friend.username) #{friend.displayName}
+		button.btn.col-sm-2(type="button", onclick='socket.sendGameInvite()') Send Invite
+	.row.form-group
+		label.col-sm-2 Get Friends
+		button.btn.col-sm-6(type="button",onclick='socket.sendGetFriends()') Get Friends List
+	.row.form-group
+		label.col-sm-2 Basic Mode
+		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
+	.row.form-group
+		label.col-sm-2 Join Game
+		select.form-select.col-sm-4(id="game_id")
+			option(disabled selected) Select Game to Join
+			each friend in friendsList
+				option(value=friend.username) #{friend.displayName}
+		button.btn.col-sm-2(type="button", onclick='socket.sendJoinGame()') Join Game
+	.row.form-group
+		label.col-sm-2 New Game
+		button.btn.col-sm-6(type="button",onclick='socket.sendNewGame()') Create New Game
+	
 
 
 	link(rel='stylesheet',type="text/css", href='/css/game2D.css')
 	script(src="/lib/TweenMax.min.js")
 	script(src="/lib/Draggable.min.js")
 	script(src="/js/GameVisuals2D.js")
-	//- script.
-	//- 	const visuals = new GameVisuals2D(Draggable);
+	script(src="/js/GameSocket.js")
 
 	script.
-		var container = $("#position-board");
-		var attackBoard = $("#attack-board");
-		var width = 50;
-		var height = 50;
-		var rows = 8;
-		var cols = 8;
-		var snap = 50;
+		const socket = new GameSocket("#{user.username}");
 
-		var readyToPlay = 0;
-		var yourTurn = 0; // determine who goes first
-		//- for (var i = 0; i < rows * cols; i++) {
-		//- 	var y = Math.floor(i / cols) * height;
-		//- 	var x = (i * width) % (cols * width);
-		//- 	$("<div class=grid-cell-clear></div>").css({ top: y, left: x }).prependTo(container);
-		//- }
-		//- for (var i = 0; i < rows * cols; i++) {
-		//- 	var y = Math.floor(i / cols) * height;
-		//- 	var x = (i * width) % (cols * width);
-		//- 	$("<div class=grid-cell-clear id=" + i + " onclick=attack(this.id)></div>").css({ top: y, left: x }).prependTo(attackBoard);
-		//- }
-	
-		Draggable.create(boat2, {
-			bounds: container,
-			onDrag: onDrag,
-			onClick: rotateShip
-		});
-		Draggable.create(boat3, {
-			bounds: container,
-			onDrag: onDrag,
-			onClick: rotateShip
-		});
-		Draggable.create(boat4, {
-			bounds: container,
-			onDrag: onDrag,
-			onClick: rotateShip
-		});
-		Draggable.create(boat5, {
-			bounds: container,
-			onDrag: onDrag,
-			onClick: rotateShip
-		});
+		const snap = 50;
+		const ships = [boat2, boat3, boat4, boat5];
+
+		for (let i = 0; i < ships.length; i++) {
+			const ship = ships[i];
+			Draggable.create(ship, {
+				bounds: $("#position-board"),
+				onDrag: onDrag,
+				onClick: rotateShip
+			});
+		}
+
 		function rotateShip() {
 			var oldwidth = $(this.target).css("width");
 			var oldheight = $(this.target).css("height");
@@ -85,124 +83,53 @@ block content
 				ease: Back.easeOut.config(2)
 			});
 		}
-
+		function coordsToShip(x, y, size) {
+			const obj = {c: x, r: y};
+			if (size === 2) {
+				obj.t = "P";
+			} else if (size === 3) {
+				obj.t = "S";
+			} else if (size === 4) {
+				obj.t = "B";
+			} else if (size === 5) {
+				obj.t = "C";
+			} else {
+				throw new Error(`Invalid Ship Size: ${size}`);
+			}
+			return obj;
+		}
 		function sendLocations() {
-			const boats = ["boat2", "boat3", "boat4", "boat5"];
-			const boatLocations = [];
-			const coordsList = [];
-			boats.forEach(item => boatLocations.push([item, getLocation(item)]));
-			boats.forEach(item => coordsList.push(getLocation(item)));
-			
-			if(boatCheck(coordsList)) {
-				Draggable.get(boat5).disable();
-				Draggable.get(boat4).disable();
-				Draggable.get(boat3).disable();
-				Draggable.get(boat2).disable();
-				//- document.getElementById("confirm").style.visibility = 'hidden';
-				console.log(boatLocations);
-				// send coords to server
-				readyToPlay = 1;
-			}
-		}
+			const list = [];
 
-		function getLocation(boat) {
-			var element = document.getElementById(boat).style.cssText;
-			const splitText = element.split("translate3d(");
-			const vals = splitText[1].split(", ");
+			for (let i = 0; i < ships.length; i++) {
+				const ship = ships[i];
+				var element = ship.style.cssText;
+				const splitText = element.split("translate3d(");
+				const vals = splitText[1].split(", ");
 
-			if (document.getElementById(boat).style.height.split("p")[0] === '') {
-				var height = $("#" + boat).css("height").split("p")[0];
-				var width = $("#" + boat).css("width").split("p")[0];
-			}
-			else {
-				var height = document.getElementById(boat).style.height.split("p")[0];
-				var width = document.getElementById(boat).style.width.split("p")[0];
-			}
-			const coords = [];
-			var x = Math.round(vals[0].split("p")[0] / 50);
-			var y = Math.round(vals[1].split("p")[0] / 50);
-			coords.push([x,y]);
-			if (width == 50) {
-				var length = height / 50;
-				for (var i = 1; i < length; i++) {
-					coords.push([x,y+i]);
-				}
-			}
-			else {
-				var length = width / 50;
-				for (var i = 1; i < length; i++) {
-					coords.push([x+i,y]);
-				}
-			}
-			const finalPos = [coords[0], coords[coords.length -1 ]];
-			return finalPos
-		}
-
-		function boatCheck(coordList) {
-			const stringList = [];
-			coordList.flat(1).forEach(item => stringList.push(item.toString()));
-			if (stringList.length !== new Set(stringList).size) {
-				alert("Boats overlapping! Try again!");
-				return false
-			}
-			const allCoords = coordList.flat(2);
-			for (let i = 0; i < allCoords.length; i++) {
-				if (allCoords[i] > 7) {
-					alert("Boat out of bounds! Try again!");
-					return false
-				}
-			}
-			return true
-		}
-
-		var count = 0;
-
-		// delete this and update the rest with Mitch's code
-		var shipLookup =   [0, 1, 1, 1, 0, 0, 0, 0,
-							0, 0, 0, 0, 0, 0, 0, 0,
-							0, 0, 0, 0, 1, 1, 0, 0,
-							0, 1, 0, 0, 0, 0, 1, 0,
-							0, 1, 0, 0, 0, 0, 1, 0,
-							0, 1, 0, 0, 0, 0, 1, 0,
-							0, 1, 0, 0, 0, 0, 1, 0,
-							0, 0, 0, 0, 0, 0, 1, 0];
-		function attack(id) {
-			if (readyToPlay && yourTurn) { 
-				if (document.getElementById(id).classList.contains("grid-cell-clear")) {
-					document.getElementById(id).classList.remove("grid-cell-clear");
-
-					var row = id % 8;
-					var col = Math.trunc(id / 8);
-					// get val from sever of id, send row and col
-					console.log(row, col)
-					
-					// if hit
-					if (shipLookup[id]) {
-						document.getElementById(id).classList.add("grid-cell-hit");
-						count += 1;
-					}
-					// if miss
-					else {
-						document.getElementById(id).classList.add("grid-cell-miss");
-						yourTurn = 0;
-					}
-				}
-			}
-			else {
-				if (readyToPlay == 0) {
-					alert("Make sure you hit confirm!");
+				if (ship.style.height.split("p")[0] === '') {
+					var height = $(ship).css("height").split("p")[0];
+					var width = $(ship).css("width").split("p")[0];
 				}
 				else {
-					alert("Not your turn!");
+					var height = ship.style.height.split("p")[0];
+					var width = ship.style.width.split("p")[0];
 				}
+				const x = Math.round(vals[0].split("p")[0] / 50);
+				const y = Math.round(vals[1].split("p")[0] / 50);
+				let length;
+				if (width == 50) {
+					length = height / 50;
+					list.push(coordsToShip(x, y+length-1, length));
+				}
+				else {
+					length = width / 50;
+					list.push(coordsToShip(x+length-1, y, length));
+				}
+				list.push(coordsToShip(x, y, length));
+				Draggable.get(ship).disable();
 			}
-			if (count == 14) {
-				alert("Game over!");
-			}  
+		
+			socket.sendShipPositions(list);
 		}
 
-		function opponentAttacks() {
-			if (count != 14) {
-				yourTurn = 1;
-			}
-		}
