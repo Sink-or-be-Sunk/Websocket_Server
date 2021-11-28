@@ -26,5 +26,168 @@ block content
 	script(src="/lib/TweenMax.min.js")
 	script(src="/lib/Draggable.min.js")
 	script(src="/js/GameVisuals2D.js")
+	//- script.
+	//- 	const visuals = new GameVisuals2D(Draggable);
+
 	script.
-		const visuals = new GameVisuals2D(Draggable);
+		var container = $("#place");
+		var attackBoard = $("#attack");
+		var width = 50;
+		var height = 50;
+		var rows = 8;
+		var cols = 8;
+		var snap = 50;
+	
+		Draggable.create(boat2, {
+			bounds: container,
+			onDrag: onDrag,
+			onClick: rotateShip
+		});
+		Draggable.create(boat3, {
+			bounds: container,
+			onDrag: onDrag,
+			onClick: rotateShip
+		});
+		Draggable.create(boat4, {
+			bounds: container,
+			onDrag: onDrag,
+			onClick: rotateShip
+		});
+		Draggable.create(boat5, {
+			bounds: container,
+			onDrag: onDrag,
+			onClick: rotateShip
+		});
+		function rotateShip() {
+			var oldwidth = $(this.target).css("width");
+			var oldheight = $(this.target).css("height");
+			$(this.target).css("height", oldwidth);
+			$(this.target).css("width", oldheight);
+		}
+		function onDrag() {
+			TweenLite.to(this.target, 0.5, {
+				x: Math.round(this.x / snap) * snap,
+				y: Math.round(this.y / snap) * snap,
+				ease: Back.easeOut.config(2)
+			});
+		}
+
+		function sendLocations() {
+			const boats = ["boat2", "boat3", "boat4", "boat5"];
+			const boatLocations = [];
+			const coordsList = [];
+			boats.forEach(item => boatLocations.push([item, getLocation(item)]));
+			boats.forEach(item => coordsList.push(getLocation(item)));
+			
+			if(boatCheck(coordsList)) {
+				Draggable.get(boat5).disable();
+				Draggable.get(boat4).disable();
+				Draggable.get(boat3).disable();
+				Draggable.get(boat2).disable();
+				document.getElementById("confirm").style.visibility = 'hidden';
+				console.log(boatLocations);
+				// send coords to server
+				readyToPlay = 1;
+			}
+		}
+
+		function getLocation(boat) {
+			var element = document.getElementById(boat).style.cssText;
+			const splitText = element.split("translate3d(");
+			const vals = splitText[1].split(", ");
+
+			if (document.getElementById(boat).style.height.split("p")[0] === '') {
+				var height = $("#" + boat).css("height").split("p")[0];
+				var width = $("#" + boat).css("width").split("p")[0];
+			}
+			else {
+				var height = document.getElementById(boat).style.height.split("p")[0];
+				var width = document.getElementById(boat).style.width.split("p")[0];
+			}
+			const coords = [];
+			var x = Math.round(vals[0].split("p")[0] / 50);
+			var y = Math.round(vals[1].split("p")[0] / 50);
+			coords.push([x,y]);
+			if (width == 50) {
+				var length = height / 50;
+				for (var i = 1; i < length; i++) {
+					coords.push([x,y+i]);
+				}
+			}
+			else {
+				var length = width / 50;
+				for (var i = 1; i < length; i++) {
+					coords.push([x+i,y]);
+				}
+			}
+			return coords
+		}
+
+		function boatCheck(coordList) {
+			const stringList = [];
+			coordList.flat(1).forEach(item => stringList.push(item.toString()));
+			if (stringList.length !== new Set(stringList).size) {
+				alert("Boats overlapping! Try again!");
+				return false
+			}
+			const allCoords = coordList.flat(2);
+			for (let i = 0; i < allCoords.length; i++) {
+				if (allCoords[i] > 7) {
+					alert("Boat out of bounds! Try again!");
+					return false
+				}
+			}
+			return true
+		}
+
+		var count = 0;
+
+		// delete this and update the rest with Mitch's code
+		var shipLookup =   [0, 1, 1, 1, 0, 0, 0, 0,
+							0, 0, 0, 0, 0, 0, 0, 0,
+							0, 0, 0, 0, 1, 1, 0, 0,
+							0, 1, 0, 0, 0, 0, 1, 0,
+							0, 1, 0, 0, 0, 0, 1, 0,
+							0, 1, 0, 0, 0, 0, 1, 0,
+							0, 1, 0, 0, 0, 0, 1, 0,
+							0, 0, 0, 0, 0, 0, 1, 0];
+		function attack(id) {
+			if (readyToPlay && yourTurn) { 
+				if (document.getElementById(id).classList.contains("grid-cell-clear")) {
+					document.getElementById(id).classList.remove("grid-cell-clear");
+
+					var row = id % 8;
+					var col = Math.trunc(id / 8);
+					// get val from sever of id, send row and col
+					console.log(row, col)
+					
+					// if hit
+					if (shipLookup[id]) {
+						document.getElementById(id).classList.add("grid-cell-hit");
+						count += 1;
+					}
+					// if miss
+					else {
+						document.getElementById(id).classList.add("grid-cell-miss");
+						yourTurn = 0;
+					}
+				}
+			}
+			else {
+				if (readyToPlay == 0) {
+					alert("Make sure you hit confirm!");
+				}
+				else {
+					alert("Not your turn!");
+				}
+			}
+			if (count == 14) {
+				alert("Game over!");
+			}  
+		}
+
+		function opponentAttacks() {
+			if (count != 14) {
+				yourTurn = 1;
+			}
+		}
