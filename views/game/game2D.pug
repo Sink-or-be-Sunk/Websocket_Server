@@ -2,25 +2,26 @@ extends ../layout
 
 block content
 	h1 2D Gameplay
-	.board
+	.boards
 		-var grid = 8;
 		-var size = 50;
-		h2 Position Board
-		.container(id="position-board")
+		.board-container(id="position-board")
+			each x in [0, 1, 2, 3, 4, 5, 6, 7]
+				each y in [0, 1, 2, 3, 4, 5, 6, 7]
+					.grid-cell-clear(style="top:"+y*size +"px;left:"+x*size + "px")
 			.boat(id="boat2")
 			.boat(id="boat3")
 			.boat(id="boat4")
 			.boat(id="boat5")
-			each x in [0, 1, 2, 3, 4, 5, 6, 7]
-				each y in [0, 1, 2, 3, 4, 5, 6, 7]
-					.cell-clear(style="top:"+y*size +"px;left:"+x*size + "px")
 			
 		
-		h2 Attack Board
-		.container(id="attack-board")
+		.board-container(id="attack-board")
 			each x in [0, 1, 2, 3, 4, 5, 6, 7]
 				each y in [0, 1, 2, 3, 4, 5, 6, 7]
-					.cell-clear(style="top:"+y*size +"px;left:"+x*size + "px")
+					.grid-cell-clear(id=x*8+y style="top:"+y*size +"px;left:"+x*size + "px" onclick="attack("+x*8+y+")")
+
+	button.btn.col-sm-5(type="button",onclick='sendLocations()') Position Ships
+
 
 	link(rel='stylesheet',type="text/css", href='/css/game2D.css')
 	script(src="/lib/TweenMax.min.js")
@@ -30,13 +31,26 @@ block content
 	//- 	const visuals = new GameVisuals2D(Draggable);
 
 	script.
-		var container = $("#place");
-		var attackBoard = $("#attack");
+		var container = $("#position-board");
+		var attackBoard = $("#attack-board");
 		var width = 50;
 		var height = 50;
 		var rows = 8;
 		var cols = 8;
 		var snap = 50;
+
+		var readyToPlay = 0;
+		var yourTurn = 0; // determine who goes first
+		//- for (var i = 0; i < rows * cols; i++) {
+		//- 	var y = Math.floor(i / cols) * height;
+		//- 	var x = (i * width) % (cols * width);
+		//- 	$("<div class=grid-cell-clear></div>").css({ top: y, left: x }).prependTo(container);
+		//- }
+		//- for (var i = 0; i < rows * cols; i++) {
+		//- 	var y = Math.floor(i / cols) * height;
+		//- 	var x = (i * width) % (cols * width);
+		//- 	$("<div class=grid-cell-clear id=" + i + " onclick=attack(this.id)></div>").css({ top: y, left: x }).prependTo(attackBoard);
+		//- }
 	
 		Draggable.create(boat2, {
 			bounds: container,
@@ -84,7 +98,7 @@ block content
 				Draggable.get(boat4).disable();
 				Draggable.get(boat3).disable();
 				Draggable.get(boat2).disable();
-				document.getElementById("confirm").style.visibility = 'hidden';
+				//- document.getElementById("confirm").style.visibility = 'hidden';
 				console.log(boatLocations);
 				// send coords to server
 				readyToPlay = 1;
@@ -120,7 +134,8 @@ block content
 					coords.push([x+i,y]);
 				}
 			}
-			return coords
+			const finalPos = [coords[0], coords[coords.length -1 ]];
+			return finalPos
 		}
 
 		function boatCheck(coordList) {
