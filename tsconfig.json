@@ -19,5 +19,5 @@
   },
   "types": ["three"],
   "include": ["src/**/*"],
-  "exclude": ["src/public/bundle/**/*"]
+  "exclude": ["src/public/bundle/**/*", "src/public/lib/**/*"]
 }

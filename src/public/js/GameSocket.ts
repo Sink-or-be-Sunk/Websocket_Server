@@ -25,6 +25,7 @@ class GameSocket {
 	private readonly POSITION_SHIPS = "POSITION SHIPS";
 	private readonly JOIN_GAME = "JOIN GAME";
 	private readonly GAME_TYPE = "GAME TYPE";
+	private readonly BOARD_UPDATE = "BOARD UPDATE";
 	private readonly GAME_TYPE_BASIC = "BASIC";
 	private readonly GAME_TYPE_CLASSIC = "CLASSIC";
 	// private readonly GAME_TYPE_SOLO = "SOLO";
@@ -90,6 +91,8 @@ class GameSocket {
 
 		if (data.header === this.MOVE_MADE) {
 		} else if (data.header === this.INVALID_MOVE) {
+		} else if (data.header === this.BOARD_UPDATE) {
+			this.updateBoard(data.meta);
 		} else if (data.header === this.JOINED_GAME) {
 			this.opponent = data.payload.opponent;
 			this.gameMode = data.payload.gameType;
@@ -98,6 +101,25 @@ class GameSocket {
 			this.gameMode = data.meta;
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
+		}
+	}
+
+	private updateBoard(states: string) {
+		for (let i = 0; i < states.length; i++) {
+			const state = states[i];
+			const square = $(`#square${i}`);
+			square.removeClass("grid-cell-clear");
+			if (state === "H") {
+				square.addClass("grid-cell-hit");
+			} else if (state === "M") {
+				square.addClass("grid-cell-miss");
+			} else if (state === "F") {
+				square.addClass("grid-cell-full");
+			} else if (state === "E") {
+				square.addClass("grid-cell-clear");
+			} else {
+				throw new Error(`Invalid Square State: ${state}`);
+			}
 		}
 	}
 
@@ -150,34 +172,14 @@ class GameSocket {
 		this._send(obj);
 	}
 
-	public sendShipPositions() {
-		const list = [];
-		if (this.gameMode == this.GAME_TYPE_BASIC) {
-			list.push({ r: 0, c: 0, t: "P" });
-			list.push({ r: 0, c: 1, t: "P" });
-
-			list.push({ r: 1, c: 0, t: "D" });
-			list.push({ r: 1, c: 2, t: "D" });
-		} else {
-			list.push({ r: 0, c: 0, t: "P" });
-			list.push({ r: 0, c: 1, t: "P" });
-
-			list.push({ r: 1, c: 0, t: "S" });
-			list.push({ r: 1, c: 2, t: "S" });
-
-			list.push({ r: 2, c: 0, t: "B" });
-			list.push({ r: 2, c: 3, t: "B" });
-
-			list.push({ r: 3, c: 0, t: "C" });
-			list.push({ r: 3, c: 4, t: "C" });
-		}
+	public sendShipPositions(list: ShipPos[]) {
 		const obj = { req: this.POSITION_SHIPS, id: this.uid, data: list };
 		this._send(obj);
 	}
 
-	public sendMakeMove() {
-		const col = $("#attack_col").val() as number;
-		const row = $("#attack_row").val() as number;
+	public sendMakeMove(col: number, row: number) {
+		// const col = $("#attack_col").val() as number;
+		// const row = $("#attack_row").val() as number;
 		const move = {
 			type: MOVE_TYPES.SOLO,
 			r: row,
