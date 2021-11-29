@@ -97,17 +97,19 @@ block content
 		}
 
 		function rotateShip() {
+			//TODO: CHECK THAT THIS IS A VALID ROTATE
 			var oldwidth = $(this.target).css("width");
 			var oldheight = $(this.target).css("height");
 			$(this.target).css("height", oldwidth);
 			$(this.target).css("width", oldheight);
 		}
 		function onDragEnd() {
+			const target = ships[this.target.id];
 			for (let [, val] of Object.entries(ships)) {
 				ship = val.el;
 				if (this.target != ship) {
 					if (Draggable.hitTest(this.target, ship, 0.8)) {
-						const target = ships[this.target.id];
+						//collision
 						target.cur.x = target.prev.x;
 						target.cur.y = target.prev.y;
 						TweenLite.to(this.target, 0.5, {
@@ -115,12 +117,13 @@ block content
 							y: target.prev.y,
 							ease: Back.easeOut.config(2),
 						});
+						break;
 					}
-				} else {
-					val.prev.x = val.cur.x;
-					val.prev.y = val.cur.y;
 				}
 			}
+			//no collision
+			target.prev.x = target.cur.x;
+			target.prev.y = target.cur.y;
 		}
 		
 		function onDrag() {
