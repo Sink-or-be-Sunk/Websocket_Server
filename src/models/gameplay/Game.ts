@@ -1,4 +1,4 @@
-import { Board, Square } from "./Board";
+import { Board, Square, BOARD_STATE } from "./Board";
 import Player from "./Player";
 import { Move } from "./Move";
 import { Layout, POSITION_TYPE } from "./Layout";
@@ -462,16 +462,21 @@ export class ResponseBoard {
 	readonly str: string;
 	constructor(mine: Board, opponent: Board) {
 		this.id = mine.id;
-		this.str = this.boardToStr(mine) + this.boardToStr(opponent);
+		this.str =
+			this.boardToStr(mine, true) + this.boardToStr(opponent, false);
 	}
 
-	private boardToStr(board: Board): string {
+	private boardToStr(board: Board, showFilled: boolean): string {
 		let str = "";
 		for (let i = 0; i < board.grid.length; i++) {
 			const squares = board.grid[i];
 			for (let j = 0; j < squares.length; j++) {
 				const square = squares[j];
-				str += square.state;
+				if (showFilled || square.state != BOARD_STATE.FILLED) {
+					str += square.state;
+				} else {
+					str += BOARD_STATE.EMPTY;
+				}
 			}
 		}
 		return str;

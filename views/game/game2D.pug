@@ -59,14 +59,40 @@ block content
 		const socket = new GameSocket("#{user.username}");
 
 		const snap = 50;
-		const ships = [boat2, boat3, boat4, boat5];
-
-		for (let i = 0; i < ships.length; i++) {
-			const ship = ships[i];
+		
+		const ships = {
+			boat2: {
+				el: boat2,
+				cur: { x: 0, y: snap * 0 },
+				prev: { x: 0, y: snap * 0 },
+			},
+			boat3: {
+				el: boat3,
+				cur: { x: 0, y: snap * 1 },
+				prev: { x: 0, y: snap * 1 },
+			},
+			boat4: {
+				el: boat4,
+				cur: { x: 0, y: snap * 2 },
+				prev: { x: 0, y: snap * 2 },
+			},
+			boat5: {
+				el: boat5,
+				cur: { x: 0, y: snap * 3 },
+				prev: { x: 0, y: snap * 3 },
+			},
+		};
+		
+		for (let [, val] of Object.entries(ships)) {
+			const ship = val.el;
+			const cur = val.cur;
+			console.log(val.cur);
+			$(ship).css({ transform: `translate3d(${cur.x}px,${cur.y}px,0px)` });
 			Draggable.create(ship, {
 				bounds: $("#position-board"),
 				onDrag: onDrag,
-				onClick: rotateShip
+				onClick: rotateShip,
+				onDragEnd: onDragEnd,
 			});
 		}
 
@@ -76,15 +102,42 @@ block content
 			$(this.target).css("height", oldwidth);
 			$(this.target).css("width", oldheight);
 		}
+		function onDragEnd() {
+			for (let [, val] of Object.entries(ships)) {
+				ship = val.el;
+				if (this.target != ship) {
+					if (Draggable.hitTest(this.target, ship, 0.8)) {
+						const target = ships[this.target.id];
+						target.cur.x = target.prev.x;
+						target.cur.y = target.prev.y;
+						TweenLite.to(this.target, 0.5, {
+							x: target.prev.x,
+							y: target.prev.y,
+							ease: Back.easeOut.config(2),
+						});
+					}
+				} else {
+					val.prev.x = val.cur.x;
+					val.prev.y = val.cur.y;
+				}
+			}
+		}
+		
 		function onDrag() {
-			TweenLite.to(this.target, 0.5, {
-				x: Math.round(this.x / snap) * snap,
-				y: Math.round(this.y / snap) * snap,
-				ease: Back.easeOut.config(2)
-			});
+			for (let [, val] of Object.entries(ships)) {
+				if (this.target == val.el) {
+					val.cur.x = Math.round(this.x / snap) * snap;
+					val.cur.y = Math.round(this.y / snap) * snap;
+					TweenLite.to(this.target, 0.5, {
+						x: val.cur.x,
+						y: val.cur.y,
+						ease: Back.easeOut.config(2),
+					});
+				}
+			}
 		}
 		function coordsToShip(x, y, size) {
-			const obj = {c: x, r: y};
+			const obj = { c: x, r: y };
 			if (size === 2) {
 				obj.t = "P";
 			} else if (size === 3) {
@@ -107,11 +160,10 @@ block content
 				const splitText = element.split("translate3d(");
 				const vals = splitText[1].split(", ");
 
-				if (ship.style.height.split("p")[0] === '') {
+				if (ship.style.height.split("p")[0] === "") {
 					var height = $(ship).css("height").split("p")[0];
 					var width = $(ship).css("width").split("p")[0];
-				}
-				else {
+				} else {
 					var height = ship.style.height.split("p")[0];
 					var width = ship.style.width.split("p")[0];
 				}
@@ -120,11 +172,10 @@ block content
 				let length;
 				if (width == 50) {
 					length = height / 50;
-					list.push(coordsToShip(x, y+length-1, length));
-				}
-				else {
+					list.push(coordsToShip(x, y + length - 1, length));
+				} else {
 					length = width / 50;
-					list.push(coordsToShip(x+length-1, y, length));
+					list.push(coordsToShip(x + length - 1, y, length));
 				}
 				list.push(coordsToShip(x, y, length));
 				Draggable.get(ship).disable();
@@ -133,3 +184,4 @@ block content
 			socket.sendShipPositions(list);
 		}
 
+	//- Comment here to fix Pug Lint Error
