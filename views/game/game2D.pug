@@ -6,18 +6,18 @@ block content
 		-var grid = 8;
 		-var size = 50;
 		.board-container(id="position-board")
-			each x in [0, 1, 2, 3, 4, 5, 6, 7]
-				each y in [0, 1, 2, 3, 4, 5, 6, 7]
-					.grid-cell-clear(style="top:"+y*size +"px;left:"+x*size + "px")
+			each y in [0, 1, 2, 3, 4, 5, 6, 7]
+				each x in [0, 1, 2, 3, 4, 5, 6, 7]
+					.grid-cell-clear(id="square"+(7*8+x) style="top:"+y*size +"px;left:"+x*size + "px")
 			.boat(id="boat2")
 			.boat(id="boat3")
 			.boat(id="boat4")
 			.boat(id="boat5")
 		
 		.board-container(id="attack-board")
-			each x in [0, 1, 2, 3, 4, 5, 6, 7]
-				each y in [0, 1, 2, 3, 4, 5, 6, 7]
-					.grid-cell-clear(id=x*8+y style="top:"+y*size +"px;left:"+x*size + "px" onclick="socket.sendMakeMove("+y+"," + x +")")
+			each y in [0, 1, 2, 3, 4, 5, 6, 7]
+				each x in [0, 1, 2, 3, 4, 5, 6, 7]
+					.grid-cell-clear(id="square"+(y*8+x+64) style="top:"+y*size +"px;left:"+x*size + "px" onclick="socket.sendMakeMove("+y+"," + x +")")
 
 	h3 Gameplay Dev Console
 	.row.form-group
