@@ -14,18 +14,24 @@ interface Move {
 	c: number;
 	to: string;
 }
+
+enum SERVER_HEADERS {
+	// SERVER HEADERS
+	MOVE_MADE = "MADE MOVE",
+	INVALID_MOVE = "INVALID MOVE",
+	JOINED_GAME = "JOINED GAME",
+	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
+	INVALID_JOIN = "INVALID JOIN",
+	INVALID_OPPONENT = "INVALID OPPONENT",
+	BOARD_UPDATE = "BOARD UPDATE",
+}
 class GameSocket {
 	// ERRORS
-	private readonly SOCKET_NOT_OPEN =
-		"Must wait for socket to be open before sending message";
-	// CLIENT HEADERS
-	private readonly CONNECTED = "CONNECTED";
 	private readonly NEW_GAME = "NEW GAME";
 	private readonly MAKE_MOVE = "MAKE MOVE";
 	private readonly POSITION_SHIPS = "POSITION SHIPS";
 	private readonly JOIN_GAME = "JOIN GAME";
 	private readonly GAME_TYPE = "GAME TYPE";
-	private readonly BOARD_UPDATE = "BOARD UPDATE";
 	private readonly GAME_TYPE_BASIC = "BASIC";
 	private readonly GAME_TYPE_CLASSIC = "CLASSIC";
 	// private readonly GAME_TYPE_SOLO = "SOLO";
@@ -33,55 +39,19 @@ class GameSocket {
 	private readonly GET_FRIENDS = "GET FRIENDS";
 	private readonly INVITE_TO_GAME = "INVITE TO GAME";
 
-	// SERVER HEADERS
-	private readonly MOVE_MADE = "MADE MOVE";
-	private readonly INVALID_MOVE = "INVALID MOVE";
-	private readonly JOINED_GAME = "JOINED GAME";
-	private readonly GAME_TYPE_APPROVED = "GAME TYPE APPROVED";
-	private readonly INVALID_JOIN = "INVALID JOIN";
-	private readonly INVALID_OPPONENT = "INVALID OPPONENT";
-
 	/** unique identifier: either username for web or device id for mcu */
 	private uid: string;
-	private socket: WebSocket;
+	private socket: BaseSocket;
 	private opponent: string;
 	private gameMode: string;
 
 	constructor(uid: string) {
-		this.uid = uid;
 		//FIXME: NEED TO FIND A WAY TO ID THIS AS A WEB VS MCU REQUEST, maybe have MCU send device id and do database call for username
-
-		this.opponent = this.INVALID_OPPONENT;
+		this.uid = uid;
+		this.opponent = SERVER_HEADERS.INVALID_OPPONENT;
 		this.gameMode = this.GAME_TYPE_CLASSIC;
 
-		const protocol = location.protocol == "https:" ? "wss" : "ws";
-		const uri = protocol + "://" + location.hostname + ":" + location.port;
-		this.socket = new WebSocket(uri);
-
-		this.socket.onmessage = (event: any) => {
-			this._onmessage(event);
-		};
-
-		this.socket.onopen = (event: any) => {
-			console.log(event);
-			this.configureConnection();
-		};
-	}
-
-	private configureConnection() {
-		const obj = { req: this.CONNECTED, id: this.uid };
-		const str = JSON.stringify(obj);
-
-		this.socket.send(str);
-		const interval = setInterval(() => {
-			if (this.socket.readyState == this.socket.OPEN) {
-				this.socket.send(str);
-			} else {
-				console.error("Websocket Disconnected.  Please Refresh Page");
-				clearInterval(interval);
-			}
-			// this._send(obj); //TODO: MAYBE UPDATE THIS BACK TO COMMON _send() FUNCTION BUT REALLY ANNOYING CONSOLE LOGS
-		}, 1000);
+		this.socket = new BaseSocket(uid, this);
 	}
 
 	private _onmessage(event: any) {
@@ -89,15 +59,15 @@ class GameSocket {
 		console.info("Received Server Message:");
 		console.info(data);
 
-		if (data.header === this.MOVE_MADE) {
-		} else if (data.header === this.INVALID_MOVE) {
-		} else if (data.header === this.BOARD_UPDATE) {
+		if (data.header === SERVER_HEADERS.MOVE_MADE) {
+		} else if (data.header === SERVER_HEADERS.INVALID_MOVE) {
+		} else if (data.header === SERVER_HEADERS.BOARD_UPDATE) {
 			this.updateBoard(data.meta);
-		} else if (data.header === this.JOINED_GAME) {
+		} else if (data.header === SERVER_HEADERS.JOINED_GAME) {
 			this.opponent = data.payload.opponent;
 			this.gameMode = data.payload.gameType;
-		} else if (data.header === this.INVALID_JOIN) {
-		} else if (data.header === this.GAME_TYPE_APPROVED) {
+		} else if (data.header === SERVER_HEADERS.INVALID_JOIN) {
+		} else if (data.header === SERVER_HEADERS.GAME_TYPE_APPROVED) {
 			this.gameMode = data.meta;
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
@@ -123,24 +93,13 @@ class GameSocket {
 		}
 	}
 
-	private _send(obj: any) {
-		if (this.socket.readyState == this.socket.OPEN) {
-			console.info("Sending Message:");
-			console.info(obj);
-			const str = JSON.stringify(obj);
-			this.socket.send(str);
-		} else {
-			console.error(this.SOCKET_NOT_OPEN);
-		}
-	}
-
 	public sendGameInvite() {
 		const friend = $("#friend_list").val() as string;
 		if (friend) {
 			console.log(friend);
 			const req = { type: this.INVITE_TO_GAME, data: friend };
 			const obj = { req: this.DATABASE_REQUEST, id: this.uid, data: req };
-			this._send(obj);
+			this.socket.send(obj);
 		} else {
 			console.error("Must Choose a Friend to Invite!");
 		}
@@ -152,29 +111,29 @@ class GameSocket {
 			id: this.uid,
 			data: this.GAME_TYPE_BASIC,
 		};
-		this._send(obj);
+		this.socket.send(obj);
 	}
 
 	public sendGetFriends() {
 		const req = { type: this.GET_FRIENDS };
 		const obj = { req: this.DATABASE_REQUEST, id: this.uid, data: req };
-		this._send(obj);
+		this.socket.send(obj);
 	}
 
 	public sendNewGame() {
 		const obj = { req: this.NEW_GAME, id: this.uid };
-		this._send(obj);
+		this.socket.send(obj);
 	}
 
 	public sendJoinGame() {
 		const game = $("#game_id").val() as string;
 		const obj = { req: this.JOIN_GAME, id: this.uid, data: game };
-		this._send(obj);
+		this.socket.send(obj);
 	}
 
 	public sendShipPositions(list: ShipPos[]) {
 		const obj = { req: this.POSITION_SHIPS, id: this.uid, data: list };
-		this._send(obj);
+		this.socket.send(obj);
 	}
 
 	public sendMakeMove(col: number, row: number) {
@@ -187,6 +146,6 @@ class GameSocket {
 			to: this.opponent,
 		};
 		const obj = { req: this.MAKE_MOVE, id: this.uid, data: move };
-		this._send(obj);
+		this.socket.send(obj);
 	}
 }
