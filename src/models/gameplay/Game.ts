@@ -468,10 +468,9 @@ export class ResponseBoard {
 
 	private boardToStr(board: Board, showFilled: boolean): string {
 		let str = "";
-		for (let i = 0; i < board.grid.length; i++) {
-			const squares = board.grid[i];
-			for (let j = 0; j < squares.length; j++) {
-				const square = squares[j];
+		for (let r = 0; r < board.grid.length; r++) {
+			for (let c = 0; c < board.grid.length; c++) {
+				const square = board.grid[c][r];
 				if (showFilled || square.state != BOARD_STATE.FILLED) {
 					str += square.state;
 				} else {
