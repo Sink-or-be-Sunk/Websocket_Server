@@ -53,6 +53,7 @@
 }
 
 .grid-cell-hit {
+  box-sizing: content-box;
   position: absolute;
   border: 1px solid #444;
   width: 49px;
@@ -61,6 +62,7 @@
 }
 
 .grid-cell-miss {
+  box-sizing: content-box;
   position: absolute;
   border: 1px solid #444;
   width: 49px;
@@ -69,6 +71,7 @@
 }
 
 .grid-cell-full {
+  box-sizing: content-box;
   position: absolute;
   border: 1px solid #444;
   width: 49px;

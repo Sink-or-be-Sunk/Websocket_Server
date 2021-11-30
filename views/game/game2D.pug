@@ -8,7 +8,7 @@ block content
 		.board-container(id="position-board")
 			each y in [0, 1, 2, 3, 4, 5, 6, 7]
 				each x in [0, 1, 2, 3, 4, 5, 6, 7]
-					.grid-cell-clear(id="square"+(7*8+x) style="top:"+y*size +"px;left:"+x*size + "px")
+					.grid-cell-clear(id="square"+(y*8+x) style="top:"+y*size +"px;left:"+x*size + "px")
 			.boat(id="boat2")
 			.boat(id="boat3")
 			.boat(id="boat4")
@@ -158,8 +158,8 @@ block content
 		function sendLocations() {
 			const list = [];
 
-			for (let i = 0; i < ships.length; i++) {
-				const ship = ships[i];
+			for (let [, val] of Object.entries(ships)) {
+				const ship = val.el;
 				var element = ship.style.cssText;
 				const splitText = element.split("translate3d(");
 				const vals = splitText[1].split(", ");
