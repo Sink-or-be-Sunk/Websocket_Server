@@ -28,7 +28,7 @@
 #boat3 {
   height: 50px;
   width: 150px;
-  background: red;
+  background: purple;
 }
 
 #boat4 {
@@ -40,7 +40,7 @@
 #boat5 {
   height: 50px;
   width: 250px;
-  background: orange;
+  background: hsl(300, 80%, 50%);
 }
 
 .grid-cell-clear {
@@ -53,22 +53,37 @@
 }
 
 .grid-cell-hit {
+  box-sizing: content-box;
   position: absolute;
   border: 1px solid #444;
   width: 49px;
   height: 49px;
   background-color: red;
+  z-index: 1;
+}
+
+.grid-cell-sunk {
+  box-sizing: content-box;
+  position: absolute;
+  border: 1px solid #444;
+  width: 49px;
+  height: 49px;
+  background-color: orange;
+  z-index: 1;
 }
 
 .grid-cell-miss {
+  box-sizing: content-box;
   position: absolute;
   border: 1px solid #444;
   width: 49px;
   height: 49px;
   background-color: blue;
+  z-index: 1;
 }
 
 .grid-cell-full {
+  box-sizing: content-box;
   position: absolute;
   border: 1px solid #444;
   width: 49px;

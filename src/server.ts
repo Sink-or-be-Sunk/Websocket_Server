@@ -83,6 +83,7 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 				socket.id = msg.id;
 				socket.dropped = 0;
 				connections.set(socket.id, socket);
+				logger.info(`New Socket Added: <${socket.id}>`);
 			} else {
 				logger.error("msg received without id!");
 				return;

@@ -1,18 +1,20 @@
+enum CONNECT_SERVER_HEADERS {
+	// HEADERS
+	REGISTRATION_HEADER = "REGISTRATION",
+	SERVER_SUCCESS_RESPONSE = "WEB REQ SUCCESS",
+	REGISTER_SUCCESS = "REGISTER SUCCESS",
+}
+
 class ConnectManager {
 	deviceID: string;
 	username: string;
 
-	socket: WebSocket;
-
-	// HEADERS
-	private readonly REGISTRATION_HEADER = "REGISTRATION";
-	private readonly SERVER_SUCCESS_RESPONSE = "WEB REQ SUCCESS";
-	private readonly REGISTER_SUCCESS = "REGISTER SUCCESS";
+	socket: BaseSocket;
 
 	// MESSAGES
 	private getDeviceList() {
 		return {
-			req: this.REGISTRATION_HEADER,
+			req: CONNECT_SERVER_HEADERS.REGISTRATION_HEADER,
 			id: this.username,
 			data: {
 				type: "GET_LIST",
@@ -31,32 +33,25 @@ class ConnectManager {
 
 		console.log(uri);
 
-		this.socket = new WebSocket(uri);
-		this.socket.onmessage = (event) => {
-			this._onmessage(event);
-		};
-
-		this.socket.onopen = (event) => {
-			this._onopen(event);
-		};
+		this.socket = new BaseSocket(username, this);
 	}
 
-	private _onmessage(event: any) {
+	public _onmessage(event: any) {
 		const data = JSON.parse(event.data);
 		console.log(data);
 
-		if (data.header == this.SERVER_SUCCESS_RESPONSE) {
+		if (data.header == CONNECT_SERVER_HEADERS.SERVER_SUCCESS_RESPONSE) {
 			this.updatePairingList(data.payload);
-		} else if (data.header == this.REGISTER_SUCCESS) {
-			this.socket.send(JSON.stringify(this.getDeviceList()));
+		} else if (data.header == CONNECT_SERVER_HEADERS.REGISTER_SUCCESS) {
+			this.socket.send(this.getDeviceList());
 			($("#mcuWait") as any).modal("hide");
 			($("#mcuConnected") as any).modal("show");
 		}
 	}
 
-	private _onopen(event: any) {
-		console.log(event);
-		this.socket.send(JSON.stringify(this.getDeviceList()));
+	public _onopen(event: any) {
+		console.log("Requesting Device List");
+		this.socket.send(this.getDeviceList());
 	}
 
 	/** Functions to Update Dom */
@@ -117,7 +112,7 @@ class ConnectManager {
 				};
 				console.log("sending msg:");
 				console.log(msg);
-				this.socket.send(JSON.stringify(msg));
+				this.socket.send(msg);
 			});
 
 			const buttonDiv = document.createElement("div");
