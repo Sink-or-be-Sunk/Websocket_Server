@@ -42,6 +42,14 @@ export class Ship {
 		return true;
 	}
 
+	sink(): void {
+		for (let i = 0; i < this.squares.length; i++) {
+			const square = this.squares[i];
+			square.sink();
+		}
+		this.state = SHIP_STATE.SUNK;
+	}
+
 	attack(move: Move): boolean {
 		for (let i = 0; i < this.squares.length; i++) {
 			const square = this.squares[i];
@@ -49,7 +57,7 @@ export class Ship {
 				square.hit();
 				this.state = SHIP_STATE.DAMAGED;
 				if (this.checkSunk()) {
-					this.state = SHIP_STATE.SUNK;
+					this.sink();
 				}
 				return true;
 			}

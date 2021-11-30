@@ -79,12 +79,15 @@ class GameSocket {
 			const state = states[i];
 			const square = $(`#square${i}`);
 			square.removeClass("grid-cell-clear");
+			square.removeClass("grid-cell-full");
 			if (state === "H") {
 				square.addClass("grid-cell-hit");
 			} else if (state === "M") {
 				square.addClass("grid-cell-miss");
 			} else if (state === "F") {
 				square.addClass("grid-cell-full");
+			} else if (state === "S") {
+				square.addClass("grid-cell-sunk");
 			} else if (state === "E") {
 				square.addClass("grid-cell-clear");
 			} else {

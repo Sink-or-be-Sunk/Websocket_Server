@@ -184,10 +184,12 @@ export enum BOARD_STATE {
 	FILLED = "F",
 	HIT = "H",
 	MISS = "M",
+	SUNK = "S",
 	// EMPTY = 0,
 	// FILLED = 1,
 	// HIT = 2,
 	// MISS = 3,
+	// SUNK = 4,
 }
 
 /**
@@ -227,11 +229,15 @@ export class Square {
 		this.state = BOARD_STATE.EMPTY; //default
 	}
 
-	hit() {
+	hit(): void {
 		this.state = BOARD_STATE.HIT;
 	}
 
-	miss() {
+	miss(): void {
 		this.state = BOARD_STATE.MISS;
+	}
+
+	sink(): void {
+		this.state = BOARD_STATE.SUNK;
 	}
 }
