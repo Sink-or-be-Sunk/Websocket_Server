@@ -166,11 +166,18 @@ export default class Lobby {
 			return this.leaveGame(message.id);
 		} else if (message.req == REQ_TYPE.INIT_CONNECTION) {
 			const game = this.games.get(message.id);
+
 			if (game) {
-				//player was in game when disconnect occurred
-				const resp = game.reconnect(); //TODO: NEED TO FIGURE OUT HOW TO IMPLEMENT THIS
+				return this.sendReconnect(game, message.id);
+			} else {
+				// player wasn't in game previously or game timed out
+				return [
+					new WSServerMessage({
+						header: SERVER_HEADERS.CONNECTED,
+						at: message.id,
+					}),
+				];
 			}
-			// else ignore, player wasn't in game previously or game timed out
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
@@ -384,6 +391,38 @@ export default class Lobby {
 		throw new Error(
 			"Couldn't find source game to broadcast started: this should never happen",
 		);
+	}
+
+	private sendReconnect(game: Game, uid: string): WSServerMessage[] {
+		//player was in game when disconnect occurred
+		// return position ships message if game isn't started
+		// return last move if game is in progress
+		// if (game not startedships not positioned) then send ship positions
+		// else if game started
+		const list = [];
+		if (game.isStarted()) {
+			//send game board
+			list.push(...this.broadcastBoards(game.id)); //TODO: CHANGE SO WE AREN'T SENDING TO ALL PLAYERS (NOT REALLY A BIG DEAL)
+
+			//TODO: ADD CODE TO SEND LAST MOVE (NEED TO GET ACCESS TO THE PREVIOUS MOVE RESPONSE IN ADDITION TO THE MOVE)
+			// if (game.isInProgress()) {
+			// 	list.push(
+			// 		new WSServerMessage({
+			// 			header: SERVER_HEADERS.MOVE_MADE,
+			// 			at: uid,
+			// 			payload: game.lastMove,
+			// 			meta: resp.meta,
+			// 		}),
+			// 	);
+		} else if (game.shipsPositioned(uid)) {
+			list.push(
+				new WSServerMessage({
+					header: SERVER_HEADERS.POSITIONED_SHIPS,
+					at: uid,
+				}),
+			);
+		}
+		return list;
 	}
 
 	private broadcastGameType(

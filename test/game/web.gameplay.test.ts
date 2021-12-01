@@ -16,6 +16,19 @@ import { ShipType, SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
 describe("Mimic Game Play From Two Web Players", () => {
 	const lobby = new Lobby();
 
+	it("Accepts Init Connection Request", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const resp = await lobby.handleReq(msg);
+		const result = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.CONNECTED,
+				at: obj.id,
+			}),
+		];
+		expect(resp.toString()).toEqual(result.toString());
+	});
+
 	it("Accepts New Game Request", async () => {
 		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
@@ -265,6 +278,24 @@ describe("Game Two Web Players with different setup message order", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
+			}),
+		];
+		for (let i = 0; i < results.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Allow Player 1 to reconnect after positioning ships", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
+		const str = JSON.stringify(obj);
+		const msg = new WSClientMessage(str);
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "one",
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
@@ -597,6 +628,30 @@ describe("Game Two Web Players with different setup message order", () => {
 				at: move.to,
 				payload: move_res,
 				meta: move_res.toResultString(),
+			}),
+		];
+		for (let i = 0; i < results.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Allow Player 1 to reconnect in middle of gameplay", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
+		const str = JSON.stringify(obj);
+		const msg = new WSClientMessage(str);
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "SHEEEEEESHEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESHEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "SHEEEESHEEEEEFEEEEEEEEEEEEEEEEEEEEEESHEEEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
