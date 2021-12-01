@@ -28,7 +28,8 @@ export default class Lobby {
 			req === REQ_TYPE.JOIN_GAME ||
 			req === REQ_TYPE.GAME_TYPE ||
 			req === REQ_TYPE.POSITION_SHIPS ||
-			req === REQ_TYPE.LEAVE_GAME
+			req === REQ_TYPE.LEAVE_GAME ||
+			req === REQ_TYPE.INIT_CONNECTION
 		) {
 			return true;
 		} else {
@@ -163,6 +164,13 @@ export default class Lobby {
 			}
 		} else if (message.req == REQ_TYPE.LEAVE_GAME) {
 			return this.leaveGame(message.id);
+		} else if (message.req == REQ_TYPE.INIT_CONNECTION) {
+			const game = this.games.get(message.id);
+			if (game) {
+				//player was in game when disconnect occurred
+				const resp = game.reconnect(); //TODO: NEED TO FIGURE OUT HOW TO IMPLEMENT THIS
+			}
+			// else ignore, player wasn't in game previously or game timed out
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
