@@ -251,7 +251,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 		}
 	});
 
-	it("Accepts Player One Reconnect to Game In Progress", async () => {
+	it("Accepts Player One Reconnect to Game In Progress with No Moves", async () => {
 		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const responses = await lobby.handleReq(msg);
@@ -271,6 +271,36 @@ describe("Mimic Game Play From Two Web Players", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.BOARD_UPDATE,
 				at: "one",
+				meta: "FFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts Player Two Reconnect to Game In Progress with No Moves", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "two" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+				payload: {
+					opponent: "one",
+					gameType: GAME_TYPE.CLASSIC,
+				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "two",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
 				meta: "FFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
 			}),
 		];
@@ -312,6 +342,66 @@ describe("Mimic Game Play From Two Web Players", () => {
 				header: SERVER_HEADERS.BOARD_UPDATE,
 				at: "one",
 				meta: "FFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "HFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts Player One Reconnect to Game In Progress with One Move", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+				payload: {
+					opponent: "two",
+					gameType: GAME_TYPE.CLASSIC,
+				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "one",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "FFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts Player Two Reconnect to Game In Progress with One Move", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "two" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+				payload: {
+					opponent: "one",
+					gameType: GAME_TYPE.CLASSIC,
+				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "two",
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.BOARD_UPDATE,
@@ -403,6 +493,66 @@ describe("Mimic Game Play From Two Web Players", () => {
 				header: SERVER_HEADERS.BOARD_UPDATE,
 				at: "one",
 				meta: "FFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEMSEEEEEEESEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "SFFFEEEESFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEM",
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts Player One Reconnect to Game In Progress with One Move", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+				payload: {
+					opponent: "two",
+					gameType: GAME_TYPE.CLASSIC,
+				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "one",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "FFFFEEEEFFFFEEEEEFFFEEEEEEFFEEEEEEEFEEEEEEEEEEEEEEEEEEEEEEEEEEEMSEEEEEEESEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+		];
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
+	});
+
+	it("Accepts Player Two Reconnect to Game In Progress with One Move", async () => {
+		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "two" };
+		const msg = new WSClientMessage(JSON.stringify(obj));
+		const responses = await lobby.handleReq(msg);
+		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: obj.id,
+				payload: {
+					opponent: "one",
+					gameType: GAME_TYPE.CLASSIC,
+				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_STARTED,
+				at: "two",
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.BOARD_UPDATE,
