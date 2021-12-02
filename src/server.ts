@@ -90,12 +90,20 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			}
 		}
 
+		logger.debug(`reset dropped for ${socket.id}`);
 		socket.dropped = 0;
 
 		if (socket.id != msg.id) {
 			logger.error(
 				`Ignoring message where socket id <${socket.id}> differs from msg id <${msg.id}>`,
 			);
+			sendList([
+				new WSServerMessage({
+					header: SERVER_HEADERS.BAD_CLIENT_MSG,
+					at: socket.id,
+					meta: `ID Mismatch ${socket.id}, ${msg.id}`,
+				}),
+			]);
 			return;
 		}
 		//FIXME: ADD A BETTER CHECK HERE
@@ -169,7 +177,7 @@ setInterval(() => {
 	// logger.debug(`Number of Connections: ${connections.size}`);
 	for (const [id, connection] of connections) {
 		// logger.debug(`<${id}> has dropped <${connection.dropped}>`);
-		if (connection.dropped > 10) {
+		if (connection.dropped > 30) {
 			logger.error(`Connection to <${id}> timed out!`);
 			lobby.leaveGame(id); // This does nothing when player isn't apart of any game
 			connections.delete(id);
