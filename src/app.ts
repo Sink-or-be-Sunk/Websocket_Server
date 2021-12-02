@@ -16,6 +16,7 @@ import * as userController from "./controllers/user";
 import * as contactController from "./controllers/contact";
 import * as gameController from "./controllers/game";
 import * as connectController from "./controllers/connect";
+import * as adminController from "./controllers/admin";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -151,4 +152,5 @@ app.get(
 	passportConfig.isAuthenticated,
 	connectController.getConnect,
 );
+app.get("/server_log", adminController.getLog);
 export default app;
