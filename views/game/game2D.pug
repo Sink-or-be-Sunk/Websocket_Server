@@ -87,7 +87,6 @@ block content
 		for (let [, val] of Object.entries(ships)) {
 			const ship = val.el;
 			const cur = val.cur;
-			console.log(val.cur);
 			$(ship).css({ transform: `translate3d(${cur.x}px,${cur.y}px,0px)` });
 			Draggable.create(ship, {
 				bounds: $("#position-board"),

@@ -104,7 +104,6 @@ class GameSocket {
 	public sendGameInvite() {
 		const friend = $("#friend_list").val() as string;
 		if (friend) {
-			console.log(friend);
 			const req = { type: this.INVITE_TO_GAME, data: friend };
 			const obj = { req: this.DATABASE_REQUEST, id: this.uid, data: req };
 			this.socket.send(obj);
