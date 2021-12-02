@@ -175,6 +175,7 @@ export default class Lobby {
 					new WSServerMessage({
 						header: SERVER_HEADERS.CONNECTED,
 						at: message.id,
+						meta: SERVER_HEADERS.INITIAL_CONNECTION,
 					}),
 				];
 			}
@@ -399,10 +400,22 @@ export default class Lobby {
 		// return last move if game is in progress
 		// if (game not startedships not positioned) then send ship positions
 		// else if game started
-		const list = [];
+		const list = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.JOINED_GAME,
+				at: uid,
+				payload: {
+					opponent: Lobby.EMPTY_GAME_MSG,
+					gameType: this.games.get(uid).rules.type,
+				},
+			}),
+		];
+		//FIXME: CHANGE THIS OVER TO CALL LOBBY.HANDLE WITH PROPER CLIENT REQUESTS THAT THEY WOULD HAVE SENT INITIALLY
+
 		if (game.isStarted()) {
 			//send game board
-			list.push(...this.broadcastBoards(game.id)); //TODO: CHANGE SO WE AREN'T SENDING TO ALL PLAYERS (NOT REALLY A BIG DEAL)
+			list.push(...this.broadcastGameStarted(uid));
+			list.push(...this.broadcastBoards(uid)); //TODO: CHANGE SO WE AREN'T SENDING TO ALL PLAYERS (NOT REALLY A BIG DEAL)
 
 			//TODO: ADD CODE TO SEND LAST MOVE (NEED TO GET ACCESS TO THE PREVIOUS MOVE RESPONSE IN ADDITION TO THE MOVE)
 			// if (game.isInProgress()) {
