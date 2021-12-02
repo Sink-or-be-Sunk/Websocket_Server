@@ -6,9 +6,7 @@ import { WSClientMessage, REQ_TYPE } from "./util/WSClientMessage";
 import { SERVER_HEADERS, WSServerMessage } from "./util/WSServerMessage";
 import Lobby from "./models/gameplay/Lobby";
 import { RegistrationManager } from "./models/registration/RegistrationManager";
-import { assert } from "console";
 import { DBManager } from "./models/database/DBManager";
-import { REGISTER_TYPE } from "./models/registration/RegisterRequest"; //FIXME: REMOVE THIS: FOR TESTING ONLY
 
 const connections = new Map<string, WebSocket>();
 const timeouts = new Map<string, NodeJS.Timeout>();
@@ -106,11 +104,12 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			]);
 			return;
 		}
-		//FIXME: ADD A BETTER CHECK HERE
-		//TODO: THIS ERRORS THE SYSTEM OUT WHEN PLAYER FIRST CONNECTS TO DEVICE THEN IMMEDIATELY TRIED TO START GAME
-		if (msg.req == REQ_TYPE.CONNECTED) {
-			// logger.debug(`Device connected: ${msg.id}`);
-		} else if (dbManager.handles(msg.req)) {
+
+		// TODO: REMOVE THIS, DON'T NEED TO DO ANYTHING SPECIAL ON CONNECTED MESSAGE
+		// if (msg.req == REQ_TYPE.CONNECTED) {
+		// 	// logger.debug(`Device connected: ${msg.id}`);
+		// } else
+		if (dbManager.handles(msg.req)) {
 			const list = await dbManager.handleReq(msg);
 			sendList(list);
 		} else if (lobby.handles(msg.req)) {
