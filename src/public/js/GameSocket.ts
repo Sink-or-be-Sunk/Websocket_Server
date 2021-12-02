@@ -24,6 +24,7 @@ enum SERVER_HEADERS {
 	INVALID_JOIN = "INVALID JOIN",
 	INVALID_OPPONENT = "INVALID OPPONENT",
 	BOARD_UPDATE = "BOARD UPDATE",
+	POSITIONED_SHIPS = "POSITIONED SHIPS",
 }
 class GameSocket {
 	// ERRORS
@@ -69,6 +70,10 @@ class GameSocket {
 		} else if (data.header === SERVER_HEADERS.INVALID_JOIN) {
 		} else if (data.header === SERVER_HEADERS.GAME_TYPE_APPROVED) {
 			this.gameMode = data.meta;
+		} else if (data.header === SERVER_HEADERS.POSITIONED_SHIPS) {
+			console.log(
+				"//TODO: NEED TO LOCK SHIP POSITIONS SO YOU CAN'T MOVE THEM",
+			);
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
 		}
@@ -99,7 +104,6 @@ class GameSocket {
 	public sendGameInvite() {
 		const friend = $("#friend_list").val() as string;
 		if (friend) {
-			console.log(friend);
 			const req = { type: this.INVITE_TO_GAME, data: friend };
 			const obj = { req: this.DATABASE_REQUEST, id: this.uid, data: req };
 			this.socket.send(obj);

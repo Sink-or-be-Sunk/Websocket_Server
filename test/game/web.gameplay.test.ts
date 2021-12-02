@@ -606,7 +606,7 @@ describe("Game Two Web Players with different setup message order", () => {
 		}
 	});
 
-	it("Allow Player 1 to make 5th move", async () => {
+	it("Allow Player 1 to win game", async () => {
 		const move = {
 			type: MOVE_TYPE.SOLO,
 			c: 1,

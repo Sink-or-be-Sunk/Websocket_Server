@@ -6,30 +6,20 @@ import { Ship, SHIP_DESCRIPTOR } from "./Ship";
 import logger from "../../util/logger";
 
 export class Game {
-	/**
-	 * List of all players in the game
-	 */
+	/** List of all players in the game */
 	players: Player[];
-	/**
-	 * Boards have one to one mapping with player array
-	 */
+	/** Boards have one to one mapping with player array */
 	boards: Board[];
-	/**
-	 * unique game id
-	 */
+	/** unique game id */
 	id: string;
-	/**
-	 * Indicated index of players array who has current turn
-	 */
+	/** Indicated index of players array who has current turn */
 	turn: number;
-	/**
-	 * sets up the game rules
-	 */
+	/** sets up the game rules */
 	rules: Rules;
-	/**
-	 * current state of the game
-	 */
+	/** current state of the game */
 	state: STATE;
+	/** Most recent move that has been made by either player */
+	lastMove: Move;
 
 	constructor(id: string, type: GAME_TYPE) {
 		this.id = id;
@@ -39,6 +29,11 @@ export class Game {
 		logger.info(`New ${this.rules.type} Game Created`);
 		this.turn = 0;
 		this.state = STATE.IDLE; //wait for ship positions to be locked in;
+		this.lastMove = null;
+	}
+
+	isInProgress(): boolean {
+		return this.isStarted() && this.lastMove != null;
 	}
 
 	isStarted(): boolean {
@@ -47,6 +42,16 @@ export class Game {
 
 	isOver(): boolean {
 		return this.state == STATE.OVER;
+	}
+
+	shipsPositioned(uid: string): boolean {
+		for (let i = 0; i < this.players.length; i++) {
+			const player = this.players[i];
+			if (player.id == uid) {
+				return player.ready;
+			}
+		}
+		throw new Error(`Invalid player uid <${uid}>.  Player not found`);
 	}
 
 	getPlayers(ignoreID?: string): Player[] {
@@ -206,6 +211,8 @@ export class Game {
 							if (res.meta.includes(ResponseHeader.GAME_OVER)) {
 								logger.info(`Game Over: Player <${id}> won`);
 								this.state = STATE.OVER;
+							} else {
+								this.lastMove = move;
 							}
 							this.nextTurn();
 						}
@@ -308,7 +315,7 @@ export enum GAME_TYPE {
 }
 
 export enum STATE {
-	IDLE = "IDLE", //before game has started
+	IDLE = "IDLE", // before game has started
 	STARTED = "STARTED",
 	OVER = "OVER",
 }

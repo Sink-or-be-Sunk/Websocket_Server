@@ -41,7 +41,8 @@ export class WSClientMessage {
 				object.req === REQ_TYPE.POSITION_SHIPS ||
 				object.req === REQ_TYPE.REGISTRATION ||
 				object.req === REQ_TYPE.CONNECTED ||
-				object.req === REQ_TYPE.LEAVE_GAME
+				object.req === REQ_TYPE.LEAVE_GAME ||
+				object.req === REQ_TYPE.INIT_CONNECTION
 			) {
 				return true;
 			}
@@ -74,4 +75,5 @@ export enum REQ_TYPE {
 	DATABASE = "DATABASE",
 	CONNECTED = "CONNECTED",
 	LEAVE_GAME = "LEAVE GAME",
+	INIT_CONNECTION = "INIT CONNECTION",
 }

@@ -28,7 +28,8 @@ export default class Lobby {
 			req === REQ_TYPE.JOIN_GAME ||
 			req === REQ_TYPE.GAME_TYPE ||
 			req === REQ_TYPE.POSITION_SHIPS ||
-			req === REQ_TYPE.LEAVE_GAME
+			req === REQ_TYPE.LEAVE_GAME ||
+			req === REQ_TYPE.INIT_CONNECTION
 		) {
 			return true;
 		} else {
@@ -163,6 +164,21 @@ export default class Lobby {
 			}
 		} else if (message.req == REQ_TYPE.LEAVE_GAME) {
 			return this.leaveGame(message.id);
+		} else if (message.req == REQ_TYPE.INIT_CONNECTION) {
+			const game = this.getGameByPlayerID(message.id);
+
+			if (game) {
+				return this.sendReconnect(game, message.id);
+			} else {
+				// player wasn't in game previously or game timed out
+				return [
+					new WSServerMessage({
+						header: SERVER_HEADERS.CONNECTED,
+						at: message.id,
+						meta: SERVER_HEADERS.INITIAL_CONNECTION,
+					}),
+				];
+			}
 		} else {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
@@ -298,24 +314,33 @@ export default class Lobby {
 		);
 	}
 
+	private getBroadcastBoard(game: Game, playerID: string): WSServerMessage {
+		const boards = game.getBoards();
+
+		for (let i = 0; i < boards.length; i++) {
+			const board = boards[i];
+			if (board.id == playerID) {
+				return new WSServerMessage({
+					header: SERVER_HEADERS.BOARD_UPDATE,
+					at: board.id,
+					meta: board.str,
+				});
+			}
+		}
+		throw new Error(
+			`Couldn't find player <${playerID}> in game <${game.id}>`,
+		);
+	}
+
 	private broadcastBoards(sourceID: string): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
 				const list = [];
-
-				const boards = game.getBoards();
-
-				for (let i = 0; i < boards.length; i++) {
-					const board = boards[i];
-					list.push(
-						new WSServerMessage({
-							header: SERVER_HEADERS.BOARD_UPDATE,
-							at: board.id,
-							meta: board.str,
-						}),
-					);
+				for (let i = 0; i < game.players.length; i++) {
+					const pid = game.players[i].id;
+					list.push(this.getBroadcastBoard(game, pid));
 				}
 
 				return list;
@@ -354,6 +379,13 @@ export default class Lobby {
 		);
 	}
 
+	private getBroadcastGame(playerID: string): WSServerMessage {
+		return new WSServerMessage({
+			header: SERVER_HEADERS.GAME_STARTED,
+			at: playerID,
+		});
+	}
+
 	private broadcastGameStarted(sourceID: string): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
@@ -363,12 +395,7 @@ export default class Lobby {
 				const players = game.getPlayers();
 				for (let i = 0; i < players.length; i++) {
 					const p = players[i];
-					list.push(
-						new WSServerMessage({
-							header: SERVER_HEADERS.GAME_STARTED,
-							at: p.id,
-						}),
-					);
+					list.push(this.getBroadcastGame(p.id));
 				}
 				return list;
 			}
@@ -376,6 +403,66 @@ export default class Lobby {
 		throw new Error(
 			"Couldn't find source game to broadcast started: this should never happen",
 		);
+	}
+
+	private sendReconnect(game: Game, uid: string): WSServerMessage[] {
+		const list = [];
+
+		//send joined game
+		if (game.players.length <= 1) {
+			list.push(
+				new WSServerMessage({
+					header: SERVER_HEADERS.JOINED_GAME,
+					at: uid,
+					payload: {
+						opponent: Lobby.EMPTY_GAME_MSG,
+						gameType: game.rules.type,
+					},
+				}),
+			);
+		} else {
+			const opponent = game.getOpponent(uid);
+			if (opponent) {
+				list.push(
+					new WSServerMessage({
+						header: SERVER_HEADERS.JOINED_GAME,
+						at: uid,
+						payload: {
+							opponent: opponent.id,
+							gameType: game.rules.type,
+						},
+					}),
+				);
+			} else {
+				throw new Error(
+					`Cannot Find Opponent In Game: ${game.id} for player ${uid}`,
+				);
+			}
+		}
+
+		if (game.isStarted()) {
+			//send game board
+			list.push(this.getBroadcastGame(uid));
+			list.push(this.getBroadcastBoard(game, uid));
+
+			// if (game.isInProgress()) {
+			// 	list.push(
+			// 		new WSServerMessage({
+			// 			header: SERVER_HEADERS.MOVE_MADE,
+			// 			at: uid,
+			// 			payload: game.lastMove,
+			// 			meta: resp.meta,
+			// 		}),
+			// 	);
+		} else if (game.shipsPositioned(uid)) {
+			list.push(
+				new WSServerMessage({
+					header: SERVER_HEADERS.POSITIONED_SHIPS,
+					at: uid,
+				}),
+			);
+		}
+		return list;
 	}
 
 	private broadcastGameType(

@@ -5,6 +5,8 @@ class BaseSocket {
 	// CLIENT HEADERS
 	private readonly CONNECTED = "CONNECTED";
 
+	private readonly INIT_CONNECTION = "INIT CONNECTION";
+
 	/** unique identifier: either username for web or device id for mcu */
 	private uid: string;
 	private socket: WebSocket;
@@ -24,6 +26,7 @@ class BaseSocket {
 		};
 		this.socket.onopen = (event: any) => {
 			console.log(event);
+			this.send({ req: this.INIT_CONNECTION, id: this.uid });
 			this.configureConnection();
 			superThis._onopen
 				? superThis._onopen(event)
