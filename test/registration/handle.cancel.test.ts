@@ -24,7 +24,7 @@ describe("Validate Registration Client Cancellation Message After Enqueue", () =
 	});
 
 	it("Accepts MCU Cancel Message", async () => {
-		const register = { type: REGISTER_TYPE.CANCEL_REGISTER, ssid: "wifi" };
+		const register = { type: REGISTER_TYPE.DEQUEUE, ssid: "wifi" };
 		const obj = { req: REQ_TYPE.REGISTRATION, id: "MCU", data: register };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const resp = await manager.handleReq(msg);
@@ -88,7 +88,7 @@ describe("Validate Registration Client Cancellation Message After Web Initiate",
 	});
 
 	it("Accepts MCU Cancel Message after web initiation", async () => {
-		const register = { type: REGISTER_TYPE.CANCEL_REGISTER, ssid: "wifi" };
+		const register = { type: REGISTER_TYPE.DEQUEUE, ssid: "wifi" };
 		const obj = { req: REQ_TYPE.REGISTRATION, id: "MCU", data: register };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const responses = await manager.handleReq(msg);
@@ -190,7 +190,7 @@ describe("Reject Registration Client Cancellation Message After MCU Confirm", ()
 	});
 
 	it("Reject MCU Cancel Message after pairing complete", async () => {
-		const register = { type: REGISTER_TYPE.CANCEL_REGISTER, ssid: "wifi" };
+		const register = { type: REGISTER_TYPE.DEQUEUE, ssid: "wifi" };
 		const obj = { req: REQ_TYPE.REGISTRATION, id: "MCU", data: register };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const responses = await manager.handleReq(msg);

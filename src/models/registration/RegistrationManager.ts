@@ -121,7 +121,7 @@ export class RegistrationManager {
 							meta: RegistrationManager.WAITING_FOR_WEB,
 						}),
 					];
-				} else if (req.type == REGISTER_TYPE.CANCEL_REGISTER) {
+				} else if (req.type == REGISTER_TYPE.DEQUEUE) {
 					const list = [
 						new WSServerMessage({
 							header: SERVER_HEADERS.TERMINATED_REGISTER,
@@ -163,7 +163,7 @@ export class RegistrationManager {
 						payload: list,
 					}),
 				];
-			} else if (req.type == REGISTER_TYPE.CANCEL_REGISTER) {
+			} else if (req.type == REGISTER_TYPE.DEQUEUE) {
 				return [
 					new WSServerMessage({
 						header: SERVER_HEADERS.INVALID_CANCEL_REGISTER,

@@ -105,11 +105,10 @@ async function _onWSMessage(socket: WebSocket, raw: WebSocket.Data) {
 			return;
 		}
 
-		// TODO: REMOVE THIS, DON'T NEED TO DO ANYTHING SPECIAL ON CONNECTED MESSAGE
-		// if (msg.req == REQ_TYPE.CONNECTED) {
-		// 	// logger.debug(`Device connected: ${msg.id}`);
-		// } else
-		if (dbManager.handles(msg.req)) {
+		if (msg.req == REQ_TYPE.CONNECTED) {
+			// logger.debug(`Device connected: ${msg.id}`);
+			// DO NOTHING BUT DON'T REMOVE, NEEDED TO AVOID INTERNAL SERVER ERROR MESSAGE
+		} else if (dbManager.handles(msg.req)) {
 			const list = await dbManager.handleReq(msg);
 			sendList(list);
 		} else if (lobby.handles(msg.req)) {
