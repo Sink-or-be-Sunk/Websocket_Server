@@ -165,7 +165,7 @@ export default class Lobby {
 		} else if (message.req == REQ_TYPE.LEAVE_GAME) {
 			return this.leaveGame(message.id);
 		} else if (message.req == REQ_TYPE.INIT_CONNECTION) {
-			const game = this.games.get(message.id);
+			const game = this.getGameByPlayerID(message.id);
 
 			if (game) {
 				return this.sendReconnect(game, message.id);
@@ -314,24 +314,33 @@ export default class Lobby {
 		);
 	}
 
+	private getBroadcastBoard(game: Game, playerID: string): WSServerMessage {
+		const boards = game.getBoards();
+
+		for (let i = 0; i < boards.length; i++) {
+			const board = boards[i];
+			if (board.id == playerID) {
+				return new WSServerMessage({
+					header: SERVER_HEADERS.BOARD_UPDATE,
+					at: board.id,
+					meta: board.str,
+				});
+			}
+		}
+		throw new Error(
+			`Couldn't find player <${playerID}> in game <${game.id}>`,
+		);
+	}
+
 	private broadcastBoards(sourceID: string): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
 			if (player) {
 				//found game
 				const list = [];
-
-				const boards = game.getBoards();
-
-				for (let i = 0; i < boards.length; i++) {
-					const board = boards[i];
-					list.push(
-						new WSServerMessage({
-							header: SERVER_HEADERS.BOARD_UPDATE,
-							at: board.id,
-							meta: board.str,
-						}),
-					);
+				for (let i = 0; i < game.players.length; i++) {
+					const pid = game.players[i].id;
+					list.push(this.getBroadcastBoard(game, pid));
 				}
 
 				return list;
@@ -370,6 +379,13 @@ export default class Lobby {
 		);
 	}
 
+	private getBroadcastGame(playerID: string): WSServerMessage {
+		return new WSServerMessage({
+			header: SERVER_HEADERS.GAME_STARTED,
+			at: playerID,
+		});
+	}
+
 	private broadcastGameStarted(sourceID: string): WSServerMessage[] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(sourceID);
@@ -379,12 +395,7 @@ export default class Lobby {
 				const players = game.getPlayers();
 				for (let i = 0; i < players.length; i++) {
 					const p = players[i];
-					list.push(
-						new WSServerMessage({
-							header: SERVER_HEADERS.GAME_STARTED,
-							at: p.id,
-						}),
-					);
+					list.push(this.getBroadcastGame(p.id));
 				}
 				return list;
 			}
@@ -395,29 +406,45 @@ export default class Lobby {
 	}
 
 	private sendReconnect(game: Game, uid: string): WSServerMessage[] {
-		//player was in game when disconnect occurred
-		// return position ships message if game isn't started
-		// return last move if game is in progress
-		// if (game not startedships not positioned) then send ship positions
-		// else if game started
-		const list = [
-			new WSServerMessage({
-				header: SERVER_HEADERS.JOINED_GAME,
-				at: uid,
-				payload: {
-					opponent: Lobby.EMPTY_GAME_MSG,
-					gameType: this.games.get(uid).rules.type,
-				},
-			}),
-		];
-		//FIXME: CHANGE THIS OVER TO CALL LOBBY.HANDLE WITH PROPER CLIENT REQUESTS THAT THEY WOULD HAVE SENT INITIALLY
+		const list = [];
+
+		//send joined game
+		if (game.players.length <= 1) {
+			list.push(
+				new WSServerMessage({
+					header: SERVER_HEADERS.JOINED_GAME,
+					at: uid,
+					payload: {
+						opponent: Lobby.EMPTY_GAME_MSG,
+						gameType: game.rules.type,
+					},
+				}),
+			);
+		} else {
+			const opponent = game.getOpponent(uid);
+			if (opponent) {
+				list.push(
+					new WSServerMessage({
+						header: SERVER_HEADERS.JOINED_GAME,
+						at: uid,
+						payload: {
+							opponent: opponent.id,
+							gameType: game.rules.type,
+						},
+					}),
+				);
+			} else {
+				throw new Error(
+					`Cannot Find Opponent In Game: ${game.id} for player ${uid}`,
+				);
+			}
+		}
 
 		if (game.isStarted()) {
 			//send game board
-			list.push(...this.broadcastGameStarted(uid));
-			list.push(...this.broadcastBoards(uid)); //TODO: CHANGE SO WE AREN'T SENDING TO ALL PLAYERS (NOT REALLY A BIG DEAL)
+			list.push(this.getBroadcastGame(uid));
+			list.push(this.getBroadcastBoard(game, uid));
 
-			//TODO: ADD CODE TO SEND LAST MOVE (NEED TO GET ACCESS TO THE PREVIOUS MOVE RESPONSE IN ADDITION TO THE MOVE)
 			// if (game.isInProgress()) {
 			// 	list.push(
 			// 		new WSServerMessage({
