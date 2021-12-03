@@ -69,11 +69,16 @@ class ShipGamePiece {
 				}
 			},
 			onDragEnd: () => {
-				if (options.ships.validTranslate(this)) {
-					this.onDragEnd();
-				} else {
+				if (options.ships.checkIntersections(this)) {
 					console.log("Invalid Translate");
 					this.signalError();
+					this.cur.x = this.prev.x;
+					this.cur.y = this.prev.y;
+
+					this.translate();
+				} else {
+					this.prev.x = this.cur.x;
+					this.prev.y = this.cur.y;
 				}
 			},
 		});
@@ -86,14 +91,21 @@ class ShipGamePiece {
 		}, 150);
 	}
 	private translate() {
-		this.positioner.css({
-			transform: `translate3d(${this.cur.x}px,${this.cur.y}px,0px)`,
+		const duration = 0.75;
+		TweenLite.to(this.positioner, duration, {
+			x: this.cur.x,
+			y: this.cur.y,
+			ease: Back.easeOut.config(2),
 		});
-		this.v.css({
-			transform: `translate3d(${this.cur.x}px,${this.cur.y}px,0px)`,
+		TweenLite.to(this.v, duration, {
+			x: this.cur.x,
+			y: this.cur.y,
+			ease: Back.easeOut.config(2),
 		});
-		this.h.css({
-			transform: `translate3d(${this.cur.x}px,${this.cur.y}px,0px)`,
+		TweenLite.to(this.h, duration, {
+			x: this.cur.x,
+			y: this.cur.y,
+			ease: Back.easeOut.config(2),
 		});
 	}
 
@@ -107,21 +119,7 @@ class ShipGamePiece {
 
 		this.cur.x = Math.round(childOffset.x / this.snap) * this.snap;
 		this.cur.y = Math.round(childOffset.y / this.snap) * this.snap;
-		TweenLite.to(this.positioner, 0.5, {
-			x: this.cur.x,
-			y: this.cur.y,
-			ease: Back.easeOut.config(2),
-		});
-		TweenLite.to(this.v, 0.5, {
-			x: this.cur.x,
-			y: this.cur.y,
-			ease: Back.easeOut.config(2),
-		});
-		TweenLite.to(this.h, 0.5, {
-			x: this.cur.x,
-			y: this.cur.y,
-			ease: Back.easeOut.config(2),
-		});
+		this.translate();
 	}
 
 	render() {

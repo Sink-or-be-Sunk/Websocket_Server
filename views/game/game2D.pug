@@ -73,61 +73,6 @@ block content
 			},
 		]);
 		
-		//- for (let [, val] of Object.entries(ships)) {
-		//- 	const ship = val.els[0];
-		//- 	const cur = val.cur;
-		//- 	$(ship).css({ transform: `translate3d(${cur.x}px,${cur.y}px,0px)` });
-		//- 	Draggable.create(ship, {
-		//- 		bounds: $("#position-board"),
-		//- 		onDrag: onDrag,
-		//- 		onClick: rotateShip,
-		//- 		onDragEnd: onDragEnd,
-		//- 	});
-		//- }
-
-		//- function rotateShip() {
-		//- 	//TODO: CHECK THAT THIS IS A VALID ROTATE
-		//- 	var oldwidth = $(this.target).css("width");
-		//- 	var oldheight = $(this.target).css("height");
-		//- 	$(this.target).css("height", oldwidth);
-		//- 	$(this.target).css("width", oldheight);
-		//- }
-		//- function onDragEnd() {
-		//- 	const target = ships[this.target.id];
-		//- 	for (let [, val] of Object.entries(ships)) {
-		//- 		ship = val.els[0];
-		//- 		if (this.target != ship) {
-		//- 			if (Draggable.hitTest(this.target, ship, 0.8)) {
-		//- 				//collision
-		//- 				target.cur.x = target.prev.x;
-		//- 				target.cur.y = target.prev.y;
-		//- 				TweenLite.to(this.target, 0.5, {
-		//- 					x: target.prev.x,
-		//- 					y: target.prev.y,
-		//- 					ease: Back.easeOut.config(2),
-		//- 				});
-		//- 				break;
-		//- 			}
-		//- 		}
-		//- 	}
-		//- 	//no collision
-		//- 	target.prev.x = target.cur.x;
-		//- 	target.prev.y = target.cur.y;
-		//- }
-		
-		//- function onDrag() {
-		//- 	for (let [, val] of Object.entries(ships)) {
-		//- 		if (this.target == val.els[0]) {
-		//- 			val.cur.x = Math.round(this.x / snap) * snap;
-		//- 			val.cur.y = Math.round(this.y / snap) * snap;
-		//- 			TweenLite.to(this.target, 0.5, {
-		//- 				x: val.cur.x,
-		//- 				y: val.cur.y,
-		//- 				ease: Back.easeOut.config(2),
-		//- 			});
-		//- 		}
-		//- 	}
-		//- }
 		function coordsToShip(x, y, size) {
 			const obj = { c: x, r: y };
 			if (size === 2) {
