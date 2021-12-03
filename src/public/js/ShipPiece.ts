@@ -16,8 +16,7 @@ interface ShipPieceOptions {
 	tag: string;
 	len: number;
 	snap: number;
-	rotate: (ShipGamePiece) => boolean;
-	translate: (ShipGamePiece) => boolean;
+	ships: ShipGamePieces;
 }
 
 class ShipGamePiece {
@@ -58,28 +57,33 @@ class ShipGamePiece {
 				this.onDrag();
 			},
 			onClick: () => {
-				if (options.rotate(this)) {
+				if (options.ships.validRotate(this)) {
 					this.rotate();
+					if (options.ships.checkIntersections(this)) {
+						this.rotate(); //flip back
+						this.signalError();
+					}
 				} else {
 					console.log("Invalid Rotate");
-					this.positioner.css({ border: "3px solid red" });
-					setTimeout(() => {
-						this.positioner.css({ border: "none" });
-					}, 150);
+					this.signalError();
 				}
 			},
 			onDragEnd: () => {
-				if (options.translate(this)) {
+				if (options.ships.validTranslate(this)) {
 					this.onDragEnd();
 				} else {
 					console.log("Invalid Translate");
-					this.positioner.css({ border: "3px solid red" });
-					setTimeout(() => {
-						this.positioner.css({ border: "none" });
-					}, 150);
+					this.signalError();
 				}
 			},
 		});
+	}
+
+	private signalError() {
+		this.positioner.css({ border: "3px solid red" });
+		setTimeout(() => {
+			this.positioner.css({ border: "none" });
+		}, 150);
 	}
 	private translate() {
 		this.positioner.css({
@@ -164,8 +168,7 @@ class ShipGamePieces {
 					y: i * snap,
 					len: el.len,
 					snap: snap,
-					rotate: this.validRotate,
-					translate: this.validTranslate,
+					ships: this,
 				}),
 			);
 		}
@@ -174,10 +177,29 @@ class ShipGamePieces {
 	validRotate(ship: ShipGamePiece): boolean {
 		// check board constraints
 		if (ship.isVertical) {
-			return ship.cur.x / ship.snap + ship.len - 1 < ShipGamePieces.grid;
-		} else {
-			return ship.cur.y / ship.snap + ship.len - 1 < ShipGamePieces.grid;
+			if (ship.cur.x / ship.snap + ship.len - 1 >= ShipGamePieces.grid) {
+				return false;
+			}
+		} else if (
+			ship.cur.y / ship.snap + ship.len - 1 >=
+			ShipGamePieces.grid
+		) {
+			return false;
 		}
+
+		return true;
+	}
+
+	checkIntersections(ship: ShipGamePiece): boolean {
+		for (let i = 0; i < this.ships.length; i++) {
+			const s = this.ships[i];
+			console.log("ship", ship);
+			console.log("s", s);
+			if (Draggable.hitTest(ship, s, 0.8)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	validTranslate(ship: ShipGamePiece): boolean {
