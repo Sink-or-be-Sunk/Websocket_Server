@@ -49,8 +49,8 @@ class ShipGamePiece {
 
 		Draggable.create(this.positioner, {
 			bounds: $("#position-board"),
-			onDrag: (target: any) => {
-				this.onDrag(target);
+			onDrag: () => {
+				this.onDrag();
 			},
 			onClick: this.rotate,
 			onDragEnd: this.onDragEnd,
@@ -69,16 +69,20 @@ class ShipGamePiece {
 	}
 
 	onDrag() {
-		console.log(this.positioner.get(0));
-		// this.cur.x =
-		// 	Math.round(this.positioner.css("x") / this.snap) * this.snap;
-		// this.cur.y =
-		// 	Math.round(this.positioner.css("y") / this.snap) * this.snap;
-		// TweenLite.to(this.positioner, 0.5, {
-		// 	x: this.cur.x,
-		// 	y: this.cur.y,
-		// 	ease: Back.easeOut.config(2),
-		// });
+		const childPos = this.positioner.offset();
+		const parentPos = this.positioner.parent().offset();
+		const childOffset = {
+			y: childPos.top - parentPos.top,
+			x: childPos.left - parentPos.left,
+		};
+
+		this.cur.x = Math.round(childOffset.x / this.snap) * this.snap;
+		this.cur.y = Math.round(childOffset.y / this.snap) * this.snap;
+		TweenLite.to(this.positioner, 0.5, {
+			x: this.cur.x,
+			y: this.cur.y,
+			ease: Back.easeOut.config(2),
+		});
 	}
 	rotate(target: any) {
 		console.log(target);
