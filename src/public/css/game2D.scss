@@ -19,10 +19,16 @@
   position: absolute;
 }
 
-#boat2 {
+.patrol {
+  fill: green;
+}
+#patrol_h {
   height: 50px;
   width: 100px;
-  background: green;
+}
+#patrol_v {
+  height: 100px;
+  width: 50px;
 }
 
 #boat3 {
