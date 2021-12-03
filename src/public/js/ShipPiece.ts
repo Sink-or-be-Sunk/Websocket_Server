@@ -38,6 +38,7 @@ class ShipGamePiece {
 
 		this.positioner = jQuery("<div>", {
 			id: `${this.tag}_pos`,
+			class: "boat",
 			style: `width: ${options.len * options.snap}px; height: ${
 				options.snap
 			}px; background: red`,
@@ -67,16 +68,17 @@ class ShipGamePiece {
 		});
 	}
 
-	onDrag(target: any) {
-		console.log("target", target.x);
-		this.cur.x = Math.round(target.x / this.snap) * this.snap;
-		this.cur.y = Math.round(target.y / this.snap) * this.snap;
-		console.log(this.positioner);
-		TweenLite.to(this.positioner, 0.5, {
-			x: this.cur.x,
-			y: this.cur.y,
-			ease: Back.easeOut.config(2),
-		});
+	onDrag() {
+		console.log(this.positioner.get(0));
+		// this.cur.x =
+		// 	Math.round(this.positioner.css("x") / this.snap) * this.snap;
+		// this.cur.y =
+		// 	Math.round(this.positioner.css("y") / this.snap) * this.snap;
+		// TweenLite.to(this.positioner, 0.5, {
+		// 	x: this.cur.x,
+		// 	y: this.cur.y,
+		// 	ease: Back.easeOut.config(2),
+		// });
 	}
 	rotate(target: any) {
 		console.log(target);
