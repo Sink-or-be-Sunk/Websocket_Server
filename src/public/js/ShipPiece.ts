@@ -193,9 +193,8 @@ class ShipGamePieces {
 	checkIntersections(ship: ShipGamePiece): boolean {
 		for (let i = 0; i < this.ships.length; i++) {
 			const s = this.ships[i];
-			console.log("ship", ship);
-			console.log("s", s);
-			if (Draggable.hitTest(ship, s, 0.8)) {
+
+			if (Draggable.hitTest(ship.positioner, s.positioner, 0.8)) {
 				return true;
 			}
 		}
