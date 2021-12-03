@@ -9,11 +9,9 @@ block content
 			each y in [0, 1, 2, 3, 4, 5, 6, 7]
 				each x in [0, 1, 2, 3, 4, 5, 6, 7]
 					.grid-cell-clear(id="square"+(y*8+x) style="top:"+y*size +"px;left:"+x*size + "px")
-			.boat(id="boat2")
-			.boat(id="boat3")
 			include boats/battleship_h.pug
 			include boats/battleship_v.pug
-			include boats/carrier.pug
+			//- include boats/carrier.pug
 		
 		.board-container(id="attack-board")
 			each y in [0, 1, 2, 3, 4, 5, 6, 7]

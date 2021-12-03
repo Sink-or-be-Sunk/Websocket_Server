@@ -31,29 +31,34 @@ class ShipGamePiece {
 		this.cur = new ShipPos(options.x, options.y);
 		this.prev = new ShipPos(options.x, options.y);
 		this.tag = options.tag;
-		this.v = $(`${this.tag}_v`);
-		this.h = $(`${this.tag}_h`);
-		this.isVertical = false;
+		this.v = $(`#${this.tag}_v`);
+		this.h = $(`#${this.tag}_h`);
 		this.snap = options.snap;
+		this.isVertical = false;
 
 		this.positioner = jQuery("<div>", {
 			id: `${this.tag}_pos`,
 			class: "boat",
 			style: `width: ${options.len * options.snap}px; height: ${
 				options.snap
-			}px; background: red`,
+			}px;`,
 		});
 		$("#position-board").append(this.positioner);
 
 		this.translate();
+		this.render();
 
 		Draggable.create(this.positioner, {
 			bounds: $("#position-board"),
 			onDrag: () => {
 				this.onDrag();
 			},
-			onClick: this.rotate,
-			onDragEnd: this.onDragEnd,
+			onClick: () => {
+				this.rotate();
+			},
+			onDragEnd: () => {
+				this.onDragEnd();
+			},
 		});
 	}
 	private translate() {
@@ -83,12 +88,38 @@ class ShipGamePiece {
 			y: this.cur.y,
 			ease: Back.easeOut.config(2),
 		});
+		TweenLite.to(this.v, 0.5, {
+			x: this.cur.x,
+			y: this.cur.y,
+			ease: Back.easeOut.config(2),
+		});
+		TweenLite.to(this.h, 0.5, {
+			x: this.cur.x,
+			y: this.cur.y,
+			ease: Back.easeOut.config(2),
+		});
 	}
-	rotate(target: any) {
-		console.log(target);
+
+	render() {
+		if (this.isVertical) {
+			this.v.css({ display: "unset" });
+			this.h.css({ display: "none" });
+		} else {
+			this.v.css({ display: "none" });
+			this.h.css({ display: "unset" });
+		}
 	}
-	onDragEnd(target: any) {
-		console.log(target);
+	rotate() {
+		this.isVertical = !this.isVertical;
+		const prevW = this.positioner.css("width");
+		const prevH = this.positioner.css("height");
+		this.positioner.css({ height: prevW });
+		this.positioner.css({ width: prevH });
+
+		this.render();
+	}
+	onDragEnd() {
+		console.log("target");
 	}
 }
 
