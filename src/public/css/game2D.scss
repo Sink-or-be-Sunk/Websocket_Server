@@ -43,10 +43,12 @@
   width: 200px;
 }
 
-#boat5 {
-  height: 200px;
-  width: 50px;
+.carrier {
   fill: hsl(300, 80%, 50%);
+}
+#carrier_h {
+  width: 250px;
+  height: 50px;
 }
 
 .grid-cell-clear {

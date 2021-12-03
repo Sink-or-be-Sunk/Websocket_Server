@@ -61,6 +61,7 @@ class ShipGamePiece {
 				if (options.rotate(this)) {
 					this.rotate();
 				} else {
+					console.log("Invalid Rotate");
 					this.positioner.css({ border: "3px solid red" });
 					setTimeout(() => {
 						this.positioner.css({ border: "none" });
@@ -72,6 +73,10 @@ class ShipGamePiece {
 					this.onDragEnd();
 				} else {
 					console.log("Invalid Translate");
+					this.positioner.css({ border: "3px solid red" });
+					setTimeout(() => {
+						this.positioner.css({ border: "none" });
+					}, 150);
 				}
 			},
 		});
@@ -156,7 +161,7 @@ class ShipGamePieces {
 				new ShipGamePiece({
 					tag: el.tag,
 					x: 0,
-					y: i,
+					y: i * snap,
 					len: el.len,
 					snap: snap,
 					rotate: this.validRotate,
