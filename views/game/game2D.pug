@@ -11,9 +11,9 @@ block content
 					.grid-cell-clear(id="square"+(y*8+x) style="top:"+y*size +"px;left:"+x*size + "px")
 			.boat(id="boat2")
 			.boat(id="boat3")
-			//- .boat(id="boat4")
-			include boats/battleship.pug
-			.boat(id="boat5")
+			include boats/battleship_h.pug
+			include boats/battleship_v.pug
+			include boats/carrier.pug
 		
 		.board-container(id="attack-board")
 			each y in [0, 1, 2, 3, 4, 5, 6, 7]
@@ -56,90 +56,75 @@ block content
 	script(src="/js/GameVisuals2D.js")
 	script(src="/js/BaseSocket.js")
 	script(src="/js/GameSocket.js")
+	script(src="/js/ShipPiece.js")
 
 	script.
 		const socket = new GameSocket("#{user.username}");
 
 		const snap = 50;
-		
-		const ships = {
-			boat2: {
-				el: boat2,
-				cur: { x: 0, y: snap * 0 },
-				prev: { x: 0, y: snap * 0 },
-			},
-			boat3: {
-				el: boat3,
-				cur: { x: 0, y: snap * 1 },
-				prev: { x: 0, y: snap * 1 },
-			},
-			boat4: {
-				el: boat4,
-				cur: { x: 0, y: snap * 2 },
-				prev: { x: 0, y: snap * 2 },
-			},
-			boat5: {
-				el: boat5,
-				cur: { x: 0, y: snap * 3 },
-				prev: { x: 0, y: snap * 3 },
-			},
-		};
-		
-		for (let [, val] of Object.entries(ships)) {
-			const ship = val.el;
-			const cur = val.cur;
-			$(ship).css({ transform: `translate3d(${cur.x}px,${cur.y}px,0px)` });
-			Draggable.create(ship, {
-				bounds: $("#position-board"),
-				onDrag: onDrag,
-				onClick: rotateShip,
-				onDragEnd: onDragEnd,
-			});
-		}
 
-		function rotateShip() {
-			//TODO: CHECK THAT THIS IS A VALID ROTATE
-			var oldwidth = $(this.target).css("width");
-			var oldheight = $(this.target).css("height");
-			$(this.target).css("height", oldwidth);
-			$(this.target).css("width", oldheight);
-		}
-		function onDragEnd() {
-			const target = ships[this.target.id];
-			for (let [, val] of Object.entries(ships)) {
-				ship = val.el;
-				if (this.target != ship) {
-					if (Draggable.hitTest(this.target, ship, 0.8)) {
-						//collision
-						target.cur.x = target.prev.x;
-						target.cur.y = target.prev.y;
-						TweenLite.to(this.target, 0.5, {
-							x: target.prev.x,
-							y: target.prev.y,
-							ease: Back.easeOut.config(2),
-						});
-						break;
-					}
-				}
-			}
-			//no collision
-			target.prev.x = target.cur.x;
-			target.prev.y = target.cur.y;
-		}
+		const ships = new ShipGamePieces(snap, [
+			{
+				tag: "battleship",
+				len: 4,
+			},
+		]);
 		
-		function onDrag() {
-			for (let [, val] of Object.entries(ships)) {
-				if (this.target == val.el) {
-					val.cur.x = Math.round(this.x / snap) * snap;
-					val.cur.y = Math.round(this.y / snap) * snap;
-					TweenLite.to(this.target, 0.5, {
-						x: val.cur.x,
-						y: val.cur.y,
-						ease: Back.easeOut.config(2),
-					});
-				}
-			}
-		}
+		//- for (let [, val] of Object.entries(ships)) {
+		//- 	const ship = val.els[0];
+		//- 	const cur = val.cur;
+		//- 	$(ship).css({ transform: `translate3d(${cur.x}px,${cur.y}px,0px)` });
+		//- 	Draggable.create(ship, {
+		//- 		bounds: $("#position-board"),
+		//- 		onDrag: onDrag,
+		//- 		onClick: rotateShip,
+		//- 		onDragEnd: onDragEnd,
+		//- 	});
+		//- }
+
+		//- function rotateShip() {
+		//- 	//TODO: CHECK THAT THIS IS A VALID ROTATE
+		//- 	var oldwidth = $(this.target).css("width");
+		//- 	var oldheight = $(this.target).css("height");
+		//- 	$(this.target).css("height", oldwidth);
+		//- 	$(this.target).css("width", oldheight);
+		//- }
+		//- function onDragEnd() {
+		//- 	const target = ships[this.target.id];
+		//- 	for (let [, val] of Object.entries(ships)) {
+		//- 		ship = val.els[0];
+		//- 		if (this.target != ship) {
+		//- 			if (Draggable.hitTest(this.target, ship, 0.8)) {
+		//- 				//collision
+		//- 				target.cur.x = target.prev.x;
+		//- 				target.cur.y = target.prev.y;
+		//- 				TweenLite.to(this.target, 0.5, {
+		//- 					x: target.prev.x,
+		//- 					y: target.prev.y,
+		//- 					ease: Back.easeOut.config(2),
+		//- 				});
+		//- 				break;
+		//- 			}
+		//- 		}
+		//- 	}
+		//- 	//no collision
+		//- 	target.prev.x = target.cur.x;
+		//- 	target.prev.y = target.cur.y;
+		//- }
+		
+		//- function onDrag() {
+		//- 	for (let [, val] of Object.entries(ships)) {
+		//- 		if (this.target == val.els[0]) {
+		//- 			val.cur.x = Math.round(this.x / snap) * snap;
+		//- 			val.cur.y = Math.round(this.y / snap) * snap;
+		//- 			TweenLite.to(this.target, 0.5, {
+		//- 				x: val.cur.x,
+		//- 				y: val.cur.y,
+		//- 				ease: Back.easeOut.config(2),
+		//- 			});
+		//- 		}
+		//- 	}
+		//- }
 		function coordsToShip(x, y, size) {
 			const obj = { c: x, r: y };
 			if (size === 2) {
@@ -159,7 +144,7 @@ block content
 			const list = [];
 
 			for (let [, val] of Object.entries(ships)) {
-				const ship = val.el;
+				const ship = val.els[0];
 				var element = ship.style.cssText;
 				const splitText = element.split("translate3d(");
 				const vals = splitText[1].split(", ");

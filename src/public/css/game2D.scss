@@ -31,22 +31,22 @@
   background: purple;
 }
 
-// .battleship {
-//   height: 50px;
-//   width: 200px;
-//   fill: blue;
-//   position: absolute;
-// }
-#boat4 {
+.battleship {
+  fill: blue;
+}
+#battleship_v {
+  width: 50px;
+  height: 200px;
+}
+#battleship_h {
   height: 50px;
   width: 200px;
-  fill: blue;
 }
 
 #boat5 {
-  height: 50px;
-  width: 250px;
-  background: hsl(300, 80%, 50%);
+  height: 200px;
+  width: 50px;
+  fill: hsl(300, 80%, 50%);
 }
 
 .grid-cell-clear {
