@@ -16,6 +16,8 @@ interface ShipPieceOptions {
 	tag: string;
 	len: number;
 	snap: number;
+	rotate: (ShipGamePiece) => boolean;
+	translate: (ShipGamePiece) => boolean;
 }
 
 class ShipGamePiece {
@@ -25,6 +27,7 @@ class ShipGamePiece {
 	v: JQuery<HTMLDivElement>;
 	h: JQuery<HTMLDivElement>;
 	isVertical: boolean;
+	len: number;
 	positioner: JQuery<HTMLDivElement>;
 	snap: number;
 	constructor(options: ShipPieceOptions) {
@@ -35,6 +38,7 @@ class ShipGamePiece {
 		this.h = $(`#${this.tag}_h`);
 		this.snap = options.snap;
 		this.isVertical = false;
+		this.len = options.len;
 
 		this.positioner = jQuery("<div>", {
 			id: `${this.tag}_pos`,
@@ -54,10 +58,18 @@ class ShipGamePiece {
 				this.onDrag();
 			},
 			onClick: () => {
-				this.rotate();
+				if (options.rotate(this)) {
+					this.rotate();
+				} else {
+					console.log("Invalid Rotate");
+				}
 			},
 			onDragEnd: () => {
-				this.onDragEnd();
+				if (options.translate(this)) {
+					this.onDragEnd();
+				} else {
+					console.log("Invalid Translate");
+				}
 			},
 		});
 	}
@@ -131,6 +143,8 @@ interface ShipElement {
 class ShipGamePieces {
 	ships: ShipGamePiece[];
 
+	private static readonly grid = 8;
+
 	constructor(snap: number, list: ShipElement[]) {
 		this.ships = [];
 		for (let i = 0; i < list.length; i++) {
@@ -142,8 +156,23 @@ class ShipGamePieces {
 					y: i,
 					len: el.len,
 					snap: snap,
+					rotate: this.validRotate,
+					translate: this.validTranslate,
 				}),
 			);
 		}
+	}
+
+	validRotate(ship: ShipGamePiece): boolean {
+		// check board constraints
+		if (ship.isVertical) {
+			return ship.cur.x / ship.snap + ship.len - 1 < ShipGamePieces.grid;
+		} else {
+			return ship.cur.y / ship.snap + ship.len - 1 < ShipGamePieces.grid;
+		}
+	}
+
+	validTranslate(ship: ShipGamePiece): boolean {
+		return true;
 	}
 }
