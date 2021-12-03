@@ -61,7 +61,10 @@ class ShipGamePiece {
 				if (options.rotate(this)) {
 					this.rotate();
 				} else {
-					console.log("Invalid Rotate");
+					this.positioner.css({ border: "3px solid red" });
+					setTimeout(() => {
+						this.positioner.css({ border: "none" });
+					}, 150);
 				}
 			},
 			onDragEnd: () => {
