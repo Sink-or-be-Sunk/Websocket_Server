@@ -464,6 +464,7 @@ export default class Lobby {
 				new WSServerMessage({
 					header: SERVER_HEADERS.POSITIONED_SHIPS,
 					at: uid,
+					payload: game.getShipPositions(uid),
 				}),
 			);
 		}

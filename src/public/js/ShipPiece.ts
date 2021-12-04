@@ -2,17 +2,18 @@ declare const Draggable: any;
 declare const TweenLite: any;
 declare const Back: any;
 class ShipPos {
-	x: number;
-	y: number;
-	constructor(x, y) {
-		this.x = x;
-		this.y = y;
+	c: number;
+	r: number;
+	t: "P" | "S" | "B" | "C";
+	constructor(c: number, r: number) {
+		this.c = c;
+		this.r = r;
 	}
 }
 
 interface ShipPieceOptions {
-	x: number;
-	y: number;
+	c: number;
+	r: number;
 	tag: string;
 	len: number;
 	snap: number;
@@ -30,8 +31,8 @@ class ShipGamePiece {
 	positioner: JQuery<HTMLDivElement>;
 	snap: number;
 	constructor(options: ShipPieceOptions) {
-		this.cur = new ShipPos(options.x, options.y);
-		this.prev = new ShipPos(options.x, options.y);
+		this.cur = new ShipPos(options.c, options.r);
+		this.prev = new ShipPos(options.c, options.r);
 		this.tag = options.tag;
 		this.v = $(`#${this.tag}_v`);
 		this.h = $(`#${this.tag}_h`);
@@ -72,13 +73,13 @@ class ShipGamePiece {
 				if (options.ships.checkIntersections(this)) {
 					console.log("Invalid Translate");
 					this.signalError();
-					this.cur.x = this.prev.x;
-					this.cur.y = this.prev.y;
+					this.cur.c = this.prev.c;
+					this.cur.r = this.prev.r;
 
 					this.translate();
 				} else {
-					this.prev.x = this.cur.x;
-					this.prev.y = this.cur.y;
+					this.prev.c = this.cur.c;
+					this.prev.r = this.cur.r;
 				}
 			},
 		});
@@ -93,20 +94,30 @@ class ShipGamePiece {
 	private translate() {
 		const duration = 0.75;
 		TweenLite.to(this.positioner, duration, {
-			x: this.cur.x,
-			y: this.cur.y,
+			x: this.cur.c,
+			y: this.cur.r,
 			ease: Back.easeOut.config(2),
 		});
 		TweenLite.to(this.v, duration, {
-			x: this.cur.x,
-			y: this.cur.y,
+			x: this.cur.c,
+			y: this.cur.r,
 			ease: Back.easeOut.config(2),
 		});
 		TweenLite.to(this.h, duration, {
-			x: this.cur.x,
-			y: this.cur.y,
+			x: this.cur.c,
+			y: this.cur.r,
 			ease: Back.easeOut.config(2),
 		});
+	}
+
+	setPosition(position: ShipPos, isVertical: boolean) {
+		this.cur.c = position.c * this.snap;
+		this.cur.r = position.r * this.snap;
+		this.translate();
+
+		if (isVertical) {
+			this.rotate();
+		}
 	}
 
 	onDrag() {
@@ -117,8 +128,8 @@ class ShipGamePiece {
 			x: childPos.left - parentPos.left,
 		};
 
-		this.cur.x = Math.round(childOffset.x / this.snap) * this.snap;
-		this.cur.y = Math.round(childOffset.y / this.snap) * this.snap;
+		this.cur.c = Math.round(childOffset.x / this.snap) * this.snap;
+		this.cur.r = Math.round(childOffset.y / this.snap) * this.snap;
 		this.translate();
 	}
 
@@ -161,21 +172,21 @@ class ShipGamePiece {
 		const type = this.getTypeString();
 
 		list.push({
-			c: this.cur.x / this.snap,
-			r: this.cur.y / this.snap,
+			c: this.cur.c / this.snap,
+			r: this.cur.r / this.snap,
 			t: type,
 		});
 
 		if (this.isVertical) {
 			list.push({
-				c: this.cur.x / this.snap,
-				r: this.cur.y / this.snap + this.len - 1,
+				c: this.cur.c / this.snap,
+				r: this.cur.r / this.snap + this.len - 1,
 				t: type,
 			});
 		} else {
 			list.push({
-				c: this.cur.x / this.snap + this.len - 1,
-				r: this.cur.y / this.snap,
+				c: this.cur.c / this.snap + this.len - 1,
+				r: this.cur.r / this.snap,
 				t: type,
 			});
 		}
@@ -200,8 +211,8 @@ class ShipGamePieces {
 			this.ships.push(
 				new ShipGamePiece({
 					tag: el.tag,
-					x: 0,
-					y: i * snap,
+					c: 0,
+					r: i * snap,
 					len: el.len,
 					snap: snap,
 					ships: this,
@@ -213,11 +224,11 @@ class ShipGamePieces {
 	validRotate(ship: ShipGamePiece): boolean {
 		// check board constraints
 		if (ship.isVertical) {
-			if (ship.cur.x / ship.snap + ship.len - 1 >= ShipGamePieces.grid) {
+			if (ship.cur.c / ship.snap + ship.len - 1 >= ShipGamePieces.grid) {
 				return false;
 			}
 		} else if (
-			ship.cur.y / ship.snap + ship.len - 1 >=
+			ship.cur.r / ship.snap + ship.len - 1 >=
 			ShipGamePieces.grid
 		) {
 			return false;
@@ -237,9 +248,6 @@ class ShipGamePieces {
 		return false;
 	}
 
-	validTranslate(ship: ShipGamePiece): boolean {
-		return true;
-	}
 	getShipPositionList() {
 		const list = [];
 		for (let i = 0; i < this.ships.length; i++) {
@@ -248,5 +256,48 @@ class ShipGamePieces {
 		}
 
 		return list;
+	}
+
+	setPositions(list: ShipPos[]): void {
+		const typeMap = { P: 0, S: 1, B: 2, C: 3 };
+
+		for (let i = 0; i < list.length; i++) {
+			const pos = list[i];
+			let pair: ShipPos = null;
+			for (let j = i + 1; j < list.length; j++) {
+				const search = list[j];
+				if (search.t == pos.t) {
+					pair = search;
+					list.splice(j, 1);
+					break;
+				}
+			}
+			if (pair) {
+				const ship = this.ships[typeMap[pos.t]];
+				let first;
+				let isVertical;
+				console.log("pos", pos);
+				console.log("pair", pair);
+				if (pos.c == pair.c) {
+					isVertical = true;
+					if (pos.r < pair.r) {
+						first = pos;
+					} else {
+						first = pair;
+					}
+				} else {
+					isVertical = false;
+					if (pos.c < pair.c) {
+						first = pos;
+					} else {
+						first = pair;
+					}
+				}
+				ship.setPosition(first, isVertical);
+			} else {
+				console.error(pos);
+				throw new Error(`Couldn't find Pair for Ship Coordinate`);
+			}
+		}
 	}
 }

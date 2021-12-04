@@ -1,9 +1,3 @@
-interface ShipPos {
-	r: number;
-	c: number;
-	t: "P" | "S" | "B" | "C";
-}
-
 enum MOVE_TYPES {
 	SOLO = "SOLO", //TODO: ADD OTHER TYPES
 }
@@ -73,9 +67,7 @@ class GameSocket {
 		} else if (data.header === SERVER_HEADERS.GAME_TYPE_APPROVED) {
 			this.gameMode = data.meta;
 		} else if (data.header === SERVER_HEADERS.POSITIONED_SHIPS) {
-			console.log(
-				"//TODO: NEED TO LOCK SHIP POSITIONS SO YOU CAN'T MOVE THEM",
-			);
+			this.ships.setPositions(data.payload);
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
 		}

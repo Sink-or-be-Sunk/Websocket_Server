@@ -63,7 +63,7 @@ wss.on("connection", (ws) => {
 });
 
 wss.on("error", (err: Error) => {
-	logger.error("Websocket SERVER Error!");
+	logger.error("Websocket Server Error!");
 	logger.error(err);
 });
 
