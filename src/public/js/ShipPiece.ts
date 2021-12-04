@@ -140,8 +140,46 @@ class ShipGamePiece {
 
 		this.render();
 	}
-	onDragEnd() {
-		console.log("target");
+
+	getTypeString() {
+		if (this.len === 2) {
+			return "P";
+		} else if (this.len === 3) {
+			return "S";
+		} else if (this.len === 4) {
+			return "B";
+		} else if (this.len === 5) {
+			return "C";
+		} else {
+			throw new Error(`Invalid Ship Size: ${this.len}`);
+		}
+	}
+
+	coordsToShip() {
+		const list = [];
+
+		const type = this.getTypeString();
+
+		list.push({
+			c: this.cur.x / this.snap,
+			r: this.cur.y / this.snap,
+			t: type,
+		});
+
+		if (this.isVertical) {
+			list.push({
+				c: this.cur.x / this.snap,
+				r: this.cur.y / this.snap + this.len - 1,
+				t: type,
+			});
+		} else {
+			list.push({
+				c: this.cur.x / this.snap + this.len - 1,
+				r: this.cur.y / this.snap,
+				t: type,
+			});
+		}
+		return list;
 	}
 }
 
@@ -201,5 +239,14 @@ class ShipGamePieces {
 
 	validTranslate(ship: ShipGamePiece): boolean {
 		return true;
+	}
+	getShipPositionList() {
+		const list = [];
+		for (let i = 0; i < this.ships.length; i++) {
+			const ship = this.ships[i];
+			list.push(...ship.coordsToShip());
+		}
+
+		return list;
 	}
 }
