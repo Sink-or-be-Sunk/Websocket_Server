@@ -115,9 +115,10 @@ class ShipGamePiece {
 		this.cur.r = position.r * this.snap;
 		this.translate();
 
-		if (isVertical) {
+		if (isVertical && !this.isVertical) {
 			this.rotate();
 		}
+		Draggable.get(this.positioner).disable();
 	}
 
 	onDrag() {
