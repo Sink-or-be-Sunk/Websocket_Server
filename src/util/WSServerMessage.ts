@@ -1,6 +1,7 @@
 import { Move } from "../models/gameplay/Move";
 import { GAME_TYPE } from "../models/gameplay/Game";
 import { DBFriend } from "../models/database/DBManager";
+import { Position } from "../models/gameplay/Layout";
 
 type payloadType =
 	| Move
@@ -10,7 +11,8 @@ type payloadType =
 	  }[]
 	| { username: string }
 	| { opponent: string; gameType: GAME_TYPE }
-	| Array<DBFriend>;
+	| Array<DBFriend>
+	| Position[];
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;

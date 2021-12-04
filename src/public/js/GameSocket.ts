@@ -45,12 +45,14 @@ class GameSocket {
 	private socket: BaseSocket;
 	private opponent: string;
 	private gameMode: string;
+	private ships: ShipGamePieces;
 
-	constructor(uid: string) {
+	constructor(uid: string, ships: ShipGamePieces) {
 		//FIXME: NEED TO FIND A WAY TO ID THIS AS A WEB VS MCU REQUEST, maybe have MCU send device id and do database call for username
 		this.uid = uid;
 		this.opponent = SERVER_HEADERS.INVALID_OPPONENT;
 		this.gameMode = this.GAME_TYPE_CLASSIC;
+		this.ships = ships;
 
 		this.socket = new BaseSocket(uid, this);
 	}

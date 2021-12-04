@@ -83,8 +83,8 @@ block content
 				len: 5,
 			},
 		]);
-		
-		const socket = new GameSocket("#{user.username}");
+
+		const socket = new GameSocket("#{user.username}", ships);
 		
 		function sendLocations() {
 			socket.sendShipPositions(ships.getShipPositionList());
