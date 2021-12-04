@@ -31,10 +31,16 @@
   width: 50px;
 }
 
-#boat3 {
+.submarine {
+  fill: purple;
+}
+#submarine_h {
   height: 50px;
   width: 150px;
-  background: purple;
+}
+#submarine_v {
+  height: 150px;
+  width: 50px;
 }
 
 .battleship {
