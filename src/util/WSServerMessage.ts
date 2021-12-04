@@ -1,6 +1,7 @@
 import { Move } from "../models/gameplay/Move";
 import { GAME_TYPE } from "../models/gameplay/Game";
 import { DBFriend } from "../models/database/DBManager";
+import { Position } from "../models/gameplay/Layout";
 
 type payloadType =
 	| Move
@@ -10,7 +11,8 @@ type payloadType =
 	  }[]
 	| { username: string }
 	| { opponent: string; gameType: GAME_TYPE }
-	| Array<DBFriend>;
+	| Array<DBFriend>
+	| Position[];
 
 type WSServerMessageOptions = {
 	header: SERVER_HEADERS;
@@ -62,6 +64,8 @@ export enum SERVER_HEADERS {
 	INVALID_LAYOUT = "INVALID LAYOUT",
 	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
 	INVALID_GAME_TYPE = "INVALID GAME TYPE",
+	INVALID_CANCEL_REGISTER = "INVALID CANCEL REGISTER",
 	LEFT_GAME = "LEFT GAME",
+	TERMINATED_REGISTER = "TERMINATED REGISTER",
 	INITIAL_CONNECTION = "INITIAL CONNECTION",
 }

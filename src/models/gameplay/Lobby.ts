@@ -12,6 +12,7 @@ import { Move } from "./Move";
 import logger from "../../util/logger";
 import { User } from "../User";
 import sgMail from "@sendgrid/mail";
+import { Position } from "./Layout";
 
 export default class Lobby {
 	public static readonly EMPTY_GAME_MSG = "Empty Game";
@@ -117,19 +118,23 @@ export default class Lobby {
 				];
 			}
 		} else if (message.req == REQ_TYPE.POSITION_SHIPS) {
-			const resp = this.positionShips(message.id, message.data);
+			const [resp, positions] = this.positionShips(
+				message.id,
+				message.data,
+			);
 			if (resp.valid) {
 				const list = [];
+				list.push(
+					new WSServerMessage({
+						header: SERVER_HEADERS.POSITIONED_SHIPS,
+						at: message.id,
+						payload: positions,
+					}),
+				);
+
 				if (resp.meta.includes(ResponseHeader.GAME_STARTED)) {
 					list.push(...this.broadcastGameStarted(message.id));
 					list.push(...this.broadcastBoards(message.id));
-				} else {
-					list.push(
-						new WSServerMessage({
-							header: SERVER_HEADERS.POSITIONED_SHIPS,
-							at: message.id,
-						}),
-					);
 				}
 				return list;
 			} else {
@@ -459,6 +464,7 @@ export default class Lobby {
 				new WSServerMessage({
 					header: SERVER_HEADERS.POSITIONED_SHIPS,
 					at: uid,
+					payload: game.getShipPositions(uid),
 				}),
 			);
 		}
@@ -493,15 +499,21 @@ export default class Lobby {
 		);
 	}
 
-	private positionShips(playerID: string, positions: string): Response {
+	private positionShips(
+		playerID: string,
+		positions: string,
+	): [Response, Position[] | null] {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
 			if (player) {
-				return game.positionShips(playerID, positions);
+				return [
+					game.positionShips(playerID, positions),
+					game.getShipPositions(playerID),
+				];
 			}
 		}
 
-		return new Response(false, ResponseHeader.NO_SUCH_GAME);
+		return [new Response(false, ResponseHeader.NO_SUCH_GAME), null];
 	}
 
 	private changeGameType(

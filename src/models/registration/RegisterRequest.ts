@@ -45,7 +45,8 @@ export function isInstance(object: any): boolean {
 			object.type === REGISTER_TYPE.ENQUEUE ||
 			object.type === REGISTER_TYPE.CONFIRM ||
 			object.type === REGISTER_TYPE.INITIATE ||
-			object.type === REGISTER_TYPE.GET_LIST
+			object.type === REGISTER_TYPE.GET_LIST ||
+			object.type === REGISTER_TYPE.DEQUEUE
 		) {
 			return true;
 		}
@@ -60,9 +61,10 @@ export enum REGISTER_TYPE {
 	INITIATE = "INITIATE",
 	/** client confirms registration match */
 	CONFIRM = "CONFIRM",
-
 	/** web client able to get list of pending devices */
 	GET_LIST = "GET_LIST",
+	/** terminates the registration operation, removes device from register list */
+	DEQUEUE = "DEQUEUE",
 	INVALID = "INVALID",
 	BAD_FORMAT = "BAD FORMAT",
 }

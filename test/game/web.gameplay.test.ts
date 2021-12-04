@@ -70,6 +70,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
+				payload: list,
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
@@ -94,6 +95,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 		const msg = new WSClientMessage(str);
 		const responses = await lobby.handleReq(msg);
 		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "two",
+				payload: list,
+			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: "one",
@@ -265,6 +271,7 @@ describe("Game Two Web Players with different setup message order", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
+				payload: list,
 			}),
 		];
 		for (let i = 0; i < results.length; i++) {
@@ -308,6 +315,11 @@ describe("Game Two Web Players with different setup message order", () => {
 		const msg = new WSClientMessage(str);
 		const responses = await lobby.handleReq(msg);
 		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "two",
+				payload: list,
+			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: "one",

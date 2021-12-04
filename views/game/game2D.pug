@@ -9,41 +9,43 @@ block content
 			each y in [0, 1, 2, 3, 4, 5, 6, 7]
 				each x in [0, 1, 2, 3, 4, 5, 6, 7]
 					.grid-cell-clear(id="square"+(y*8+x) style="top:"+y*size +"px;left:"+x*size + "px")
-			.boat(id="boat2")
-			.boat(id="boat3")
-			.boat(id="boat4")
-			.boat(id="boat5")
+			include boats/battleship_h.pug
+			include boats/battleship_v.pug
+			include boats/carrier_h.pug
+			include boats/carrier_v.pug
+			include boats/patrol_h.pug
+			include boats/patrol_v.pug
+			include boats/submarine_h.pug
+			include boats/submarine_v.pug
 		
 		.board-container(id="attack-board")
 			each y in [0, 1, 2, 3, 4, 5, 6, 7]
 				each x in [0, 1, 2, 3, 4, 5, 6, 7]
 					.grid-cell-clear(id="square"+(y*8+x+64) style="top:"+y*size +"px;left:"+x*size + "px" onclick="socket.sendMakeMove("+x+"," + y +")")
 
-	h3 Gameplay Dev Console
-	.row.form-group
+	h3 Gameplay Console
+	.row.form-group(id="PositionShips")
 		label.col-sm-2 Ready Up
 		button.btn.col-sm-6(type="button",onclick='sendLocations()') Position Ships / Ready Up
-	.row.form-group
+	.row.form-group(id="InviteFriend")
 		label.col-sm-2 Invite Friend
 		select.form-select.col-sm-4(id="friend_list")
 			option(disabled selected) Select Friend to Invite
 			each friend in friendsList
 				option(value=friend.username) #{friend.displayName}
 		button.btn.col-sm-2(type="button", onclick='socket.sendGameInvite()') Send Invite
-	.row.form-group
-		label.col-sm-2 Get Friends
-		button.btn.col-sm-6(type="button",onclick='socket.sendGetFriends()') Get Friends List
-	.row.form-group
-		label.col-sm-2 Basic Mode
-		button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
-	.row.form-group
+	//- //TODO: ADD BASIC GAMEPLAY FEATURES TO THE GAME
+	//- .row.form-group(id="BasicMode")
+	//- 	label.col-sm-2 Basic Mode
+	//- 	button.btn.col-sm-6(type="button",onclick='socket.sendBasicMode()') Basic Game Mode
+	.row.form-group(id="JoinGame")
 		label.col-sm-2 Join Game
 		select.form-select.col-sm-4(id="game_id")
 			option(disabled selected) Select Game to Join
 			each friend in friendsList
 				option(value=friend.username) #{friend.displayName}
 		button.btn.col-sm-2(type="button", onclick='socket.sendJoinGame()') Join Game
-	.row.form-group
+	.row.form-group(id="NewGame")
 		label.col-sm-2 New Game
 		button.btn.col-sm-6(type="button",onclick='socket.sendNewGame()') Create New Game
 	
@@ -55,136 +57,35 @@ block content
 	script(src="/js/GameVisuals2D.js")
 	script(src="/js/BaseSocket.js")
 	script(src="/js/GameSocket.js")
+	script(src="/js/ShipPiece.js")
 
 	script.
-		const socket = new GameSocket("#{user.username}");
 
 		const snap = 50;
-		
-		const ships = {
-			boat2: {
-				el: boat2,
-				cur: { x: 0, y: snap * 0 },
-				prev: { x: 0, y: snap * 0 },
-			},
-			boat3: {
-				el: boat3,
-				cur: { x: 0, y: snap * 1 },
-				prev: { x: 0, y: snap * 1 },
-			},
-			boat4: {
-				el: boat4,
-				cur: { x: 0, y: snap * 2 },
-				prev: { x: 0, y: snap * 2 },
-			},
-			boat5: {
-				el: boat5,
-				cur: { x: 0, y: snap * 3 },
-				prev: { x: 0, y: snap * 3 },
-			},
-		};
-		
-		for (let [, val] of Object.entries(ships)) {
-			const ship = val.el;
-			const cur = val.cur;
-			$(ship).css({ transform: `translate3d(${cur.x}px,${cur.y}px,0px)` });
-			Draggable.create(ship, {
-				bounds: $("#position-board"),
-				onDrag: onDrag,
-				onClick: rotateShip,
-				onDragEnd: onDragEnd,
-			});
-		}
 
-		function rotateShip() {
-			//TODO: CHECK THAT THIS IS A VALID ROTATE
-			var oldwidth = $(this.target).css("width");
-			var oldheight = $(this.target).css("height");
-			$(this.target).css("height", oldwidth);
-			$(this.target).css("width", oldheight);
-		}
-		function onDragEnd() {
-			const target = ships[this.target.id];
-			for (let [, val] of Object.entries(ships)) {
-				ship = val.el;
-				if (this.target != ship) {
-					if (Draggable.hitTest(this.target, ship, 0.8)) {
-						//collision
-						target.cur.x = target.prev.x;
-						target.cur.y = target.prev.y;
-						TweenLite.to(this.target, 0.5, {
-							x: target.prev.x,
-							y: target.prev.y,
-							ease: Back.easeOut.config(2),
-						});
-						break;
-					}
-				}
-			}
-			//no collision
-			target.prev.x = target.cur.x;
-			target.prev.y = target.cur.y;
-		}
+		const ships = new ShipGamePieces(snap, [
+			{
+				tag: "patrol",
+				len: 2,
+			},
+			{
+				tag: "submarine",
+				len: 3,
+			},
+			{
+				tag: "battleship",
+				len: 4,
+			},
+			{
+				tag: "carrier",
+				len: 5,
+			},
+		]);
+
+		const socket = new GameSocket("#{user.username}", ships);
 		
-		function onDrag() {
-			for (let [, val] of Object.entries(ships)) {
-				if (this.target == val.el) {
-					val.cur.x = Math.round(this.x / snap) * snap;
-					val.cur.y = Math.round(this.y / snap) * snap;
-					TweenLite.to(this.target, 0.5, {
-						x: val.cur.x,
-						y: val.cur.y,
-						ease: Back.easeOut.config(2),
-					});
-				}
-			}
-		}
-		function coordsToShip(x, y, size) {
-			const obj = { c: x, r: y };
-			if (size === 2) {
-				obj.t = "P";
-			} else if (size === 3) {
-				obj.t = "S";
-			} else if (size === 4) {
-				obj.t = "B";
-			} else if (size === 5) {
-				obj.t = "C";
-			} else {
-				throw new Error(`Invalid Ship Size: ${size}`);
-			}
-			return obj;
-		}
 		function sendLocations() {
-			const list = [];
-
-			for (let [, val] of Object.entries(ships)) {
-				const ship = val.el;
-				var element = ship.style.cssText;
-				const splitText = element.split("translate3d(");
-				const vals = splitText[1].split(", ");
-
-				if (ship.style.height.split("p")[0] === "") {
-					var height = $(ship).css("height").split("p")[0];
-					var width = $(ship).css("width").split("p")[0];
-				} else {
-					var height = ship.style.height.split("p")[0];
-					var width = ship.style.width.split("p")[0];
-				}
-				const x = Math.round(vals[0].split("p")[0] / 50);
-				const y = Math.round(vals[1].split("p")[0] / 50);
-				let length;
-				if (width == 50) {
-					length = height / 50;
-					list.push(coordsToShip(x, y + length - 1, length));
-				} else {
-					length = width / 50;
-					list.push(coordsToShip(x + length - 1, y, length));
-				}
-				list.push(coordsToShip(x, y, length));
-				Draggable.get(ship).disable();
-			}
-		
-			socket.sendShipPositions(list);
+			socket.sendShipPositions(ships.getShipPositionList());
 		}
 
 	//- Comment here to fix Pug Lint Error

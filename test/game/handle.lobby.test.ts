@@ -120,11 +120,12 @@ describe("Handle Lobby Requests ", () => {
 	});
 
 	it("Allow Player 1 to position ships", async () => {
-		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
-		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
-		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
-		const list = [pos2, pos1, pos0, pos3];
+		const list = [
+			new Position(0, 0, POSITION_TYPE.PATROL),
+			new Position(0, 1, POSITION_TYPE.PATROL),
+			new Position(1, 0, POSITION_TYPE.DESTROYER),
+			new Position(1, 2, POSITION_TYPE.DESTROYER),
+		];
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
@@ -133,6 +134,7 @@ describe("Handle Lobby Requests ", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
+				payload: list,
 			}),
 		];
 		for (let i = 0; i < responses.length; i++) {
@@ -143,16 +145,22 @@ describe("Handle Lobby Requests ", () => {
 	});
 
 	it("Allow Player 2 to position ships", async () => {
-		const pos0 = new Position(0, 0, POSITION_TYPE.PATROL);
-		const pos1 = new Position(0, 1, POSITION_TYPE.PATROL);
-		const pos2 = new Position(1, 0, POSITION_TYPE.DESTROYER);
-		const pos3 = new Position(1, 2, POSITION_TYPE.DESTROYER);
-		const list = [pos2, pos1, pos0, pos3];
+		const list = [
+			new Position(0, 0, POSITION_TYPE.PATROL),
+			new Position(0, 1, POSITION_TYPE.PATROL),
+			new Position(1, 0, POSITION_TYPE.DESTROYER),
+			new Position(1, 2, POSITION_TYPE.DESTROYER),
+		];
 		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "two", data: list };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
 		const responses = await lobby.handleReq(msg);
 		const results = [
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "two",
+				payload: list,
+			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: "one",

@@ -1,13 +1,15 @@
 import { Square, BOARD_STATE } from "./Board";
-import { POSITION_TYPE } from "./Layout";
+import { Position, POSITION_TYPE } from "./Layout";
 import { Move } from "./Move";
 
 export class Ship {
 	squares: Square[];
 	type: ShipType;
+	pType: POSITION_TYPE;
 	state: SHIP_STATE;
 
 	constructor(type: POSITION_TYPE, squares: Square[]) {
+		this.pType = type;
 		this.type = this.initType(type);
 		this.squares = squares;
 		this.state = SHIP_STATE.WHOLE;
@@ -64,6 +66,14 @@ export class Ship {
 			//FIXME: FIND OUT WHERE WE ARE GETTING MISS INFORMATION!
 		}
 		return false;
+	}
+	getPosition(): Position[] {
+		const one = this.squares[0];
+		const two = this.squares[this.squares.length - 1];
+		return [
+			new Position(one.c, one.r, this.pType),
+			new Position(two.c, two.r, this.pType),
+		];
 	}
 }
 

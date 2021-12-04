@@ -1,9 +1,3 @@
-interface ShipPos {
-	r: number;
-	c: number;
-	t: "P" | "S" | "B" | "C";
-}
-
 enum MOVE_TYPES {
 	SOLO = "SOLO", //TODO: ADD OTHER TYPES
 }
@@ -15,12 +9,20 @@ interface Move {
 	to: string;
 }
 
+enum GAME_STATE {
+	INIT,
+	LOBBY,
+	IN_GAME,
+}
+
 enum SERVER_HEADERS {
 	// SERVER HEADERS
 	MOVE_MADE = "MADE MOVE",
 	INVALID_MOVE = "INVALID MOVE",
 	JOINED_GAME = "JOINED GAME",
 	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
+	GAME_STARTED = "GAME STARTED",
+	GAME_CREATED = "GAME CREATED",
 	INVALID_JOIN = "INVALID JOIN",
 	INVALID_OPPONENT = "INVALID OPPONENT",
 	BOARD_UPDATE = "BOARD UPDATE",
@@ -45,14 +47,18 @@ class GameSocket {
 	private socket: BaseSocket;
 	private opponent: string;
 	private gameMode: string;
+	private ships: ShipGamePieces;
 
-	constructor(uid: string) {
+	constructor(uid: string, ships: ShipGamePieces) {
 		//FIXME: NEED TO FIND A WAY TO ID THIS AS A WEB VS MCU REQUEST, maybe have MCU send device id and do database call for username
 		this.uid = uid;
 		this.opponent = SERVER_HEADERS.INVALID_OPPONENT;
 		this.gameMode = this.GAME_TYPE_CLASSIC;
+		this.ships = ships;
 
 		this.socket = new BaseSocket(uid, this);
+
+		this.updateConsole(GAME_STATE.INIT);
 	}
 
 	private _onmessage(event: any) {
@@ -61,21 +67,50 @@ class GameSocket {
 		console.info(data);
 
 		if (data.header === SERVER_HEADERS.MOVE_MADE) {
+			console.warn("TODO");
 		} else if (data.header === SERVER_HEADERS.INVALID_MOVE) {
+			console.warn("TODO");
 		} else if (data.header === SERVER_HEADERS.BOARD_UPDATE) {
 			this.updateBoard(data.meta);
 		} else if (data.header === SERVER_HEADERS.JOINED_GAME) {
 			this.opponent = data.payload.opponent;
 			this.gameMode = data.payload.gameType;
-		} else if (data.header === SERVER_HEADERS.INVALID_JOIN) {
+			this.updateConsole(GAME_STATE.LOBBY);
+		} else if (data.header === SERVER_HEADERS.GAME_CREATED) {
+			this.updateConsole(GAME_STATE.LOBBY);
+		} else if (data.header === SERVER_HEADERS.GAME_STARTED) {
+			this.updateConsole(GAME_STATE.IN_GAME);
+			console.warn("TODO");
 		} else if (data.header === SERVER_HEADERS.GAME_TYPE_APPROVED) {
 			this.gameMode = data.meta;
 		} else if (data.header === SERVER_HEADERS.POSITIONED_SHIPS) {
-			console.log(
-				"//TODO: NEED TO LOCK SHIP POSITIONS SO YOU CAN'T MOVE THEM",
-			);
+			this.ships.setPositions(data.payload);
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
+		}
+	}
+
+	private updateConsole(state: GAME_STATE) {
+		if (state == GAME_STATE.INIT) {
+			$("#NewGame").css({ display: "flex" });
+			$("#JoinGame").css({ display: "flex" });
+			$("#PositionShips").css({ display: "none" });
+			$("#InviteFriend").css({ display: "none" });
+			// $("#BasicMode").css({ display: "none" });
+		} else if (state == GAME_STATE.LOBBY) {
+			$("#NewGame").css({ display: "none" });
+			$("#JoinGame").css({ display: "none" });
+			$("#PositionShips").css({ display: "flex" });
+			$("#InviteFriend").css({ display: "flex" });
+			// $("#BasicMode").css({ display: "none" });
+		} else if (state == GAME_STATE.IN_GAME) {
+			$("#NewGame").css({ display: "none" });
+			$("#JoinGame").css({ display: "none" });
+			$("#PositionShips").css({ display: "none" });
+			$("#InviteFriend").css({ display: "none" });
+			// $("#BasicMode").css({ display: "none" });
+		} else {
+			throw new Error(`Invalid Game State ${state}`);
 		}
 	}
 

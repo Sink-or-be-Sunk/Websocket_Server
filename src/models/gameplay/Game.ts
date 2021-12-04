@@ -1,7 +1,7 @@
 import { Board, Square, BOARD_STATE } from "./Board";
 import Player from "./Player";
 import { Move } from "./Move";
-import { Layout, POSITION_TYPE } from "./Layout";
+import { Layout, Position, POSITION_TYPE } from "./Layout";
 import { Ship, SHIP_DESCRIPTOR } from "./Ship";
 import logger from "../../util/logger";
 
@@ -233,6 +233,15 @@ export class Game {
 			}
 		} else {
 			return new Response(false, ResponseHeader.TURN_ERROR);
+		}
+	}
+
+	getShipPositions(id: string): Position[] {
+		const board = this.getBoardByID(id);
+		if (board) {
+			return board.getShipPositions();
+		} else {
+			throw new Error(`Cannot find board for id: ${id}`);
 		}
 	}
 

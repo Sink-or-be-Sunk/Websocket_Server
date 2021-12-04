@@ -11,6 +11,7 @@ export class RegistrationManager {
 	static readonly WAITING_FOR_MCU = "WAITING FOR MCU";
 	static readonly WAITING_FOR_WEB = "WAITING FOR WEB";
 	static readonly WAITING_FOR_CONFIRM = "WAITING FOR CONFIRM";
+	static readonly NO_DEVICE = "NO DEVICE";
 	private pending: Map<string, RegisterInfo>;
 	constructor() {
 		this.pending = new Map<string, RegisterInfo>();
@@ -120,6 +121,25 @@ export class RegistrationManager {
 							meta: RegistrationManager.WAITING_FOR_WEB,
 						}),
 					];
+				} else if (req.type == REGISTER_TYPE.DEQUEUE) {
+					const list = [
+						new WSServerMessage({
+							header: SERVER_HEADERS.TERMINATED_REGISTER,
+							at: message.id,
+						}),
+					];
+
+					if (device.username) {
+						list.push(
+							new WSServerMessage({
+								header: SERVER_HEADERS.TERMINATED_REGISTER,
+								at: device.username,
+							}),
+						);
+					}
+
+					this.pending.delete(tempID);
+					return list;
 				}
 			} else if (req.type == REGISTER_TYPE.ENQUEUE) {
 				this.pending.set(message.id, new RegisterInfo(req, message.id));
@@ -141,6 +161,14 @@ export class RegistrationManager {
 						header: SERVER_HEADERS.WEB_REQ_SUCCESS,
 						at: message.id,
 						payload: list,
+					}),
+				];
+			} else if (req.type == REGISTER_TYPE.DEQUEUE) {
+				return [
+					new WSServerMessage({
+						header: SERVER_HEADERS.INVALID_CANCEL_REGISTER,
+						at: message.id,
+						meta: RegistrationManager.NO_DEVICE,
 					}),
 				];
 			} else {

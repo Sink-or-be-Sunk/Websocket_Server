@@ -54,6 +54,14 @@ export class Board {
 		}
 	}
 
+	getShipPositions(): Position[] {
+		const list = [];
+		for (let i = 0; i < this.ships.length; i++) {
+			const ship = this.ships[i];
+			list.push(...ship.getPosition());
+		}
+		return list;
+	}
 	attack(move: Move): Response {
 		for (let i = 0; i < this.ships.length; i++) {
 			const ship = this.ships[i];
