@@ -19,12 +19,14 @@ enum SERVER_HEADERS {
 	// SERVER HEADERS
 	MOVE_MADE = "MADE MOVE",
 	INVALID_MOVE = "INVALID MOVE",
+	INVALID_OPPONENT = "INVALID OPPONENT",
+	INVALID_JOIN = "INVALID JOIN",
+	INVALID_LAYOUT = "INVALID LAYOUT",
+	INVALID_GAME_TYPE = "INVALID GAME TYPE",
 	JOINED_GAME = "JOINED GAME",
 	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
 	GAME_STARTED = "GAME STARTED",
 	GAME_CREATED = "GAME CREATED",
-	INVALID_JOIN = "INVALID JOIN",
-	INVALID_OPPONENT = "INVALID OPPONENT",
 	BOARD_UPDATE = "BOARD UPDATE",
 	POSITIONED_SHIPS = "POSITIONED SHIPS",
 }
@@ -69,7 +71,15 @@ class GameSocket {
 		if (data.header === SERVER_HEADERS.MOVE_MADE) {
 			console.warn("TODO");
 		} else if (data.header === SERVER_HEADERS.INVALID_MOVE) {
-			console.warn("TODO");
+			alert(`${data.header}\n${data.meta}`);
+		} else if (data.header === SERVER_HEADERS.INVALID_JOIN) {
+			alert(`${data.header}\n${data.meta}`);
+		} else if (data.header === SERVER_HEADERS.INVALID_OPPONENT) {
+			alert(`${data.header}\n${data.meta}`);
+		} else if (data.header === SERVER_HEADERS.INVALID_LAYOUT) {
+			alert(`${data.header}\n${data.meta}`);
+		} else if (data.header === SERVER_HEADERS.INVALID_GAME_TYPE) {
+			alert(`${data.header}\n${data.meta}`);
 		} else if (data.header === SERVER_HEADERS.BOARD_UPDATE) {
 			this.updateBoard(data.meta);
 		} else if (data.header === SERVER_HEADERS.JOINED_GAME) {
