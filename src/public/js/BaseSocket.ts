@@ -43,12 +43,18 @@ class BaseSocket {
 			if (this.socket.readyState == this.socket.OPEN) {
 				this.socket.send(str);
 			} else {
-				console.error(
-					"Websocket Disconnected.  Refreshing Page in 5 seconds",
-				);
-				setTimeout(() => {
-					location.reload();
-				}, 5000);
+				let count = 5;
+
+				setInterval(() => {
+					if (count >= 0) {
+						console.error(
+							`Websocket Disconnected.  Refreshing Page in ${count} seconds`,
+						);
+						count--;
+					} else {
+						location.reload();
+					}
+				}, 1000);
 				clearInterval(interval);
 			}
 			// this._send(obj); //TODO: MAYBE UPDATE THIS BACK TO COMMON _send() FUNCTION BUT REALLY ANNOYING CONSOLE LOGS
