@@ -4,16 +4,10 @@ import logger from "./util/logger";
 import WebSocket from "ws";
 import { WSClientMessage, REQ_TYPE } from "./util/WSClientMessage";
 import { SERVER_HEADERS, WSServerMessage } from "./util/WSServerMessage";
-import Lobby from "./models/gameplay/Lobby";
-import { RegistrationManager } from "./models/registration/RegistrationManager";
-import { DBManager } from "./models/database/DBManager";
+import { lobby, dbManager, registrar } from "./singletons";
 
 const connections = new Map<string, WebSocket>();
 const timeouts = new Map<string, NodeJS.Timeout>();
-
-const lobby = new Lobby();
-const registrar = new RegistrationManager();
-const dbManager = new DBManager();
 
 /**
  * Error Handler. Provides full stack

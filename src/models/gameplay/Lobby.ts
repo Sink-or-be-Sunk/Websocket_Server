@@ -21,6 +21,12 @@ export default class Lobby {
 	constructor() {
 		this.games = new Map<string, Game>();
 	}
+	public clear(): void {
+		for (const [key] of this.games) {
+			this.leaveGame(key);
+		}
+		logger.warn("Games have been cleared and all players booted");
+	}
 
 	public handles(req: string): boolean {
 		if (

@@ -2,8 +2,16 @@ import { Request, Response, NextFunction } from "express";
 import path from "path";
 import logger from "../util/logger";
 import { body, check, validationResult } from "express-validator";
+import { lobby } from "../singletons";
 
-const server_action_list = ["Clear All Games"];
+const server_action_list = [
+	{
+		t: "Clear All Games",
+		f: () => {
+			lobby.clear();
+		},
+	},
+];
 
 /**
  * Connect page.
@@ -39,25 +47,15 @@ export const postAction = async (
 	res: Response,
 	next: NextFunction,
 ): Promise<void> => {
-	await check("action", "Invalid Action Selected")
-		.isIn(server_action_list)
-		.run(req);
-
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		req.flash("errors", errors.array());
-		return res.redirect("/admin/console");
-	}
-
 	for (let i = 0; i < server_action_list.length; i++) {
 		const action = server_action_list[i];
-		if (action == req.body.action) {
-			logger.warn(`Action Requested: ${action}`);
-			break;
+		if (action.t == req.body.action) {
+			logger.warn(`Action Requested: ${action.t}`);
+			action.f();
+			req.flash("success", { msg: "Action Complete!" });
+			return res.redirect("/admin/console");
 		}
 	}
-
-	req.flash("success", { msg: "Action Complete!" });
+	req.flash("error", { msg: "Invalid Action" });
 	return res.redirect("/admin/console");
 };

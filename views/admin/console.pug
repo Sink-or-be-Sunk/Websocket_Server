@@ -28,7 +28,7 @@ block content
 				select.form-control(id="action" name="action")
 					option(disabled selected) Select Server Action
 					each action in actions
-						option(value=action) #{action}
+						option(value=action.t) #{action.t}
 		.form-group.row.justify-content-md-center
 			.col-sm-4
 				button.btn.btn-primary(type='submit')
