@@ -72,7 +72,7 @@ app.use((req, res, next) => {
 	//ADDS VARIABLES TO GLOBAL SCOPE FOR PUG PAGES
 	const user = req.user as UserDocument;
 	res.locals.user = user; //provide user profile into to page
-	res.locals.admin = userIsAdmin(user.email); //provide admin profile into to page
+	res.locals.admin = userIsAdmin(user?.email); //provide admin profile into to page
 	next();
 });
 app.use((req, res, next) => {
