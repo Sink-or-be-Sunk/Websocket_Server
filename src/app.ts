@@ -21,6 +21,7 @@ import * as adminController from "./controllers/admin";
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
 import logger from "./util/logger";
+import { UserDocument, userIsAdmin } from "./models/User";
 
 // Create Express server
 const app = express();
@@ -68,7 +69,10 @@ app.use(flash());
 app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
-	res.locals.user = req.user; //provide user profile into to page
+	//ADDS VARIABLES TO GLOBAL SCOPE FOR PUG PAGES
+	const user = req.user as UserDocument;
+	res.locals.user = user; //provide user profile into to page
+	res.locals.admin = userIsAdmin(user.email); //provide admin profile into to page
 	next();
 });
 app.use((req, res, next) => {
@@ -152,5 +156,22 @@ app.get(
 	passportConfig.isAuthenticated,
 	connectController.getConnect,
 );
-app.get("/server_log", adminController.getLog);
+app.get(
+	"/admin/console",
+	passportConfig.isAuthenticated,
+	passportConfig.isAdmin,
+	adminController.getAdminConsole,
+);
+app.get(
+	"/admin/log",
+	passportConfig.isAuthenticated,
+	passportConfig.isAdmin,
+	adminController.getLog,
+);
+app.post(
+	"/admin/action",
+	passportConfig.isAuthenticated,
+	passportConfig.isAdmin,
+	adminController.postAction,
+);
 export default app;

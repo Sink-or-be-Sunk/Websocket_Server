@@ -170,6 +170,9 @@ function sendList(list: WSServerMessage[]) {
 	}
 }
 
+//TODO: THIS IS A MUCH BETTER WAY TO DO A PING PONG
+// https://www.npmjs.com/package/ws#:~:text=In%20these%20cases%20ping%20messages%20can%20be%20used%20as%20a%20means%20to%20verify%20that%20the%20remote%20endpoint%20is%20still%20responsive.
+
 /** Check Connections at 1Hz to determine if connection has timed out */
 setInterval(() => {
 	// logger.debug(`Number of Connections: ${connections.size}`);

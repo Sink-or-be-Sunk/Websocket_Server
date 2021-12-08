@@ -2,7 +2,7 @@ import passport from "passport";
 import passportLocal from "passport-local";
 
 // import { User, UserType } from '../models/User';
-import { User, UserDocument } from "../models/User";
+import { User, UserDocument, userIsAdmin } from "../models/User";
 import { Request, Response, NextFunction } from "express";
 import { NativeError } from "mongoose";
 
@@ -76,4 +76,19 @@ export const isAuthenticated = (
 		return next();
 	}
 	res.redirect("/login");
+};
+
+/**
+ * Administrator Check Middleware
+ */
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+	const user = req.user as UserDocument;
+
+	if (userIsAdmin(user.email)) {
+		return next();
+	}
+	req.flash("errors", {
+		msg: `Access Denied!  Account ${user.email} is not an Admin!`,
+	});
+	res.redirect("/");
 };
