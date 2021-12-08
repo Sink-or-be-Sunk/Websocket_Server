@@ -17,6 +17,7 @@ const options: winston.LoggerOptions = {
 		}),
 		new winston.transports.File({
 			filename: "debug.log",
+			options: { flags: "w" },
 			level: "debug",
 			format: winston.format.combine(
 				winston.format.timestamp({

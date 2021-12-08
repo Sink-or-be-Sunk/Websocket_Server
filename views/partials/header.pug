@@ -21,6 +21,9 @@ nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
 						a.nav-link(href='/game/game2d') Game 2D
 					li.nav-item(class=(title === 'Connect') ? 'active' : undefined)
 						a.nav-link(href='/connect') Connect
+				if admin
+					li.nav-item(class=(title === 'Admin') ? 'active' : undefined)
+						a.nav-link(href='/admin/console') Admin
 
 
 			ul.nav.navbar-nav

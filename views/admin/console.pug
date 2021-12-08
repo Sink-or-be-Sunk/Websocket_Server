@@ -1,0 +1,37 @@
+extends ../layout
+
+block content
+	.page-header
+		h3 Administrator Console
+		hr
+	.page-header
+		h3 Server Log
+		hr
+
+	form.form-horizontal
+		.form-group.row.justify-content-md-left
+			.col-sm-4
+				a.btn.btn-primary(href='log')
+					i.fa.fa-list
+					| View Log
+
+
+	.page-header
+		h3 Server Actions
+		hr
+
+	form.form-horizontal(action='/admin/action', method='POST')
+		input(type='hidden', name='_csrf', value=_csrf)
+		.form-group.row.justify-content-md-center
+			label.col-sm-3.col-form-label.text-right.font-weight-bold(for='action-selector') Select Action
+			.col-sm-7
+				select.form-control(id="action" name="action")
+					option(disabled selected) Select Server Action
+					each action in actions
+						option(value=action.t) #{action.t}
+		.form-group.row.justify-content-md-center
+			.col-sm-4
+				button.btn.btn-primary(type='submit')
+					i.fa.fa-paper-plane
+					| submit request
+				

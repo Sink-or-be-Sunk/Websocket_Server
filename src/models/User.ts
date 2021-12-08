@@ -104,3 +104,9 @@ userSchema.methods.gravatar = function (size: number = 200) {
 };
 
 export const User = mongoose.model<UserDocument>("User", userSchema);
+
+export const userIsAdmin = function (email: string) {
+	const adminEmailList = ["mitchaarndt@gmail.com"];
+
+	return adminEmailList.includes(email);
+};

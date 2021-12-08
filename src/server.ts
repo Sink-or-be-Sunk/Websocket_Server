@@ -4,16 +4,10 @@ import logger from "./util/logger";
 import WebSocket from "ws";
 import { WSClientMessage, REQ_TYPE } from "./util/WSClientMessage";
 import { SERVER_HEADERS, WSServerMessage } from "./util/WSServerMessage";
-import Lobby from "./models/gameplay/Lobby";
-import { RegistrationManager } from "./models/registration/RegistrationManager";
-import { DBManager } from "./models/database/DBManager";
+import { lobby, dbManager, registrar } from "./singletons";
 
 const connections = new Map<string, WebSocket>();
 const timeouts = new Map<string, NodeJS.Timeout>();
-
-const lobby = new Lobby();
-const registrar = new RegistrationManager();
-const dbManager = new DBManager();
 
 /**
  * Error Handler. Provides full stack
@@ -169,6 +163,9 @@ function sendList(list: WSServerMessage[]) {
 		}
 	}
 }
+
+//TODO: THIS IS A MUCH BETTER WAY TO DO A PING PONG
+// https://www.npmjs.com/package/ws#:~:text=In%20these%20cases%20ping%20messages%20can%20be%20used%20as%20a%20means%20to%20verify%20that%20the%20remote%20endpoint%20is%20still%20responsive.
 
 /** Check Connections at 1Hz to determine if connection has timed out */
 setInterval(() => {
