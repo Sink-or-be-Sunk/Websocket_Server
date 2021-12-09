@@ -152,7 +152,7 @@ function _onWSClose(ws: WebSocket) {
 	// ); //30 second timeout for stale MCU websocket
 }
 
-function sendList(list: WSServerMessage[]): void {
+export function sendList(list: WSServerMessage[]): void {
 	for (let i = 0; i < list.length; i++) {
 		const msg = list[i];
 		const socket = connections.get(msg.at);
@@ -163,8 +163,6 @@ function sendList(list: WSServerMessage[]): void {
 		}
 	}
 }
-
-export { sendList };
 
 //TODO: THIS IS A MUCH BETTER WAY TO DO A PING PONG
 // https://www.npmjs.com/package/ws#:~:text=In%20these%20cases%20ping%20messages%20can%20be%20used%20as%20a%20means%20to%20verify%20that%20the%20remote%20endpoint%20is%20still%20responsive.

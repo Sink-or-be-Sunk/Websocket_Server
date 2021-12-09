@@ -2,13 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import path from "path";
 import logger from "../util/logger";
 import { body, check, validationResult } from "express-validator";
-import { lobby } from "../singletons";
+import { clear } from "../util/admin_action";
 
 const server_action_list = [
 	{
 		t: "End All Games",
 		f: () => {
-			lobby.clear();
+			clear();
 		},
 	},
 ];

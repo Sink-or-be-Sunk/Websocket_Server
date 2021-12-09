@@ -13,7 +13,6 @@ import logger from "../../util/logger";
 import { User } from "../User";
 import sgMail from "@sendgrid/mail";
 import { Position } from "./Layout";
-import { sendList } from "../../server";
 
 export default class Lobby {
 	public static readonly EMPTY_GAME_MSG = "Empty Game";
@@ -22,14 +21,6 @@ export default class Lobby {
 
 	constructor() {
 		this.games = new Map<string, Game>();
-	}
-	public async clear(): Promise<void> {
-		for (const [key] of this.games) {
-			logger.info(`Ending Game <${key}>`);
-			sendList(this.broadcastGameEnded(Lobby.ADMIN_ACTION));
-			this.endGame(key, false);
-		}
-		logger.warn("Games have been cleared and all players booted");
 	}
 
 	public handles(req: string): boolean {
@@ -199,7 +190,6 @@ export default class Lobby {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
 	}
-
 	private getGameByPlayerID(playerID: string): Game | undefined {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
@@ -209,8 +199,7 @@ export default class Lobby {
 		}
 		return undefined;
 	}
-
-	private async endGame(playerID: string, sendEmail: boolean): Promise<void> {
+	public async endGame(playerID: string, sendEmail: boolean): Promise<void> {
 		const game = this.getGameByPlayerID(playerID);
 		const winner = game.getPlayerByID(playerID);
 		const looser = game.getOpponent(playerID);
