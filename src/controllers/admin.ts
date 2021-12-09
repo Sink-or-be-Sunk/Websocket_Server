@@ -6,7 +6,7 @@ import { lobby } from "../singletons";
 
 const server_action_list = [
 	{
-		t: "Clear All Games",
+		t: "End All Games",
 		f: () => {
 			lobby.clear();
 		},
@@ -50,7 +50,7 @@ export const postAction = async (
 	for (let i = 0; i < server_action_list.length; i++) {
 		const action = server_action_list[i];
 		if (action.t == req.body.action) {
-			logger.warn(`Action Requested: ${action.t}`);
+			logger.warn(`Admin Action Requested: ${action.t}`);
 			action.f();
 			req.flash("success", { msg: "Action Complete!" });
 			return res.redirect("/admin/console");

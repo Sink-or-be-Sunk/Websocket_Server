@@ -13,17 +13,21 @@ import logger from "../../util/logger";
 import { User } from "../User";
 import sgMail from "@sendgrid/mail";
 import { Position } from "./Layout";
+import { sendList } from "../../server";
 
 export default class Lobby {
 	public static readonly EMPTY_GAME_MSG = "Empty Game";
+	public static readonly ADMIN_ACTION = "ADMIN ACTION";
 	games: Map<string, Game>;
 
 	constructor() {
 		this.games = new Map<string, Game>();
 	}
-	public clear(): void {
+	public async clear(): Promise<void> {
 		for (const [key] of this.games) {
-			this.leaveGame(key);
+			logger.info(`Ending Game <${key}>`);
+			sendList(this.broadcastGameEnded(Lobby.ADMIN_ACTION));
+			this.endGame(key, false);
 		}
 		logger.warn("Games have been cleared and all players booted");
 	}
@@ -87,7 +91,8 @@ export default class Lobby {
 				list.push(...this.broadcastBoards(message.id));
 
 				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
-					this.endGame(message.id); //caution, this is async
+					list.push(...this.broadcastGameEnded(message.id));
+					this.endGame(message.id, true);
 				}
 				return list;
 			} else {
@@ -205,11 +210,11 @@ export default class Lobby {
 		return undefined;
 	}
 
-	private async endGame(playerID: string) {
+	private async endGame(playerID: string, sendEmail: boolean): Promise<void> {
 		const game = this.getGameByPlayerID(playerID);
 		const winner = game.getPlayerByID(playerID);
 		const looser = game.getOpponent(playerID);
-		if (winner && looser) {
+		if (sendEmail && winner && looser) {
 			const winnerDoc = await User.findOne({ username: winner.id });
 			const looserDoc = await User.findOne({ username: looser.id });
 
@@ -416,6 +421,63 @@ export default class Lobby {
 		);
 	}
 
+	private getBroadcastGameEnded(
+		playerID: string,
+		meta: string,
+	): WSServerMessage {
+		return new WSServerMessage({
+			header: SERVER_HEADERS.GAME_OVER,
+			meta: meta,
+			at: playerID,
+		});
+	}
+
+	private broadcastGameEnded(
+		sourceID?: string,
+		game?: Game,
+	): WSServerMessage[] {
+		if (sourceID) {
+			for (const [, game] of this.games) {
+				const player = game.getPlayerByID(sourceID);
+				if (player) {
+					//found game
+					const list = [];
+					const players = game.getPlayers();
+					for (let i = 0; i < players.length; i++) {
+						const p = players[i];
+						if (p.id == sourceID) {
+							list.push(
+								this.getBroadcastGameEnded(
+									p.id,
+									Move.WINNER_TAG,
+								),
+							);
+						} else {
+							list.push(
+								this.getBroadcastGameEnded(
+									p.id,
+									Move.LOSER_TAG,
+								),
+							);
+						}
+					}
+					return list;
+				}
+			}
+		} else if (game) {
+			const list = [];
+			const players = game.getPlayers();
+			for (let i = 0; i < players.length; i++) {
+				const p = players[i];
+				list.push(this.getBroadcastGameEnded(p.id, Lobby.ADMIN_ACTION));
+			}
+		}
+
+		throw new Error(
+			"Couldn't find source game to broadcast ended: this should never happen",
+		);
+	}
+
 	private sendReconnect(game: Game, uid: string): WSServerMessage[] {
 		const list = [];
 
@@ -571,6 +633,7 @@ export default class Lobby {
 				);
 			}
 			this.games.delete(socketID); //remove game from lobby
+			logger.warn(`Game Removed <${socketID}>`);
 		} else {
 			for (const [gameID, game] of this.games) {
 				const players = game.players;

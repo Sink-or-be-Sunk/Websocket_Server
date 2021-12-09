@@ -24,6 +24,7 @@ enum SERVER_HEADERS {
 	INVALID_LAYOUT = "INVALID LAYOUT",
 	INVALID_GAME_TYPE = "INVALID GAME TYPE",
 	JOINED_GAME = "JOINED GAME",
+	LEFT_GAME = "LEFT GAME",
 	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
 	GAME_STARTED = "GAME STARTED",
 	GAME_CREATED = "GAME CREATED",
@@ -43,6 +44,9 @@ class GameSocket {
 	private readonly DATABASE_REQUEST = "DATABASE";
 	private readonly GET_FRIENDS = "GET FRIENDS";
 	private readonly INVITE_TO_GAME = "INVITE TO GAME";
+
+	private readonly GAME_OVER_YOU_LOSE = "You Lost :(";
+	private readonly GAME_OVER_YOU_WIN = "You Won!";
 
 	/** unique identifier: either username for web or device id for mcu */
 	private uid: string;
@@ -69,7 +73,13 @@ class GameSocket {
 		console.info(data);
 
 		if (data.header === SERVER_HEADERS.MOVE_MADE) {
-			console.warn("TODO");
+			if (
+				data.meta == this.GAME_OVER_YOU_WIN ||
+				data.meta == this.GAME_OVER_YOU_LOSE
+			) {
+				confirm(`Game Over\n${data.meta}`);
+				location.reload();
+			}
 		} else if (data.header === SERVER_HEADERS.INVALID_MOVE) {
 			alert(`${data.header}\n${data.meta}`);
 		} else if (data.header === SERVER_HEADERS.INVALID_JOIN) {
@@ -86,15 +96,18 @@ class GameSocket {
 			this.opponent = data.payload.opponent;
 			this.gameMode = data.payload.gameType;
 			this.updateConsole(GAME_STATE.LOBBY);
+		} else if (data.header === SERVER_HEADERS.LEFT_GAME) {
+			confirm(`Left Game`);
+			location.reload();
 		} else if (data.header === SERVER_HEADERS.GAME_CREATED) {
 			this.updateConsole(GAME_STATE.LOBBY);
 		} else if (data.header === SERVER_HEADERS.GAME_STARTED) {
 			this.updateConsole(GAME_STATE.IN_GAME);
-			console.warn("TODO");
 		} else if (data.header === SERVER_HEADERS.GAME_TYPE_APPROVED) {
 			this.gameMode = data.meta;
 		} else if (data.header === SERVER_HEADERS.POSITIONED_SHIPS) {
 			this.ships.setPositions(data.payload);
+			alert("Ships Layout Accepted!");
 		} else {
 			console.warn("IGNORING SERVER MESSAGE");
 		}
