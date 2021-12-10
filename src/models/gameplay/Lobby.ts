@@ -514,6 +514,13 @@ export default class Lobby {
 		}
 
 		if (game.isStarted()) {
+			list.push(
+				new WSServerMessage({
+					header: SERVER_HEADERS.POSITIONED_SHIPS,
+					at: uid,
+					payload: game.getShipPositions(uid),
+				}),
+			);
 			//send game board
 			list.push(this.getBroadcastGame(uid));
 			list.push(this.getBroadcastBoard(game, uid));

@@ -16,6 +16,17 @@ import { ShipType, SHIP_DESCRIPTOR } from "../../src/models/gameplay/Ship";
 describe("Mimic Game Play From Two Web Players", () => {
 	const lobby = new Lobby();
 
+	const ships = [
+		new Position(0, 0, POSITION_TYPE.PATROL),
+		new Position(0, 1, POSITION_TYPE.PATROL),
+		new Position(1, 0, POSITION_TYPE.SUBMARINE),
+		new Position(1, 2, POSITION_TYPE.SUBMARINE),
+		new Position(2, 0, POSITION_TYPE.BATTLESHIP),
+		new Position(2, 3, POSITION_TYPE.BATTLESHIP),
+		new Position(3, 0, POSITION_TYPE.CARRIER),
+		new Position(3, 4, POSITION_TYPE.CARRIER),
+	];
+
 	it("Accepts Init Connection Request from player one", async () => {
 		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
@@ -138,16 +149,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 	});
 
 	it("Allow Player 1 to position ships", async () => {
-		const list = [];
-		list.push(new Position(0, 0, POSITION_TYPE.PATROL));
-		list.push(new Position(0, 1, POSITION_TYPE.PATROL));
-		list.push(new Position(1, 0, POSITION_TYPE.SUBMARINE));
-		list.push(new Position(1, 2, POSITION_TYPE.SUBMARINE));
-		list.push(new Position(2, 0, POSITION_TYPE.BATTLESHIP));
-		list.push(new Position(2, 3, POSITION_TYPE.BATTLESHIP));
-		list.push(new Position(3, 0, POSITION_TYPE.CARRIER));
-		list.push(new Position(3, 4, POSITION_TYPE.CARRIER));
-		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: list };
+		const obj = { req: REQ_TYPE.POSITION_SHIPS, id: "one", data: ships };
 		const str = JSON.stringify(obj);
 		const msg = new WSClientMessage(str);
 		const responses = await lobby.handleReq(msg);
@@ -155,7 +157,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
-				payload: list,
+				payload: ships,
 			}),
 		];
 		for (let i = 0; i < responses.length; i++) {
@@ -166,15 +168,6 @@ describe("Mimic Game Play From Two Web Players", () => {
 	});
 
 	it("Accepts Player One Reconnect to Game with Ships Positioned", async () => {
-		const list = [];
-		list.push(new Position(0, 0, POSITION_TYPE.PATROL));
-		list.push(new Position(0, 1, POSITION_TYPE.PATROL));
-		list.push(new Position(1, 0, POSITION_TYPE.SUBMARINE));
-		list.push(new Position(1, 2, POSITION_TYPE.SUBMARINE));
-		list.push(new Position(2, 0, POSITION_TYPE.BATTLESHIP));
-		list.push(new Position(2, 3, POSITION_TYPE.BATTLESHIP));
-		list.push(new Position(3, 0, POSITION_TYPE.CARRIER));
-		list.push(new Position(3, 4, POSITION_TYPE.CARRIER));
 		const obj = { req: REQ_TYPE.INIT_CONNECTION, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
 		const responses = await lobby.handleReq(msg);
@@ -190,7 +183,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 			new WSServerMessage({
 				header: SERVER_HEADERS.POSITIONED_SHIPS,
 				at: obj.id,
-				payload: list,
+				payload: ships,
 			}),
 		];
 		for (let i = 0; i < responses.length; i++) {
@@ -281,6 +274,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 				},
 			}),
 			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "one",
+				payload: ships,
+			}),
+			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: "one",
 			}),
@@ -309,6 +307,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 					opponent: "one",
 					gameType: GAME_TYPE.CLASSIC,
 				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "two",
+				payload: ships,
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
@@ -386,6 +389,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 				},
 			}),
 			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "one",
+				payload: ships,
+			}),
+			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: "one",
 			}),
@@ -414,6 +422,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 					opponent: "one",
 					gameType: GAME_TYPE.CLASSIC,
 				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "two",
+				payload: ships,
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
@@ -537,6 +550,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 				},
 			}),
 			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "one",
+				payload: ships,
+			}),
+			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: "one",
 			}),
@@ -565,6 +583,11 @@ describe("Mimic Game Play From Two Web Players", () => {
 					opponent: "one",
 					gameType: GAME_TYPE.CLASSIC,
 				},
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.POSITIONED_SHIPS,
+				at: "two",
+				payload: ships,
 			}),
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_STARTED,
