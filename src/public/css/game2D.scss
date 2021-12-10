@@ -20,7 +20,7 @@
 }
 
 .patrol {
-  fill: green;
+  fill: rgb(215, 62, 90);
 }
 #patrol_h {
   height: 50px;
@@ -32,7 +32,7 @@
 }
 
 .submarine {
-  fill: purple;
+  fill: rgb(162, 18, 162);
 }
 #submarine_h {
   height: 50px;
@@ -44,7 +44,7 @@
 }
 
 .battleship {
-  fill: hsl(240, 50%, 70%);
+  fill: hsl(240, 70%, 58%);
 }
 #battleship_v {
   width: 50px;
@@ -56,7 +56,7 @@
 }
 
 .carrier {
-  fill: hsl(300, 80%, 50%);
+  fill: hsl(144, 76%, 31%);
 }
 #carrier_h {
   width: 250px;
@@ -78,7 +78,7 @@
   border: 1px solid #444;
   width: 49px;
   height: 49px;
-  background-color: red;
+  background-color: hsl(0, 100%, 50%, 50%);
   z-index: 1;
 }
 
@@ -88,7 +88,7 @@
   border: 1px solid #444;
   width: 49px;
   height: 49px;
-  background-color: orange;
+  background-color: hsl(39, 100%, 50%, 50%);
   z-index: 1;
 }
 
@@ -98,7 +98,7 @@
   border: 1px solid #444;
   width: 49px;
   height: 49px;
-  background-color: blue;
+  background-color: hsl(240, 100%, 50%, 50%);
   z-index: 1;
 }
 
@@ -108,5 +108,5 @@
   border: 1px solid #444;
   width: 49px;
   height: 49px;
-  background-color: green;
+  background-color: hsl(120, 100%, 25%, 50%);
 }

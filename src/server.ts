@@ -152,7 +152,7 @@ function _onWSClose(ws: WebSocket) {
 	// ); //30 second timeout for stale MCU websocket
 }
 
-function sendList(list: WSServerMessage[]) {
+export function sendList(list: WSServerMessage[]): void {
 	for (let i = 0; i < list.length; i++) {
 		const msg = list[i];
 		const socket = connections.get(msg.at);

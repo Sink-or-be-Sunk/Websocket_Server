@@ -16,16 +16,11 @@ import { Position } from "./Layout";
 
 export default class Lobby {
 	public static readonly EMPTY_GAME_MSG = "Empty Game";
+	public static readonly ADMIN_ACTION = "ADMIN ACTION";
 	games: Map<string, Game>;
 
 	constructor() {
 		this.games = new Map<string, Game>();
-	}
-	public clear(): void {
-		for (const [key] of this.games) {
-			this.leaveGame(key);
-		}
-		logger.warn("Games have been cleared and all players booted");
 	}
 
 	public handles(req: string): boolean {
@@ -86,8 +81,14 @@ export default class Lobby {
 
 				list.push(...this.broadcastBoards(message.id));
 
-				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
-					this.endGame(message.id); //caution, this is async
+				if (
+					resp.meta.includes(Move.WINNER_TAG) ||
+					resp.meta.includes(Move.LOSER_TAG)
+				) {
+					list.push(
+						...this.broadcastGameEnded({ sourceID: message.id }),
+					);
+					this.endGame(message.id, true);
 				}
 				return list;
 			} else {
@@ -194,7 +195,6 @@ export default class Lobby {
 			throw Error("WSMessage is not valid.  This should never occur");
 		}
 	}
-
 	private getGameByPlayerID(playerID: string): Game | undefined {
 		for (const [, game] of this.games) {
 			const player = game.getPlayerByID(playerID);
@@ -204,12 +204,11 @@ export default class Lobby {
 		}
 		return undefined;
 	}
-
-	private async endGame(playerID: string) {
+	public async endGame(playerID: string, sendEmail: boolean): Promise<void> {
 		const game = this.getGameByPlayerID(playerID);
 		const winner = game.getPlayerByID(playerID);
 		const looser = game.getOpponent(playerID);
-		if (winner && looser) {
+		if (sendEmail && winner && looser) {
 			const winnerDoc = await User.findOne({ username: winner.id });
 			const looserDoc = await User.findOne({ username: looser.id });
 
@@ -234,7 +233,9 @@ export default class Lobby {
 				if (err) {
 					logger.error(`Email Send Error: ${err.message}`);
 				}
-				logger.info("Email has been sent successfully!");
+				logger.info(
+					`Email to ${winnerEmail.to} has been sent successfully!`,
+				);
 			});
 
 			const looserEmail = {
@@ -251,12 +252,15 @@ export default class Lobby {
 				if (err) {
 					logger.error(`Email Send Error: ${err.message}`);
 				}
-				logger.info("Email has been sent successfully!");
+				logger.info(
+					`Email to ${looserEmail.to} has been sent successfully!`,
+				);
 			});
 			//TODO: get game summary (boats sunk for each player)
 			//TODO: update wins/losses in db
 		}
 		this.games.delete(game.id);
+		logger.warn(`Removed Game <${game.id}>`);
 	}
 
 	/**
@@ -416,6 +420,64 @@ export default class Lobby {
 		);
 	}
 
+	private getBroadcastGameEnded(
+		playerID: string,
+		meta: string,
+	): WSServerMessage {
+		return new WSServerMessage({
+			header: SERVER_HEADERS.GAME_OVER,
+			meta: meta,
+			at: playerID,
+		});
+	}
+
+	public broadcastGameEnded(options: {
+		sourceID?: string;
+		game?: Game;
+	}): WSServerMessage[] {
+		if (options.sourceID) {
+			for (const [, game] of this.games) {
+				const player = game.getPlayerByID(options.sourceID);
+				if (player) {
+					//found game
+					const list = [];
+					const players = game.getPlayers();
+					for (let i = 0; i < players.length; i++) {
+						const p = players[i];
+						if (p.id == options.sourceID) {
+							list.push(
+								this.getBroadcastGameEnded(
+									p.id,
+									Move.WINNER_TAG,
+								),
+							);
+						} else {
+							list.push(
+								this.getBroadcastGameEnded(
+									p.id,
+									Move.LOSER_TAG,
+								),
+							);
+						}
+					}
+					return list;
+				}
+			}
+		} else if (options.game) {
+			const list = [];
+			const players = options.game.getPlayers();
+			for (let i = 0; i < players.length; i++) {
+				const p = players[i];
+				list.push(this.getBroadcastGameEnded(p.id, Lobby.ADMIN_ACTION));
+			}
+			return list;
+		}
+
+		throw new Error(
+			"Couldn't find source game to broadcast ended: this should never happen",
+		);
+	}
+
 	private sendReconnect(game: Game, uid: string): WSServerMessage[] {
 		const list = [];
 
@@ -452,6 +514,13 @@ export default class Lobby {
 		}
 
 		if (game.isStarted()) {
+			list.push(
+				new WSServerMessage({
+					header: SERVER_HEADERS.POSITIONED_SHIPS,
+					at: uid,
+					payload: game.getShipPositions(uid),
+				}),
+			);
 			//send game board
 			list.push(this.getBroadcastGame(uid));
 			list.push(this.getBroadcastBoard(game, uid));
@@ -571,6 +640,7 @@ export default class Lobby {
 				);
 			}
 			this.games.delete(socketID); //remove game from lobby
+			logger.warn(`Game Removed <${socketID}>`);
 		} else {
 			for (const [gameID, game] of this.games) {
 				const players = game.players;
