@@ -172,7 +172,7 @@ setInterval(() => {
 	// logger.debug(`Number of Connections: ${connections.size}`);
 	for (const [id, connection] of connections) {
 		// logger.debug(`<${id}> has dropped <${connection.dropped}>`);
-		if (connection.dropped > 30) {
+		if (connection.dropped > 120) {
 			logger.error(`Connection to <${id}> timed out!`);
 			lobby.leaveGame(id); // This does nothing when player isn't apart of any game
 			connections.delete(id);
