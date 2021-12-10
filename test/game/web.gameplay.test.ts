@@ -45,7 +45,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 				payload: { opponent: obj.id, gameType: GAME_TYPE.CLASSIC },
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -73,7 +73,7 @@ describe("Mimic Game Play From Two Web Players", () => {
 				payload: list,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -108,8 +108,18 @@ describe("Mimic Game Play From Two Web Players", () => {
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: obj.id,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -143,8 +153,18 @@ describe("Mimic Game Play From Two Web Players", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEHFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -178,8 +198,18 @@ describe("Mimic Game Play From Two Web Players", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEMEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEHFFFEEEEEEEEEEEMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -214,8 +244,18 @@ describe("Mimic Game Play From Two Web Players", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEMEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEEFFFFEEEEFFFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEEEESEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEFFFEEEESFFFEEEESFFFEEEEEEEEEEEMEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -229,14 +269,18 @@ describe("Game Two Web Players with different setup message order", () => {
 	it("Accepts New Game Request", async () => {
 		const obj = { req: REQ_TYPE.NEW_GAME, id: "one" };
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = await lobby.handleReq(msg);
-		const result = [
+		const responses = await lobby.handleReq(msg);
+		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_CREATED,
 				at: obj.id,
 			}),
 		];
-		expect(resp.toString()).toEqual(result.toString());
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
 	});
 
 	it("Accepts Change to Basic Game Mode", async () => {
@@ -246,15 +290,19 @@ describe("Game Two Web Players with different setup message order", () => {
 			data: GAME_TYPE.BASIC,
 		};
 		const msg = new WSClientMessage(JSON.stringify(obj));
-		const resp = await lobby.handleReq(msg);
-		const result = [
+		const responses = await lobby.handleReq(msg);
+		const results = [
 			new WSServerMessage({
 				header: SERVER_HEADERS.GAME_TYPE_APPROVED,
 				at: obj.id,
 				meta: GAME_TYPE.BASIC,
 			}),
 		];
-		expect(resp.toString()).toEqual(result.toString());
+		for (let i = 0; i < responses.length; i++) {
+			const result = results[i];
+			const resp = responses[i];
+			expect(resp).toEqual(result);
+		}
 	});
 
 	it("Allow Player 1 to position ships", async () => {
@@ -274,7 +322,7 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: list,
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -297,7 +345,7 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: { opponent: obj.id, gameType: GAME_TYPE.BASIC },
 			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -328,8 +376,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				header: SERVER_HEADERS.GAME_STARTED,
 				at: obj.id,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEEFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEEFFEEEEFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -363,8 +421,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEEFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEEFFEEEEHFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -398,8 +466,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEEHFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEEFFEEEEHFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -434,8 +512,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEEFFEEEEEEHFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEESEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEESFEEEESFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEHEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -470,8 +558,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEESFEEEEEESFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEESEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEESFEEEESFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEEEESEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -505,8 +603,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEESFEEEEEESFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEESHEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEESFEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEEEESEEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -540,8 +648,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEESFEEEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEESHEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEESFEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEEEESHEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -575,8 +693,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEESFEEEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESHEEEESHEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEESHEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESEEEEEEESHEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -610,8 +738,18 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: move_res.toResultString(),
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEESHEEEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESHEEEESHEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEEFEEEESHEEEESHEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESHEEEEEESHEEEEEE",
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);
@@ -646,8 +784,28 @@ describe("Game Two Web Players with different setup message order", () => {
 				payload: move_res,
 				meta: Move.LOSER_TAG,
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "one",
+				meta: "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFEEEEEESHEEEEEESHEEEEEEEEEEEEEEEEEEEEEEEEESEEEESSEEEESSEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.BOARD_UPDATE,
+				at: "two",
+				meta: "EEEEEEEEEEEEEEEEEEESEEEESSEEEESSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESHEEEEEESHEEEEEE",
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_OVER,
+				at: "one",
+				meta: Move.WINNER_TAG,
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_OVER,
+				at: "two",
+				meta: Move.LOSER_TAG,
+			}),
 		];
-		for (let i = 0; i < results.length; i++) {
+		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
 			const resp = responses[i];
 			expect(resp).toEqual(result);

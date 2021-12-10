@@ -81,7 +81,10 @@ export default class Lobby {
 
 				list.push(...this.broadcastBoards(message.id));
 
-				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
+				if (
+					resp.meta.includes(Move.WINNER_TAG) ||
+					resp.meta.includes(Move.LOSER_TAG)
+				) {
 					list.push(
 						...this.broadcastGameEnded({ sourceID: message.id }),
 					);
@@ -230,7 +233,9 @@ export default class Lobby {
 				if (err) {
 					logger.error(`Email Send Error: ${err.message}`);
 				}
-				logger.info("Email has been sent successfully!");
+				logger.info(
+					`Email to ${winnerEmail.to} has been sent successfully!`,
+				);
 			});
 
 			const looserEmail = {
@@ -247,7 +252,9 @@ export default class Lobby {
 				if (err) {
 					logger.error(`Email Send Error: ${err.message}`);
 				}
-				logger.info("Email has been sent successfully!");
+				logger.info(
+					`Email to ${looserEmail.to} has been sent successfully!`,
+				);
 			});
 			//TODO: get game summary (boats sunk for each player)
 			//TODO: update wins/losses in db

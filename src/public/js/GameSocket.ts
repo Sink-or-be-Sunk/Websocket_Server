@@ -74,13 +74,7 @@ class GameSocket {
 		console.info(data);
 
 		if (data.header === SERVER_HEADERS.MOVE_MADE) {
-			if (
-				data.meta == this.GAME_OVER_YOU_WIN ||
-				data.meta == this.GAME_OVER_YOU_LOSE
-			) {
-				confirm(`Game Over\n${data.meta}`);
-				location.reload();
-			}
+			//TODO:
 		} else if (data.header === SERVER_HEADERS.INVALID_MOVE) {
 			alert(`${data.header}\n${data.meta}`);
 		} else if (data.header === SERVER_HEADERS.INVALID_JOIN) {

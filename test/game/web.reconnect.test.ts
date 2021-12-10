@@ -1201,6 +1201,16 @@ describe("Game Two Web Players with different setup message order", () => {
 				at: "two",
 				meta: "EEEEEEEEEEEEEEEEEEESEEEESSEEEESSEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESHEEEEEESHEEEEEE",
 			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_OVER,
+				at: "one",
+				meta: Move.WINNER_TAG,
+			}),
+			new WSServerMessage({
+				header: SERVER_HEADERS.GAME_OVER,
+				at: "two",
+				meta: Move.LOSER_TAG,
+			}),
 		];
 		for (let i = 0; i < responses.length; i++) {
 			const result = results[i];
