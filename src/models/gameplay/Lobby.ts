@@ -82,7 +82,9 @@ export default class Lobby {
 				list.push(...this.broadcastBoards(message.id));
 
 				if (resp.meta.includes(ResponseHeader.GAME_OVER)) {
-					list.push(...this.broadcastGameEnded(message.id));
+					list.push(
+						...this.broadcastGameEnded({ sourceID: message.id }),
+					);
 					this.endGame(message.id, true);
 				}
 				return list;
@@ -251,6 +253,7 @@ export default class Lobby {
 			//TODO: update wins/losses in db
 		}
 		this.games.delete(game.id);
+		logger.warn(`Removed Game <${game.id}>`);
 	}
 
 	/**
@@ -421,20 +424,20 @@ export default class Lobby {
 		});
 	}
 
-	private broadcastGameEnded(
-		sourceID?: string,
-		game?: Game,
-	): WSServerMessage[] {
-		if (sourceID) {
+	public broadcastGameEnded(options: {
+		sourceID?: string;
+		game?: Game;
+	}): WSServerMessage[] {
+		if (options.sourceID) {
 			for (const [, game] of this.games) {
-				const player = game.getPlayerByID(sourceID);
+				const player = game.getPlayerByID(options.sourceID);
 				if (player) {
 					//found game
 					const list = [];
 					const players = game.getPlayers();
 					for (let i = 0; i < players.length; i++) {
 						const p = players[i];
-						if (p.id == sourceID) {
+						if (p.id == options.sourceID) {
 							list.push(
 								this.getBroadcastGameEnded(
 									p.id,
@@ -453,13 +456,14 @@ export default class Lobby {
 					return list;
 				}
 			}
-		} else if (game) {
+		} else if (options.game) {
 			const list = [];
-			const players = game.getPlayers();
+			const players = options.game.getPlayers();
 			for (let i = 0; i < players.length; i++) {
 				const p = players[i];
 				list.push(this.getBroadcastGameEnded(p.id, Lobby.ADMIN_ACTION));
 			}
+			return list;
 		}
 
 		throw new Error(

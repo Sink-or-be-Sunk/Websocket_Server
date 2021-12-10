@@ -4,9 +4,9 @@ import Lobby from "../models/gameplay/Lobby";
 import { sendList } from "../server";
 
 export async function clear(): Promise<void> {
-	for (const [key] of this.games) {
+	for (const [key, game] of lobby.games) {
 		logger.info(`Ending Game <${key}>`);
-		sendList(this.broadcastGameEnded(Lobby.ADMIN_ACTION));
+		sendList(lobby.broadcastGameEnded({ game: game }));
 		lobby.endGame(key, false);
 	}
 	logger.warn("Games have been cleared and all players booted");

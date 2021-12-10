@@ -27,6 +27,7 @@ enum SERVER_HEADERS {
 	LEFT_GAME = "LEFT GAME",
 	GAME_TYPE_APPROVED = "GAME TYPE APPROVED",
 	GAME_STARTED = "GAME STARTED",
+	GAME_OVER = "GAME OVER",
 	GAME_CREATED = "GAME CREATED",
 	BOARD_UPDATE = "BOARD UPDATE",
 	POSITIONED_SHIPS = "POSITIONED SHIPS",
@@ -101,6 +102,9 @@ class GameSocket {
 			location.reload();
 		} else if (data.header === SERVER_HEADERS.GAME_CREATED) {
 			this.updateConsole(GAME_STATE.LOBBY);
+		} else if (data.header === SERVER_HEADERS.GAME_OVER) {
+			confirm(`Game Over\n${data.meta}`);
+			location.reload();
 		} else if (data.header === SERVER_HEADERS.GAME_STARTED) {
 			this.updateConsole(GAME_STATE.IN_GAME);
 		} else if (data.header === SERVER_HEADERS.GAME_TYPE_APPROVED) {
